@@ -28,6 +28,7 @@ xn::ImageGenerator g_ImageGenerator;
 xn::SceneAnalyzer g_SceneAnalyzer;
 xn::Recorder* g_pRecorder;
 
+
 #ifdef USE_GLUT
 #include <GL/glut.h>
 #else

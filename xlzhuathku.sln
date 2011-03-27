@@ -3,6 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlzhuathku", "xlzhuathku\xlzhuathku.vcproj", "{78AEE709-A484-47BE-B2E6-7BAE74C1DDEC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AA80B2B2-FDFC-40E6-A781-DA1878459EBE}"
+	ProjectSection(SolutionItems) = preProject
+		README = README
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dc_io", "dc_io\dc_io.vcproj", "{C565D815-87DB-4A49-BB6E-D193E8373DBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +20,10 @@ Global
 		{78AEE709-A484-47BE-B2E6-7BAE74C1DDEC}.Debug|Win32.Build.0 = Debug|Win32
 		{78AEE709-A484-47BE-B2E6-7BAE74C1DDEC}.Release|Win32.ActiveCfg = Release|Win32
 		{78AEE709-A484-47BE-B2E6-7BAE74C1DDEC}.Release|Win32.Build.0 = Release|Win32
+		{C565D815-87DB-4A49-BB6E-D193E8373DBA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C565D815-87DB-4A49-BB6E-D193E8373DBA}.Debug|Win32.Build.0 = Debug|Win32
+		{C565D815-87DB-4A49-BB6E-D193E8373DBA}.Release|Win32.ActiveCfg = Release|Win32
+		{C565D815-87DB-4A49-BB6E-D193E8373DBA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
