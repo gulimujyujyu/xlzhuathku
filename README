@@ -1,1 +1,20 @@
 My MPhil Research in HongKongU
+Xiaolong ZHU@HKU
+lucienzhu@gmail.com
+
+====================================
+1. Prerequisites
+====================================
+*. OpenNI libs
+*. NSIS
+
+See http://www.openni.org
+See https://github.com/avin2/SensorKinect
+
+====================================
+2. Codes
+====================================
+-----------------
+2.1  dc_io
+-----------------
+depth camera I/O codes.
