@@ -289,4 +289,5 @@ int main_deprecated(int argc, char **argv)
 	CleanupExit();
 
 #endif
+	return 0;
 }
