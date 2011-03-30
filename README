@@ -5,15 +5,19 @@ lucienzhu@gmail.com
 ====================================
 1. Prerequisites
 ====================================
-*. OpenNI libs
-*. NSIS
+------------------
+1.1 Dependencies
+------------------
+*. OpenNI + NITE
+*. Qt4.7 for vs2008
+*. Qt4.7 add-on for vs2008
 
 a. See http://www.openni.org
 b. See https://github.com/avin2/SensorKinect
 c. See http://www.studentguru.gr/blogs/vangos/archive/2011/01/20/how-to-successfully-install-kinect-windows-openni-nite.aspx
 
 -----------------
-My Settings
+1.2 My Settings
 -----------------
 0. Download OpenNI stable release OpenNI-Win32-1.0.0.23
    Download OpenNI Compliant Hardware Binaries Sensor-Win32-5.0.0.24
@@ -30,6 +34,8 @@ My Settings
 4. Copy XML files to corresponding files as told in (c).
 5. Run samples in NITE/Samples/Bin/*.exe
 6. You may modify your own project in the similar way to NITE's samples in VS2008.
+
+
 ====================================
 2. Codes
 ====================================
