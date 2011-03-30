@@ -204,5 +204,23 @@ void dc_io::timerEvent(QTimerEvent *event)
 {
 	if (rc != XN_STATUS_OK)	{
 		//TODO:
+		getData();
+		drawScene();
 	}
+}
+
+/*
+ *	get data from generators
+ */
+void dc_io::getData()
+{
+	//TODO
+}
+
+/*
+ *	Draw Scene in XlDisplay Widget from data
+ */
+void dc_io::drawScene()
+{
+	//TODO
 }

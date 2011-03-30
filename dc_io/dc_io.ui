@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0" colspan="5">
-     <widget class="QWidget" name="Display" native="true"/>
+     <widget class="XlDisplay" name="Display" native="true"/>
     </item>
     <item row="1" column="0">
      <widget class="QPushButton" name="PlayButton">
@@ -159,6 +159,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>XlDisplay</class>
+   <extends>QWidget</extends>
+   <header location="global">xldisplay.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="dc_io.qrc"/>
  </resources>

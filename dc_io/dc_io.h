@@ -36,6 +36,10 @@ protected:
 	//overload functions
 	void timerEvent(QTimerEvent *event);
 
+private:
+	//paint related functions
+	void getData();
+	void drawScene();
 
 private:
 	//Kinect
