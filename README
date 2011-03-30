@@ -8,10 +8,28 @@ lucienzhu@gmail.com
 *. OpenNI libs
 *. NSIS
 
-See http://www.openni.org
-See https://github.com/avin2/SensorKinect
-See http://www.studentguru.gr/blogs/vangos/archive/2011/01/20/how-to-successfully-install-kinect-windows-openni-nite.aspx
+a. See http://www.openni.org
+b. See https://github.com/avin2/SensorKinect
+c. See http://www.studentguru.gr/blogs/vangos/archive/2011/01/20/how-to-successfully-install-kinect-windows-openni-nite.aspx
 
+-----------------
+My Settings
+-----------------
+0. Download OpenNI stable release OpenNI-Win32-1.0.0.23
+   Download OpenNI Compliant Hardware Binaries Sensor-Win32-5.0.0.24
+   Download OpenNI Compliant Middleware Binaries NITE-Win32-1.3.0.17
+   Download SampleXML from (c) as shown above.
+   Download Stable branches from (b) as shown above.
+1. Disconnect Kinect
+   Install OpenNI
+   Install Sensor
+   Install SensorKinect in (b)/Bin
+2. Connect Kinect
+   Check if it is well recognized.
+3. Install NITE
+4. Copy XML files to corresponding files as told in (c).
+5. Run samples in NITE/Samples/Bin/*.exe
+6. You may modify your own project in the similar way to NITE's samples in VS2008.
 ====================================
 2. Codes
 ====================================
