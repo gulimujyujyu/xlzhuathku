@@ -1,5 +1,6 @@
 #include "dc_io.h"
 #include <QtGui/QMessageBox>
+#include <QPixmap>
 
 
 dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
@@ -23,15 +24,24 @@ dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
 	//initialize flags
 	this->playFlag = false;
 	this->recordFlag = false;
+	//initialize Kinect
+	initKinectParam();
 
 	//begin main loop
 	startTimer(100);
-	
 }
 
 dc_io::~dc_io()
 {
 
+}
+
+/*
+ *	Initialize Kinect Related Parameters
+ */
+void dc_io::initKinectParam()
+{
+	//TODO:
 }
 
 /*
@@ -67,7 +77,18 @@ bool dc_io::connectCamera()
 	if(!state) {
 		QMessageBox::critical(this,"Connect Kinect Error", "state is not XN_STATUS_OK");
 	}
+
+	//initialize data storage
+	refreshDataStorage();
 	return state;
+}
+
+/*
+ *	Clear and New a data storage when connect new camera
+ */
+void dc_io::refreshDataStorage()
+{
+	//TODO:
 }
 
 /*
@@ -166,7 +187,7 @@ void dc_io::record()
 {
 	//TODO: 
 	bool state=true;
-	this->recordFlag = ui.CaptureButton->isChecked();
+	this->recordFlag = ui.RecordButton->isChecked();
 	if (recordFlag) {
 		ui.RecordButton->setText("Stop");
 	} else {
@@ -214,7 +235,13 @@ void dc_io::timerEvent(QTimerEvent *event)
  */
 void dc_io::getData()
 {
-	//TODO
+	if (!(this->playFlag)) {
+		g_Context.WaitAndUpdateAll();
+	}
+
+	//TODO: change view
+	this->g_DepthGenerator.GetMetaData(this->g_DepthData);
+	this->g_ImageGenerator.GetMetaData(this->g_ImageData);
 }
 
 /*
@@ -222,5 +249,48 @@ void dc_io::getData()
  */
 void dc_io::drawScene()
 {
-	//TODO
+	//generate pixmap
+	int imgWidth = this->g_ImageData.XRes();
+	int imgHeight = this->g_ImageData.YRes();
+	int dptWidth = this->g_DepthData.XRes();
+	int dptHeight = this->g_DepthData.YRes();
+	//int dispHeight = (imgHeight>=dptHeight?imgHeight:dptHeight);
+	//int dispWidth = (imgWidth+dptWidth);
+	int dispHeight = dptHeight;
+	int dispWidth = dptWidth;
+
+	QImage disp(dispWidth,dispHeight);
+	QColor pxl;
+	int i,j;
+
+	//const XnRGB24Pixel* pImage = this->g_ImageData.Data();
+	const XnDepthPixel* pDepth = this->g_DepthData.Data();
+	unsigned int nValue;
+
+	for ( i = 0; i < dispHeight; i++) {
+		//for (j=0; j< imgWidth; j++) {
+		//
+		//}
+		for (j=0; j<dptWidth; j++) {
+			nValue = *pImage;
+			pImage++;
+			mapDepthToColor( nValue, pxl);
+		}
+	}
+}
+
+/*
+ *	Map Depth Value to a Color Pixel in RGB format
+ */
+void dc_io::mapDepthToColor( unsigned int nValue, QColor &color)
+{
+	//TODO!!! 3/31/2011
+
+	float 
+	//linear scale to [0,255]
+	if (nValue != 0 && nValue < 1200 && nValue > 700)
+		nValue = (unsigned int)(255 * (1200-(float)nValue)/500.0);
+
+	//display as a gray level
+	color.setRedF()
 }

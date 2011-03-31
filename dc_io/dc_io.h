@@ -16,6 +16,8 @@ public:
 	dc_io(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~dc_io();
 	void refreshStatusBar(QString ctn);
+	//Utilities Functions
+	void mapDepthToColor( unsigned int nValue, QColor &color)
 
 private slots:
 	bool connectCamera();
@@ -40,15 +42,20 @@ private:
 	//paint related functions
 	void getData();
 	void drawScene();
+	void refreshDataStorage();
+	void initKinectParam();
 
 private:
 	//Kinect
 	XnStatus rc;
 	xn::Context g_Context;
+	xn::Recorder* g_pRecorder;
+
 	xn::DepthGenerator g_DepthGenerator;
 	xn::ImageGenerator g_ImageGenerator;
-	xn::SceneAnalyzer g_SceneAnalyzer;
-	xn::Recorder* g_pRecorder;
+
+	xn::DepthMetaData g_DepthData;
+	xn::ImageMetaData g_ImageData;
 
 	//Status
 	bool playFlag;

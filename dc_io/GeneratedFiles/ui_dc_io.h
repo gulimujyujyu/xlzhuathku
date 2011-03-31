@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dc_io.ui'
 **
-** Created: Wed Mar 30 12:01:52 2011
+** Created: Thu Mar 31 15:25:42 2011
 **      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -23,6 +23,7 @@
 #include <QtGui/QSpacerItem>
 #include <QtGui/QStatusBar>
 #include <QtGui/QWidget>
+#include <xldisplay.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -41,7 +42,7 @@ public:
     QAction *action2;
     QWidget *centralWidget;
     QGridLayout *gridLayout;
-    QWidget *Display;
+    XlDisplay *Display;
     QPushButton *PlayButton;
     QPushButton *CaptureButton;
     QSpacerItem *horizontalSpacer;
@@ -84,7 +85,7 @@ public:
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        Display = new QWidget(centralWidget);
+        Display = new XlDisplay(centralWidget);
         Display->setObjectName(QString::fromUtf8("Display"));
 
         gridLayout->addWidget(Display, 0, 0, 1, 5);
