@@ -1,5 +1,5 @@
 ################################
-My MPhil Research in HongKongU
+playground of my codes
 Xiaolong ZHU@HKU
 lucienzhu@gmail.com
 ################################
@@ -7,20 +7,9 @@ lucienzhu@gmail.com
 ====================================
 1. Introduction
 ====================================
------------------
-1.1  dc_io
------------------
-depth camera I/O codes.
-
------------------
-1.2  xlzhuathku
------------------
-a playground for the time being.
+Hello world.
 
 ====================================
 2. Prerequisites
 ====================================
------------------
-2.1 dc_io
------------------
-See ./dc_io/README
+None.
