@@ -17,7 +17,9 @@ public:
 	~dc_io();
 	void refreshStatusBar(QString ctn);
 	//Utilities Functions
-	void mapDepthToColor( unsigned int nValue, QColor &color)
+	int inline mapDepthToIntensity( unsigned int nValue);
+
+	static const int MinimalTimerInterval = 25;
 
 private slots:
 	bool connectCamera();
@@ -42,7 +44,7 @@ private:
 	//paint related functions
 	void getData();
 	void drawScene();
-	void refreshDataStorage();
+	void initializeDataAndTimer();
 	void initKinectParam();
 
 private:
@@ -60,6 +62,7 @@ private:
 	//Status
 	bool playFlag;
 	bool recordFlag;
+	int timerId;
 
 	//Display
 	QImage *displayImage;

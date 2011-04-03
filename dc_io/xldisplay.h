@@ -2,7 +2,9 @@
 #define XLDISPLAY_H
 
 #include <QWidget>
-#include <QPixmap>
+#include <QImage>
+#include <QLabel>
+#include <QVBoxLayout>
 
 class XlDisplaySettings {
 public:
@@ -22,16 +24,13 @@ public:
 	~XlDisplay();
 
 	void setDisplaySettings(const XlDisplaySettings & settings);
-	void setPixmap(QPixmap pm);
-	void clearPixmap();
-	void refreshPixmap();
-
-protected:
-	void paintEvent(QPaintEvent *event);
-	void resizeEvent(QResizeEvent *event);
+	void putImage(QImage img);
 
 private:
-	QPixmap pixmap;
+	QLabel *imageLabel;
+	QVBoxLayout *layout;
+
+	QImage pixmap;
 	XlDisplaySettings settings;
 };
 

@@ -24,11 +24,9 @@ dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
 	//initialize flags
 	this->playFlag = false;
 	this->recordFlag = false;
+	this->timerId = 0;
 	//initialize Kinect
-	initKinectParam();
-
-	//begin main loop
-	startTimer(100);
+	initKinectParam();	
 }
 
 dc_io::~dc_io()
@@ -42,6 +40,7 @@ dc_io::~dc_io()
 void dc_io::initKinectParam()
 {
 	//TODO:
+	rc = XN_STATUS_OK + 999;
 }
 
 /*
@@ -67,8 +66,6 @@ bool dc_io::connectCamera()
 	CHECK_RC(rc, "Find depth generator");
 	rc = g_Context.FindExistingNode(XN_NODE_TYPE_IMAGE, g_ImageGenerator);
 	CHECK_RC(rc, "Find image generator");
-	rc = g_Context.FindExistingNode(XN_NODE_TYPE_SCENE, g_SceneAnalyzer);
-	CHECK_RC(rc, "Find scene analyzer");
 
 	rc = g_Context.StartGeneratingAll();
 	CHECK_RC(rc, "StartGenerating");
@@ -76,19 +73,27 @@ bool dc_io::connectCamera()
 	state=(rc==XN_STATUS_OK);
 	if(!state) {
 		QMessageBox::critical(this,"Connect Kinect Error", "state is not XN_STATUS_OK");
+		this->refreshStatusBar(QString("Connect Kinect Error"));
 	}
-
+	else {
+		this->refreshStatusBar(QString("Connect Kinect Successful"));
+	}
+	
 	//initialize data storage
-	refreshDataStorage();
+	initializeDataAndTimer();
 	return state;
 }
 
 /*
  *	Clear and New a data storage when connect new camera
  */
-void dc_io::refreshDataStorage()
+void dc_io::initializeDataAndTimer()
 {
 	//TODO:
+	if(this->timerId) {
+		killTimer(this->timerId);
+	}	
+	this->timerId = startTimer(this->MinimalTimerInterval);
 }
 
 /*
@@ -223,7 +228,7 @@ bool dc_io::setROR()
  */
 void dc_io::timerEvent(QTimerEvent *event)
 {
-	if (rc != XN_STATUS_OK)	{
+	if (rc == XN_STATUS_OK)	{
 		//TODO:
 		getData();
 		drawScene();
@@ -235,13 +240,15 @@ void dc_io::timerEvent(QTimerEvent *event)
  */
 void dc_io::getData()
 {
-	if (!(this->playFlag)) {
+	if (this->playFlag) {
 		g_Context.WaitAndUpdateAll();
 	}
 
 	//TODO: change view
-	this->g_DepthGenerator.GetMetaData(this->g_DepthData);
-	this->g_ImageGenerator.GetMetaData(this->g_ImageData);
+	if (this->playFlag) {
+		this->g_DepthGenerator.GetMetaData(this->g_DepthData);
+		this->g_ImageGenerator.GetMetaData(this->g_ImageData);
+	}	
 }
 
 /*
@@ -259,38 +266,43 @@ void dc_io::drawScene()
 	int dispHeight = dptHeight;
 	int dispWidth = dptWidth;
 
-	QImage disp(dispWidth,dispHeight);
-	QColor pxl;
+	QImage disp(dispWidth,dispHeight,QImage::Format_RGB32);
+	QColor pxl(0,0,0);
 	int i,j;
 
 	//const XnRGB24Pixel* pImage = this->g_ImageData.Data();
 	const XnDepthPixel* pDepth = this->g_DepthData.Data();
 	unsigned int nValue;
 
+	//set one frame
 	for ( i = 0; i < dispHeight; i++) {
 		//for (j=0; j< imgWidth; j++) {
 		//
 		//}
 		for (j=0; j<dptWidth; j++) {
-			nValue = *pImage;
-			pImage++;
-			mapDepthToColor( nValue, pxl);
+			nValue = *pDepth;
+			pDepth++;
+			int tmp = mapDepthToIntensity( nValue);
+			disp.setPixel(j,i,qRgb(tmp, tmp, tmp));
 		}
 	}
+
+	ui.Display->putImage(disp);
 }
 
 /*
  *	Map Depth Value to a Color Pixel in RGB format
  */
-void dc_io::mapDepthToColor( unsigned int nValue, QColor &color)
+int inline dc_io::mapDepthToIntensity( unsigned int nValue)
 {
 	//TODO!!! 3/31/2011
 
-	float 
+	int tmp = 0;
 	//linear scale to [0,255]
 	if (nValue != 0 && nValue < 1200 && nValue > 700)
-		nValue = (unsigned int)(255 * (1200-(float)nValue)/500.0);
+		tmp = int(255*(1200-(float)nValue)/500.0);
+	tmp = tmp>255? 0:tmp;
+	tmp = tmp<0? 0:tmp;
 
-	//display as a gray level
-	color.setRedF()
+	return tmp;
 }
