@@ -261,29 +261,34 @@ void dc_io::drawScene()
 	int imgHeight = this->g_ImageData.YRes();
 	int dptWidth = this->g_DepthData.XRes();
 	int dptHeight = this->g_DepthData.YRes();
-	//int dispHeight = (imgHeight>=dptHeight?imgHeight:dptHeight);
-	//int dispWidth = (imgWidth+dptWidth);
-	int dispHeight = dptHeight;
-	int dispWidth = dptWidth;
+	int dispHeight = (imgHeight>=dptHeight?imgHeight:dptHeight);
+	int dispWidth = (imgWidth+dptWidth);
+	//int dispHeight = dptHeight;
+	//int dispWidth = dptWidth;
 
 	QImage disp(dispWidth,dispHeight,QImage::Format_RGB32);
 	QColor pxl(0,0,0);
 	int i,j;
+	int tmp, tr, tg, tb;
 
-	//const XnRGB24Pixel* pImage = this->g_ImageData.Data();
+	const XnUInt8* pImage = this->g_ImageData.Data();
 	const XnDepthPixel* pDepth = this->g_DepthData.Data();
 	unsigned int nValue;
 
 	//set one frame
 	for ( i = 0; i < dispHeight; i++) {
-		//for (j=0; j< imgWidth; j++) {
-		//
-		//}
+		for (j=0; j< imgWidth; j++) {
+			tr = *pImage;
+			tg = *(pImage+1);
+			tb = *(pImage+2);
+			disp.setPixel(j,i,qRgb(tr, tg, tb));
+			pImage += 3;
+		}
 		for (j=0; j<dptWidth; j++) {
 			nValue = *pDepth;
 			pDepth++;
-			int tmp = mapDepthToIntensity( nValue);
-			disp.setPixel(j,i,qRgb(tmp, tmp, tmp));
+			tmp = mapDepthToIntensity( nValue);
+			disp.setPixel(j+imgWidth,i,qRgb(tmp, tmp, tmp));
 		}
 	}
 
@@ -291,12 +296,10 @@ void dc_io::drawScene()
 }
 
 /*
- *	Map Depth Value to a Color Pixel in RGB format
+ *	Map Depth Value to a [0,255] intensity value
  */
 int inline dc_io::mapDepthToIntensity( unsigned int nValue)
 {
-	//TODO!!! 3/31/2011
-
 	int tmp = 0;
 	//linear scale to [0,255]
 	if (nValue != 0 && nValue < 1200 && nValue > 700)

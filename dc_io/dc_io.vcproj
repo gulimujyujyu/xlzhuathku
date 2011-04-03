@@ -402,6 +402,10 @@
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath=".\README"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global
