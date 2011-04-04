@@ -18,6 +18,8 @@ dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
 	connect(ui.action1, SIGNAL(triggered()), this, SLOT(scale1()));
 	connect(ui.action05, SIGNAL(triggered()), this, SLOT(scale05()));
 	connect(ui.action2, SIGNAL(triggered()), this, SLOT(scale2()));
+	connect(ui.actionROI,SIGNAL(triggered()), this, SLOT(setROI()));
+	connect(ui.actionDOI,SIGNAL(triggered()), this, SLOT(setDOI()));
 	//connect buttons
 	connect(ui.PlayButton, SIGNAL(clicked()), this, SLOT(play()));
 	connect(ui.CaptureButton, SIGNAL(clicked()), this, SLOT(capture()));
@@ -29,6 +31,7 @@ dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
 	this->timerId = 0;
 	this->viewType = MAINWINDOW_VIEWTYPE_RAW;
 	this->scaleFactor = 1;
+	this->regionOfInterest = ui.Display->rect();
 	//initialize Kinect
 	initKinectParam();	
 }
@@ -88,7 +91,15 @@ bool dc_io::connectCamera()
 	g_MaxDepth = this->g_DepthGenerator.GetDeviceMaxDepth();
 	this->refreshStatusBar(QString("Connect Kinect Successful. g_MaxDepth:") + QString::number(g_MaxDepth));
 
-	
+	//generate pixmap
+	int imgWidth = this->g_ImageData.XRes();
+	int imgHeight = this->g_ImageData.YRes();
+	int dptWidth = this->g_DepthData.XRes();
+	int dptHeight = this->g_DepthData.YRes();
+	int dispHeight = (imgHeight>=dptHeight?imgHeight:dptHeight);
+	int dispWidth = (imgWidth+dptWidth);
+	this->regionOfInterest = QRect(0,0,dispWidth,dispHeight);
+
 	//initialize data storage
 	initializeDataAndTimer();
 	return state;
@@ -208,8 +219,15 @@ void dc_io::play()
  */
 void dc_io::capture()
 {
-	//TODO: 
-	bool state=true;
+	QString filename;
+
+	filename = QString("capture")+QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString(".png");
+	
+	if(ui.Display->getImage().save(filename,"PNG")) {
+		this->refreshStatusBar(QString("Successfully saved to ")+filename);
+	} else {
+		this->refreshStatusBar(QString("Cannot capture data."));
+	}
 }
 
 /*
@@ -233,10 +251,37 @@ void dc_io::record()
  */
 bool dc_io::setROI()
 {
-	//TODO: 
 	bool state=true;
 
+	if ( ui.Display->hasDoneSelection()) {
+		if ( checkROI(ui.Display->getSelectionRect())){
+			this->regionOfInterest = ui.Display->getSelectionRect();	
+			this->refreshStatusBar(QString("Set ROI Done. TL=(")+
+				QString::number(regionOfInterest.topLeft().x())+QString(",")+QString::number(regionOfInterest.topLeft().y())+
+				QString("), BR=(")+
+				QString::number(regionOfInterest.bottomRight().x())+QString(",")+QString::number(regionOfInterest.bottomRight().y())+
+				QString(")"));
+		}
+		else {
+			this->refreshStatusBar(QString("ROI should be in either color or depth image."));
+		}		
+	} 
+	else {
+		this->refreshStatusBar(QString("Please first select a retangle within the picture above."));
+	}
 	return state;
+}
+
+/*
+ *	Check whether ROI is within a valid area
+ */
+bool dc_io::checkROI(QRect &rct)
+{
+	QRect tmp = ui.Display->getImage().rect();
+	QRect tmp1(0,0,tmp.width()/2,tmp.height());
+	QRect tmp2(tmp.width()/2,0,tmp.width()/2,tmp.height());
+
+	return (tmp1.contains(rct) || tmp2.contains(rct));
 }
 
 /*
@@ -261,7 +306,7 @@ void dc_io::timerEvent(QTimerEvent *event)
 		//TODO:
 		getData(); // 3-7ms	
 		drawScene(); // 42-46ms
-		this->refreshStatusBar(QString("One Frame: ") + QString::number(tmpTimer.elapsed()) + QString(" ms."));		
+		//this->refreshStatusBar(QString("One Frame: ") + QString::number(tmpTimer.elapsed()) + QString(" ms."));		
 	}	
 	this->resize(this->minimumSize());
 }

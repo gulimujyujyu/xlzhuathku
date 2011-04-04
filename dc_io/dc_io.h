@@ -53,6 +53,7 @@ private:
 	void drawScene();
 	void initializeDataAndTimer();
 	void initKinectParam();
+	bool checkROI(QRect& rct);
 
 private:
 	//Kinect
@@ -72,10 +73,7 @@ private:
 	//Region of Interest
 	int depthLowerBound;
 	int depthUpperBound;
-	int xLeftRight;
-	int yLeftRight;
-	int xRightBottom;
-	int yRightBottom;
+	QRect regionOfInterest;
 
 	//Status
 	bool playFlag;
