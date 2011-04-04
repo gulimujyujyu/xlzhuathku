@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="dc_io"
 	ProjectGUID="{504E3316-1413-433E-93A3-383BAB33776E}"
+	RootNamespace="dc_io"
 	Keyword="Qt4VSv1.0"
 	TargetFrameworkVersion="0"
 	>
@@ -172,14 +173,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\main_deprecated.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SceneDrawer.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\xldisplay.cpp"
 				>
 			</File>
@@ -218,10 +211,6 @@
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\SceneDrawer.h"
-				>
 			</File>
 			<File
 				RelativePath=".\xldisplay.h"

@@ -40,6 +40,7 @@ private slots:
 	//button slots
 	void play();
 	void capture();
+	void captureROI();
 	void record();
 
 protected:

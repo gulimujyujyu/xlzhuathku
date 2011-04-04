@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dc_io.ui'
 **
-** Created: Mon Apr 4 20:25:59 2011
+** Created: Mon Apr 4 21:34:42 2011
 **      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -47,6 +47,7 @@ public:
     QPushButton *CaptureButton;
     QSpacerItem *horizontalSpacer;
     QPushButton *RecordButton;
+    QPushButton *CaptureROIButton;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuView;
@@ -98,7 +99,7 @@ public:
         sizePolicy.setHeightForWidth(Display->sizePolicy().hasHeightForWidth());
         Display->setSizePolicy(sizePolicy);
 
-        gridLayout->addWidget(Display, 0, 0, 1, 5);
+        gridLayout->addWidget(Display, 0, 0, 1, 6);
 
         PlayButton = new QPushButton(centralWidget);
         PlayButton->setObjectName(QString::fromUtf8("PlayButton"));
@@ -113,13 +114,18 @@ public:
 
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout->addItem(horizontalSpacer, 1, 3, 1, 1);
+        gridLayout->addItem(horizontalSpacer, 1, 4, 1, 1);
 
         RecordButton = new QPushButton(centralWidget);
         RecordButton->setObjectName(QString::fromUtf8("RecordButton"));
         RecordButton->setCheckable(true);
 
-        gridLayout->addWidget(RecordButton, 1, 2, 1, 1);
+        gridLayout->addWidget(RecordButton, 1, 3, 1, 1);
+
+        CaptureROIButton = new QPushButton(centralWidget);
+        CaptureROIButton->setObjectName(QString::fromUtf8("CaptureROIButton"));
+
+        gridLayout->addWidget(CaptureROIButton, 1, 2, 1, 1);
 
         dc_ioClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(dc_ioClass);
@@ -176,6 +182,7 @@ public:
         PlayButton->setText(QApplication::translate("dc_ioClass", "Play", 0, QApplication::UnicodeUTF8));
         CaptureButton->setText(QApplication::translate("dc_ioClass", "Capture", 0, QApplication::UnicodeUTF8));
         RecordButton->setText(QApplication::translate("dc_ioClass", "Record", 0, QApplication::UnicodeUTF8));
+        CaptureROIButton->setText(QApplication::translate("dc_ioClass", "CaptureROI", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("dc_ioClass", "&File", 0, QApplication::UnicodeUTF8));
         menuView->setTitle(QApplication::translate("dc_ioClass", "&View", 0, QApplication::UnicodeUTF8));
         menu_Set->setTitle(QApplication::translate("dc_ioClass", "&Set", 0, QApplication::UnicodeUTF8));

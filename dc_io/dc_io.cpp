@@ -3,6 +3,8 @@
 #include <QtGui/QMessageBox>
 #include <QPixmap>
 #include <QTime>
+#include <QFile>
+#include <QTextStream>
 
 
 dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
@@ -23,6 +25,7 @@ dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
 	//connect buttons
 	connect(ui.PlayButton, SIGNAL(clicked()), this, SLOT(play()));
 	connect(ui.CaptureButton, SIGNAL(clicked()), this, SLOT(capture()));
+	connect(ui.CaptureROIButton, SIGNAL(clicked()), this, SLOT(captureROI()));
 	connect(ui.RecordButton, SIGNAL(clicked()), this, SLOT(record()));
 
 	//initialize flags
@@ -221,10 +224,52 @@ void dc_io::capture()
 {
 	QString filename;
 
-	filename = QString("capture")+QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString(".png");
+	filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString("capture.png");
 	
 	if(ui.Display->getImage().save(filename,"PNG")) {
 		this->refreshStatusBar(QString("Successfully saved to ")+filename);
+	} else {
+		this->refreshStatusBar(QString("Cannot capture data."));
+	}
+}
+
+/*
+ *	capture ROI of one frame and write
+ */
+void dc_io::captureROI()
+{
+	QString prefix;
+	QString dfn;
+	QString cfn;
+	QString ifn;
+	QString txtfn;
+
+	prefix = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz");
+	dfn = prefix + QString("depth.png");
+	cfn = prefix + QString("image.png");
+	ifn = prefix + QString("capture.png");
+	txtfn = prefix + QString("detail.txt");
+
+	int singleImageWidth = ui.Display->getImage().width()/2;
+
+	QRect cRect(regionOfInterest.topLeft().x()%singleImageWidth,regionOfInterest.topLeft().y(),regionOfInterest.width(),regionOfInterest.height());
+	QRect dRect(regionOfInterest.topLeft().x()%singleImageWidth+singleImageWidth,regionOfInterest.topLeft().y(),regionOfInterest.width(),regionOfInterest.height());
+	
+	QImage di = ui.Display->getImage().copy(dRect);
+	QImage ci = ui.Display->getImage().copy(cRect);
+
+	if(ui.Display->getImage().save(ifn,"PNG") && di.save(dfn,"PNG") && ci.save(cfn,"PNG")) {
+		QFile file(txtfn);
+		if( !file.open(QIODevice::WriteOnly)) {
+			this->refreshStatusBar( QString("Cannot write to detail.txt but images saved"));
+		}
+		QTextStream out(&file);
+		out << cRect.topLeft().x() << endl
+			<< cRect.topLeft().y() << endl
+			<< cRect.width() << endl
+			<< cRect.height() << endl;
+		file.close();
+		this->refreshStatusBar(QString("Successfully saved to ")+prefix);
 	} else {
 		this->refreshStatusBar(QString("Cannot capture data."));
 	}
