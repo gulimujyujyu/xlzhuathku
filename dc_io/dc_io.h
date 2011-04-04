@@ -8,6 +8,10 @@
 #include <XnCodecIDs.h>
 #include <XnCppWrapper.h>
 
+#define MAINWINDOW_VIEWTYPE_RAW 0
+#define MAINWINDOW_VIEWTYPE_REGISTERED 1
+#define MAINWINDOW_VIEWTYPE_3D 2
+
 class dc_io : public QMainWindow
 {
 	Q_OBJECT
@@ -19,7 +23,7 @@ public:
 	//Utilities Functions
 	int inline mapDepthToIntensity( unsigned int nValue);
 
-	static const int MinimalTimerInterval = 25;
+	static const int MinimalTimerInterval = 100;
 
 private slots:
 	bool connectCamera();
@@ -63,6 +67,7 @@ private:
 	bool playFlag;
 	bool recordFlag;
 	int timerId;
+	int viewType;
 
 	//Display
 	QImage *displayImage;

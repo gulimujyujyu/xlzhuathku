@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dc_io.ui'
 **
-** Created: Sun Apr 3 17:45:13 2011
+** Created: Mon Apr 4 11:40:42 2011
 **      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -81,12 +81,20 @@ public:
         action2->setObjectName(QString::fromUtf8("action2"));
         centralWidget = new QWidget(dc_ioClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
+        centralWidget->setSizePolicy(sizePolicy);
         gridLayout = new QGridLayout(centralWidget);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         Display = new XlDisplay(centralWidget);
         Display->setObjectName(QString::fromUtf8("Display"));
+        Display->setEnabled(true);
+        sizePolicy.setHeightForWidth(Display->sizePolicy().hasHeightForWidth());
+        Display->setSizePolicy(sizePolicy);
 
         gridLayout->addWidget(Display, 0, 0, 1, 5);
 

@@ -13,6 +13,9 @@ XlDisplay::XlDisplay(QWidget *parent)
 
 	setDisplaySettings(XlDisplaySettings());
 
+	setBackgroundRole(QPalette::Dark);
+	setAutoFillBackground(true);
+
 	//TODO
 	QImage dummy(640,480,QImage::Format_RGB32);
 	pixmap = dummy;

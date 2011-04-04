@@ -1,6 +1,7 @@
 #include "dc_io.h"
 #include <QtGui/QMessageBox>
 #include <QPixmap>
+#include <QTime>
 
 
 dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
@@ -25,6 +26,7 @@ dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
 	this->playFlag = false;
 	this->recordFlag = false;
 	this->timerId = 0;
+	this->viewType = MAINWINDOW_VIEWTYPE_RAW;
 	//initialize Kinect
 	initKinectParam();	
 }
@@ -134,9 +136,14 @@ bool dc_io::scale1()
  */
 bool dc_io::changeView3D()
 {
-	//TODO: 
 	bool state=true;
+	this->viewType = MAINWINDOW_VIEWTYPE_3D;
+	if ( this->rc == XN_STATUS_OK) {
+		//TODO: same as registered right now
+		g_DepthGenerator.GetAlternativeViewPointCap().SetViewPoint( g_ImageGenerator); 		
+	}
 
+	this->refreshStatusBar(QString("View Point: 3D"));
 	return state;
 }
 
@@ -145,9 +152,13 @@ bool dc_io::changeView3D()
  */
 bool dc_io::changeViewRegistered()
 {
-	//TODO: 
 	bool state=true;
+	this->viewType = MAINWINDOW_VIEWTYPE_REGISTERED;
+	if ( this->rc == XN_STATUS_OK) {
+		g_DepthGenerator.GetAlternativeViewPointCap().SetViewPoint( g_ImageGenerator); 		
+	}
 
+	this->refreshStatusBar(QString("View Point: REGISTERED"));
 	return state;
 }
 
@@ -156,9 +167,14 @@ bool dc_io::changeViewRegistered()
  */
 bool dc_io::changeViewRaw()
 {
-	//TODO: 
 	bool state=true;
+	this->viewType = MAINWINDOW_VIEWTYPE_RAW;
 
+	if ( this->rc == XN_STATUS_OK) {
+		g_DepthGenerator.GetAlternativeViewPointCap().ResetViewPoint();
+	}
+
+	this->refreshStatusBar(QString("View Point: RAW"));
 	return state;
 }
 
@@ -224,15 +240,18 @@ bool dc_io::setROR()
 }
 
 /*
- *	Piant Function
+ *	Paint Function
  */
 void dc_io::timerEvent(QTimerEvent *event)
 {
 	if (rc == XN_STATUS_OK)	{
+		//QTime tmpTimer;
+		//tmpTimer.start();
 		//TODO:
-		getData();
-		drawScene();
-	}
+		getData(); // 3-7ms	
+		drawScene(); // 42-46ms
+		//this->refreshStatusBar(QString("One Frame: ") + QString::number(tmpTimer.elapsed()) + QString(" ms."));		
+	}	
 }
 
 /*
@@ -242,10 +261,7 @@ void dc_io::getData()
 {
 	if (this->playFlag) {
 		g_Context.WaitAndUpdateAll();
-	}
-
-	//TODO: change view
-	if (this->playFlag) {
+		
 		this->g_DepthGenerator.GetMetaData(this->g_DepthData);
 		this->g_ImageGenerator.GetMetaData(this->g_ImageData);
 	}	
@@ -276,6 +292,7 @@ void dc_io::drawScene()
 	unsigned int nValue;
 
 	//set one frame
+
 	for ( i = 0; i < dispHeight; i++) {
 		for (j=0; j< imgWidth; j++) {
 			tr = *pImage;
@@ -291,8 +308,8 @@ void dc_io::drawScene()
 			disp.setPixel(j+imgWidth,i,qRgb(tmp, tmp, tmp));
 		}
 	}
-
-	ui.Display->putImage(disp);
+	
+	ui.Display->putImage(disp);	
 }
 
 /*
