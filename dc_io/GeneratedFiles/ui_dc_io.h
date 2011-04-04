@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dc_io.ui'
 **
-** Created: Mon Apr 4 11:40:42 2011
+** Created: Mon Apr 4 16:58:05 2011
 **      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -36,7 +36,7 @@ public:
     QAction *actionRegistered;
     QAction *action3D;
     QAction *actionROI;
-    QAction *actionROD;
+    QAction *actionDOI;
     QAction *action1;
     QAction *action05;
     QAction *action2;
@@ -58,7 +58,12 @@ public:
     {
         if (dc_ioClass->objectName().isEmpty())
             dc_ioClass->setObjectName(QString::fromUtf8("dc_ioClass"));
-        dc_ioClass->resize(824, 629);
+        dc_ioClass->resize(307, 98);
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(dc_ioClass->sizePolicy().hasHeightForWidth());
+        dc_ioClass->setSizePolicy(sizePolicy);
         actionConnect = new QAction(dc_ioClass);
         actionConnect->setObjectName(QString::fromUtf8("actionConnect"));
         actionExit = new QAction(dc_ioClass);
@@ -71,8 +76,8 @@ public:
         action3D->setObjectName(QString::fromUtf8("action3D"));
         actionROI = new QAction(dc_ioClass);
         actionROI->setObjectName(QString::fromUtf8("actionROI"));
-        actionROD = new QAction(dc_ioClass);
-        actionROD->setObjectName(QString::fromUtf8("actionROD"));
+        actionDOI = new QAction(dc_ioClass);
+        actionDOI->setObjectName(QString::fromUtf8("actionDOI"));
         action1 = new QAction(dc_ioClass);
         action1->setObjectName(QString::fromUtf8("action1"));
         action05 = new QAction(dc_ioClass);
@@ -81,9 +86,6 @@ public:
         action2->setObjectName(QString::fromUtf8("action2"));
         centralWidget = new QWidget(dc_ioClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
         centralWidget->setSizePolicy(sizePolicy);
         gridLayout = new QGridLayout(centralWidget);
@@ -122,7 +124,7 @@ public:
         dc_ioClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(dc_ioClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 824, 21));
+        menuBar->setGeometry(QRect(0, 0, 307, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuView = new QMenu(menuBar);
@@ -146,7 +148,7 @@ public:
         menuView->addAction(actionRegistered);
         menuView->addAction(action3D);
         menu_Set->addAction(actionROI);
-        menu_Set->addAction(actionROD);
+        menu_Set->addAction(actionDOI);
         menu_Set->addSeparator();
         menu_Set->addAction(menuScale->menuAction());
         menuScale->addAction(action2);
@@ -167,7 +169,7 @@ public:
         actionRegistered->setText(QApplication::translate("dc_ioClass", "R&egistered", 0, QApplication::UnicodeUTF8));
         action3D->setText(QApplication::translate("dc_ioClass", "3&D", 0, QApplication::UnicodeUTF8));
         actionROI->setText(QApplication::translate("dc_ioClass", "RO&I", 0, QApplication::UnicodeUTF8));
-        actionROD->setText(QApplication::translate("dc_ioClass", "RO&D", 0, QApplication::UnicodeUTF8));
+        actionDOI->setText(QApplication::translate("dc_ioClass", "&DOI", 0, QApplication::UnicodeUTF8));
         action1->setText(QApplication::translate("dc_ioClass", "1", 0, QApplication::UnicodeUTF8));
         action05->setText(QApplication::translate("dc_ioClass", "0.5", 0, QApplication::UnicodeUTF8));
         action2->setText(QApplication::translate("dc_ioClass", "2", 0, QApplication::UnicodeUTF8));

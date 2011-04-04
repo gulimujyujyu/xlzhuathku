@@ -1,4 +1,5 @@
 #include "dc_io.h"
+#include <cmath>
 #include <QtGui/QMessageBox>
 #include <QPixmap>
 #include <QTime>
@@ -27,6 +28,7 @@ dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
 	this->recordFlag = false;
 	this->timerId = 0;
 	this->viewType = MAINWINDOW_VIEWTYPE_RAW;
+	this->scaleFactor = 1;
 	//initialize Kinect
 	initKinectParam();	
 }
@@ -76,10 +78,16 @@ bool dc_io::connectCamera()
 	if(!state) {
 		QMessageBox::critical(this,"Connect Kinect Error", "state is not XN_STATUS_OK");
 		this->refreshStatusBar(QString("Connect Kinect Error"));
+		return state;
 	}
 	else {
 		this->refreshStatusBar(QString("Connect Kinect Successful"));
 	}
+
+	//Display maximum distance - 10000
+	g_MaxDepth = this->g_DepthGenerator.GetDeviceMaxDepth();
+	this->refreshStatusBar(QString("Connect Kinect Successful. g_MaxDepth:") + QString::number(g_MaxDepth));
+
 	
 	//initialize data storage
 	initializeDataAndTimer();
@@ -105,6 +113,7 @@ bool dc_io::scale2()
 {
 	//TODO: 
 	bool state=true;
+	this->scaleFactor = 2;
 
 	return state;
 }
@@ -116,6 +125,7 @@ bool dc_io::scale05()
 {
 	//TODO: 
 	bool state=true;
+	this->scaleFactor = 0.5;
 
 	return state;
 }
@@ -127,6 +137,7 @@ bool dc_io::scale1()
 {
 	//TODO: 
 	bool state=true;
+	this->scaleFactor = 1;
 
 	return state;
 }
@@ -231,7 +242,7 @@ bool dc_io::setROI()
 /*
  *	set Region of interested Depth
  */
-bool dc_io::setROR()
+bool dc_io::setDOI()
 {
 	//TODO: 
 	bool state=true;
@@ -244,14 +255,15 @@ bool dc_io::setROR()
  */
 void dc_io::timerEvent(QTimerEvent *event)
 {
-	if (rc == XN_STATUS_OK)	{
-		//QTime tmpTimer;
-		//tmpTimer.start();
+	if (rc == XN_STATUS_OK && this->playFlag)	{
+		QTime tmpTimer;
+		tmpTimer.start();
 		//TODO:
 		getData(); // 3-7ms	
 		drawScene(); // 42-46ms
-		//this->refreshStatusBar(QString("One Frame: ") + QString::number(tmpTimer.elapsed()) + QString(" ms."));		
+		this->refreshStatusBar(QString("One Frame: ") + QString::number(tmpTimer.elapsed()) + QString(" ms."));		
 	}	
+	this->resize(this->minimumSize());
 }
 
 /*
@@ -309,9 +321,24 @@ void dc_io::drawScene()
 		}
 	}
 	
-	ui.Display->putImage(disp);	
+	//scale
+	if (fabs(scaleFactor-1) >= 1e-7) {
+		QImage scaledDisp = disp.scaled(int (dispWidth*scaleFactor), int (dispHeight*scaleFactor));
+		ui.Display->putImage(scaledDisp);	
+	} 
+	else {
+		ui.Display->putImage(disp);	
+	}	
 }
 
+/*
+ *	Force resize
+ */
+
+void dc_io::resizeEvent(QResizeEvent *event)
+{
+	this->ui.gridLayout->activate();
+}
 /*
  *	Map Depth Value to a [0,255] intensity value
  */

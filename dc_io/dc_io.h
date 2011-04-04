@@ -12,6 +12,8 @@
 #define MAINWINDOW_VIEWTYPE_REGISTERED 1
 #define MAINWINDOW_VIEWTYPE_3D 2
 
+#define KINECT_MAXDEPTH 10000
+
 class dc_io : public QMainWindow
 {
 	Q_OBJECT
@@ -31,7 +33,7 @@ private slots:
 	bool changeViewRegistered();
 	bool changeView3D();
 	bool setROI();
-	bool setROR();
+	bool setDOI();
 	bool scale1();
 	bool scale05();
 	bool scale2();
@@ -43,6 +45,7 @@ private slots:
 protected:
 	//overload functions
 	void timerEvent(QTimerEvent *event);
+	void resizeEvent(QResizeEvent *event);
 
 private:
 	//paint related functions
@@ -63,11 +66,23 @@ private:
 	xn::DepthMetaData g_DepthData;
 	xn::ImageMetaData g_ImageData;
 
+	XnDepthPixel g_MaxDepth;
+	XnDepthPixel g_DepthHistogram;
+
+	//Region of Interest
+	int depthLowerBound;
+	int depthUpperBound;
+	int xLeftRight;
+	int yLeftRight;
+	int xRightBottom;
+	int yRightBottom;
+
 	//Status
 	bool playFlag;
 	bool recordFlag;
 	int timerId;
 	int viewType;
+	double scaleFactor;
 
 	//Display
 	QImage *displayImage;

@@ -6,16 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>824</width>
-    <height>629</height>
+    <width>307</width>
+    <height>98</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>dc_io</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -27,7 +33,7 @@
        <bool>true</bool>
       </property>
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -81,7 +87,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>824</width>
+     <width>307</width>
      <height>21</height>
     </rect>
    </property>
@@ -114,7 +120,7 @@
      <addaction name="action05"/>
     </widget>
     <addaction name="actionROI"/>
-    <addaction name="actionROD"/>
+    <addaction name="actionDOI"/>
     <addaction name="separator"/>
     <addaction name="menuScale"/>
    </widget>
@@ -153,9 +159,9 @@
     <string>RO&amp;I</string>
    </property>
   </action>
-  <action name="actionROD">
+  <action name="actionDOI">
    <property name="text">
-    <string>RO&amp;D</string>
+    <string>&amp;DOI</string>
    </property>
   </action>
   <action name="action1">
