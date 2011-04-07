@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dc_io.ui'
 **
-** Created: Mon Apr 4 21:34:42 2011
+** Created: Thu Apr 7 13:28:37 2011
 **      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -16,10 +16,12 @@
 #include <QtGui/QButtonGroup>
 #include <QtGui/QGridLayout>
 #include <QtGui/QHeaderView>
+#include <QtGui/QLabel>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
 #include <QtGui/QPushButton>
+#include <QtGui/QSlider>
 #include <QtGui/QSpacerItem>
 #include <QtGui/QStatusBar>
 #include <QtGui/QWidget>
@@ -45,9 +47,13 @@ public:
     XlDisplay *Display;
     QPushButton *PlayButton;
     QPushButton *CaptureButton;
-    QSpacerItem *horizontalSpacer;
     QPushButton *RecordButton;
     QPushButton *CaptureROIButton;
+    QLabel *minLabel;
+    QSlider *minSlider;
+    QSlider *maxSlider;
+    QSpacerItem *horizontalSpacer;
+    QLabel *maxLabel;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuView;
@@ -59,7 +65,7 @@ public:
     {
         if (dc_ioClass->objectName().isEmpty())
             dc_ioClass->setObjectName(QString::fromUtf8("dc_ioClass"));
-        dc_ioClass->resize(307, 98);
+        dc_ioClass->resize(622, 98);
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -99,7 +105,7 @@ public:
         sizePolicy.setHeightForWidth(Display->sizePolicy().hasHeightForWidth());
         Display->setSizePolicy(sizePolicy);
 
-        gridLayout->addWidget(Display, 0, 0, 1, 6);
+        gridLayout->addWidget(Display, 0, 0, 1, 11);
 
         PlayButton = new QPushButton(centralWidget);
         PlayButton->setObjectName(QString::fromUtf8("PlayButton"));
@@ -112,10 +118,6 @@ public:
 
         gridLayout->addWidget(CaptureButton, 1, 1, 1, 1);
 
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer, 1, 4, 1, 1);
-
         RecordButton = new QPushButton(centralWidget);
         RecordButton->setObjectName(QString::fromUtf8("RecordButton"));
         RecordButton->setCheckable(true);
@@ -127,10 +129,36 @@ public:
 
         gridLayout->addWidget(CaptureROIButton, 1, 2, 1, 1);
 
+        minLabel = new QLabel(centralWidget);
+        minLabel->setObjectName(QString::fromUtf8("minLabel"));
+
+        gridLayout->addWidget(minLabel, 1, 5, 1, 1);
+
+        minSlider = new QSlider(centralWidget);
+        minSlider->setObjectName(QString::fromUtf8("minSlider"));
+        minSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout->addWidget(minSlider, 1, 6, 1, 1);
+
+        maxSlider = new QSlider(centralWidget);
+        maxSlider->setObjectName(QString::fromUtf8("maxSlider"));
+        maxSlider->setOrientation(Qt::Horizontal);
+
+        gridLayout->addWidget(maxSlider, 1, 8, 1, 1);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer, 1, 4, 1, 1);
+
+        maxLabel = new QLabel(centralWidget);
+        maxLabel->setObjectName(QString::fromUtf8("maxLabel"));
+
+        gridLayout->addWidget(maxLabel, 1, 9, 1, 1);
+
         dc_ioClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(dc_ioClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 307, 21));
+        menuBar->setGeometry(QRect(0, 0, 622, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuView = new QMenu(menuBar);
@@ -143,6 +171,10 @@ public:
         statusBar = new QStatusBar(dc_ioClass);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
         dc_ioClass->setStatusBar(statusBar);
+#ifndef QT_NO_SHORTCUT
+        minLabel->setBuddy(minSlider);
+        maxLabel->setBuddy(maxSlider);
+#endif // QT_NO_SHORTCUT
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuView->menuAction());
@@ -183,6 +215,8 @@ public:
         CaptureButton->setText(QApplication::translate("dc_ioClass", "Capture", 0, QApplication::UnicodeUTF8));
         RecordButton->setText(QApplication::translate("dc_ioClass", "Record", 0, QApplication::UnicodeUTF8));
         CaptureROIButton->setText(QApplication::translate("dc_ioClass", "CaptureROI", 0, QApplication::UnicodeUTF8));
+        minLabel->setText(QApplication::translate("dc_ioClass", "Min", 0, QApplication::UnicodeUTF8));
+        maxLabel->setText(QApplication::translate("dc_ioClass", "Max", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("dc_ioClass", "&File", 0, QApplication::UnicodeUTF8));
         menuView->setTitle(QApplication::translate("dc_ioClass", "&View", 0, QApplication::UnicodeUTF8));
         menu_Set->setTitle(QApplication::translate("dc_ioClass", "&Set", 0, QApplication::UnicodeUTF8));

@@ -177,6 +177,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\xldoidialog.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\xlgldisplay.cpp"
 				>
 			</File>
@@ -239,6 +243,32 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\xldoidialog.h"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -D -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_THREAD_SUPPORT -DUNICODE -DWIN32 -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\qtmain&quot; -I&quot;$(QTDIR)\include\QtMultimedia&quot; -I&quot;$(QTDIR)\include\QtOpenGL&quot; -I&quot;.&quot; -I&quot;.\GeneratedFiles&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -D_CONSOLE -D_DEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB -DQT_THREAD_SUPPORT -DUNICODE -DUSE_GLUT -DWIN32 -I&quot;$(OPEN_NI_INCLUDE)&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\qtmain&quot; -I&quot;$(QTDIR)\include\QtMultimedia&quot; -I&quot;$(QTDIR)\include\QtOpenGL&quot; -I&quot;.&quot; -I&quot;.\GeneratedFiles&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\xlgldisplay.h"
 				>
 				<FileConfiguration
@@ -272,6 +302,32 @@
 			>
 			<File
 				RelativePath=".\dc_io.ui"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\uic.exe&quot; -o &quot;.\GeneratedFiles\ui_$(InputName).h&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="$(QTDIR)\bin\uic.exe"
+						Outputs="&quot;.\GeneratedFiles\ui_$(InputName).h&quot;"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputFileName)..."
+						CommandLine="&quot;$(QTDIR)\bin\uic.exe&quot; -o &quot;.\GeneratedFiles\ui_$(InputName).h&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
+						AdditionalDependencies="$(QTDIR)\bin\uic.exe"
+						Outputs="&quot;.\GeneratedFiles\ui_$(InputName).h&quot;"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\xldoidialog.ui"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -360,6 +416,10 @@
 				RelativePath=".\GeneratedFiles\ui_dc_io.h"
 				>
 			</File>
+			<File
+				RelativePath=".\GeneratedFiles\ui_xldoidialog.h"
+				>
+			</File>
 			<Filter
 				Name="Release"
 				Filter="cpp;moc"
@@ -379,6 +439,18 @@
 				</File>
 				<File
 					RelativePath=".\GeneratedFiles\Release\moc_xldisplay.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\GeneratedFiles\Release\moc_xldoidialog.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -421,6 +493,18 @@
 				</File>
 				<File
 					RelativePath=".\GeneratedFiles\Debug\moc_xldisplay.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\GeneratedFiles\Debug\moc_xldoidialog.cpp"
 					>
 					<FileConfiguration
 						Name="Release|Win32"

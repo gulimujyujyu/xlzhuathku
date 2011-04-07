@@ -13,6 +13,9 @@
 #define MAINWINDOW_VIEWTYPE_3D 2
 
 #define KINECT_MAXDEPTH 10000
+#define ACCEPTABLE_MAX_DEPTH 3000
+#define ACCEPTABLE_MIN_DEPTH 1
+#define ACCEPTABLE_DEPTH_DIFFERENCE 10
 
 class dc_io : public QMainWindow
 {
@@ -42,11 +45,15 @@ private slots:
 	void capture();
 	void captureROI();
 	void record();
+	//slider slots
+	void changeMinValue();
+	void changeMaxValue();
 
 protected:
 	//overload functions
 	void timerEvent(QTimerEvent *event);
 	void resizeEvent(QResizeEvent *event);
+	void keyPressEvent(QKeyEvent *event);
 
 private:
 	//paint related functions
@@ -77,6 +84,7 @@ private:
 	QRect regionOfInterest;
 
 	//Status
+	bool hasROI;
 	bool playFlag;
 	bool recordFlag;
 	int timerId;

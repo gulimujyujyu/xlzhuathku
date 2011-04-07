@@ -1,6 +1,8 @@
 #include "dc_io.h"
+#include "xldoidialog.h"
 #include <cmath>
 #include <QtGui/QMessageBox>
+#include <QKeyEvent>
 #include <QPixmap>
 #include <QTime>
 #include <QFile>
@@ -27,14 +29,12 @@ dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
 	connect(ui.CaptureButton, SIGNAL(clicked()), this, SLOT(capture()));
 	connect(ui.CaptureROIButton, SIGNAL(clicked()), this, SLOT(captureROI()));
 	connect(ui.RecordButton, SIGNAL(clicked()), this, SLOT(record()));
+	//connect sliders
+	connect(ui.minSlider, SIGNAL(valueChanged(int)), this, SLOT(changeMinValue()));
+	connect(ui.maxSlider, SIGNAL(valueChanged(int)), this, SLOT(changeMaxValue()));
 
 	//initialize flags
-	this->playFlag = false;
-	this->recordFlag = false;
-	this->timerId = 0;
-	this->viewType = MAINWINDOW_VIEWTYPE_RAW;
-	this->scaleFactor = 1;
-	this->regionOfInterest = ui.Display->rect();
+	initializeDataAndTimer();
 	//initialize Kinect
 	initKinectParam();	
 }
@@ -109,15 +109,41 @@ bool dc_io::connectCamera()
 }
 
 /*
+ *	Key Event: add keyboard short-cut
+ */
+void dc_io::keyPressEvent(QKeyEvent *event){
+	switch (event->key())
+	{
+	case Qt::Key_C:
+		this->capture();
+		break;
+	case Qt::Key_R:
+		this->captureROI();
+		break;
+	default:
+		break;
+	}
+}
+
+/*
  *	Clear and New a data storage when connect new camera
  */
 void dc_io::initializeDataAndTimer()
 {
-	//TODO:
 	if(this->timerId) {
 		killTimer(this->timerId);
 	}	
 	this->timerId = startTimer(this->MinimalTimerInterval);
+	this->hasROI = false;
+	this->playFlag = false;
+	this->recordFlag = false;
+	this->timerId = 0;
+	this->viewType = MAINWINDOW_VIEWTYPE_RAW;
+	this->scaleFactor = 1;
+	this->regionOfInterest = ui.Display->rect();
+
+	this->depthUpperBound = 900;
+	this->depthLowerBound = 700;
 }
 
 /*
@@ -125,7 +151,6 @@ void dc_io::initializeDataAndTimer()
  */
 bool dc_io::scale2()
 {
-	//TODO: 
 	bool state=true;
 	this->scaleFactor = 2;
 
@@ -137,7 +162,6 @@ bool dc_io::scale2()
  */
 bool dc_io::scale05()
 {
-	//TODO: 
 	bool state=true;
 	this->scaleFactor = 0.5;
 
@@ -149,7 +173,6 @@ bool dc_io::scale05()
  */
 bool dc_io::scale1()
 {
-	//TODO: 
 	bool state=true;
 	this->scaleFactor = 1;
 
@@ -180,6 +203,7 @@ bool dc_io::changeViewRegistered()
 	bool state=true;
 	this->viewType = MAINWINDOW_VIEWTYPE_REGISTERED;
 	if ( this->rc == XN_STATUS_OK) {
+		//g_ImageGenerator.GetAlternativeViewPointCap().SetViewPoint(g_DepthGenerator);
 		g_DepthGenerator.GetAlternativeViewPointCap().SetViewPoint( g_ImageGenerator); 		
 	}
 
@@ -196,6 +220,7 @@ bool dc_io::changeViewRaw()
 	this->viewType = MAINWINDOW_VIEWTYPE_RAW;
 
 	if ( this->rc == XN_STATUS_OK) {
+		//g_ImageGenerator.GetAlternativeViewPointCap().ResetViewPoint();
 		g_DepthGenerator.GetAlternativeViewPointCap().ResetViewPoint();
 	}
 
@@ -222,15 +247,20 @@ void dc_io::play()
  */
 void dc_io::capture()
 {
+	if ( this->rc != XN_STATUS_OK) {
+		return;
+	}
+
 	QString filename;
 
 	filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString("capture.png");
-	
+
 	if(ui.Display->getImage().save(filename,"PNG")) {
 		this->refreshStatusBar(QString("Successfully saved to ")+filename);
 	} else {
 		this->refreshStatusBar(QString("Cannot capture data."));
 	}
+
 }
 
 /*
@@ -238,6 +268,10 @@ void dc_io::capture()
  */
 void dc_io::captureROI()
 {
+	if (this->rc != XN_STATUS_OK)
+	{
+		return;
+	}
 	QString prefix;
 	QString dfn;
 	QString cfn;
@@ -248,7 +282,7 @@ void dc_io::captureROI()
 	dfn = prefix + QString("depth.png");
 	cfn = prefix + QString("image.png");
 	ifn = prefix + QString("capture.png");
-	txtfn = prefix + QString("detail.txt");
+	txtfn = prefix + QString("detail.box");
 
 	int singleImageWidth = ui.Display->getImage().width()/2;
 
@@ -308,12 +342,15 @@ bool dc_io::setROI()
 				QString(")"));
 		}
 		else {
+			state = false;
 			this->refreshStatusBar(QString("ROI should be in either color or depth image."));
 		}		
 	} 
 	else {
+		state = false;
 		this->refreshStatusBar(QString("Please first select a retangle within the picture above."));
 	}
+	this->hasROI = state;
 	return state;
 }
 
@@ -334,8 +371,23 @@ bool dc_io::checkROI(QRect &rct)
  */
 bool dc_io::setDOI()
 {
-	//TODO: 
 	bool state=true;
+
+	XlDOIDialog doiDialog(this);
+
+	if(doiDialog.exec()) {
+		int maxValue = doiDialog.getMaxValue();
+		int minValue = doiDialog.getMinValue();
+
+		if ( maxValue <= ACCEPTABLE_MAX_DEPTH && minValue >= ACCEPTABLE_MIN_DEPTH && maxValue - minValue >= ACCEPTABLE_DEPTH_DIFFERENCE) {
+			this->depthUpperBound = maxValue;
+			this->depthLowerBound = minValue;
+			this->refreshStatusBar(QString("DOI....Max:")+QString::number(maxValue) + QString(", \tMin: ") + QString::number(minValue));
+		} 
+		else {
+			this->refreshStatusBar(QString("Failed to set DOI. Is it within [1,10000]?"));
+		}		
+	}
 
 	return state;
 }
@@ -389,7 +441,7 @@ void dc_io::drawScene()
 	int i,j;
 	int tmp, tr, tg, tb;
 
-	const XnUInt8* pImage = this->g_ImageData.Data();
+	const XnRGB24Pixel* pImage = this->g_ImageData.RGB24Data();
 	const XnDepthPixel* pDepth = this->g_DepthData.Data();
 	unsigned int nValue;
 
@@ -397,11 +449,11 @@ void dc_io::drawScene()
 
 	for ( i = 0; i < dispHeight; i++) {
 		for (j=0; j< imgWidth; j++) {
-			tr = *pImage;
-			tg = *(pImage+1);
-			tb = *(pImage+2);
+			tr = pImage->nRed;
+			tg = pImage->nGreen;
+			tb = pImage->nBlue;
 			disp.setPixel(j,i,qRgb(tr, tg, tb));
-			pImage += 3;
+			pImage ++;
 		}
 		for (j=0; j<dptWidth; j++) {
 			nValue = *pDepth;
@@ -436,10 +488,36 @@ int inline dc_io::mapDepthToIntensity( unsigned int nValue)
 {
 	int tmp = 0;
 	//linear scale to [0,255]
-	if (nValue != 0 && nValue < 1200 && nValue > 700)
-		tmp = int(255*(1200-(float)nValue)/500.0);
+	const int a = this->depthUpperBound;
+	const int b = this->depthLowerBound;
+	if (nValue != 0 && nValue < a && nValue > b)
+		tmp = int(255*(a-(float)nValue)/float(a-b));
 	tmp = tmp>255? 0:tmp;
 	tmp = tmp<0? 0:tmp;
 
 	return tmp;
+}
+
+/*
+ *	If MinSlider value changed, change Min Value
+ */
+void dc_io::changeMinValue()
+{
+	int a = ui.minSlider->value();
+	float unit = float(this->depthUpperBound - ACCEPTABLE_MIN_DEPTH)/100.0;
+	this->depthLowerBound = ACCEPTABLE_MIN_DEPTH + int(a*unit);
+	
+	this->refreshStatusBar(QString("DOI....Max:")+QString::number(depthUpperBound) + QString(", \tMin: ") + QString::number(depthLowerBound));
+}
+
+/*
+ *	If MaxSlider value changed, change Max Value
+ */
+void dc_io::changeMaxValue()
+{
+	int a = ui.maxSlider->value();
+	float unit = float(ACCEPTABLE_MAX_DEPTH - this->depthLowerBound)/100.0;
+	this->depthUpperBound = this->depthLowerBound + int(a*unit);
+
+	this->refreshStatusBar(QString("DOI....Max:")+QString::number(depthUpperBound) + QString(", \tMin: ") + QString::number(depthLowerBound));
 }
