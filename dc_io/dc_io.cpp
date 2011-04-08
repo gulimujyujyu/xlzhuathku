@@ -137,6 +137,7 @@ void dc_io::initializeDataAndTimer()
 	this->hasROI = false;
 	this->playFlag = false;
 	this->recordFlag = false;
+	this->isRecording = false;
 	this->timerId = 0;
 	this->viewType = MAINWINDOW_VIEWTYPE_RAW;
 	this->scaleFactor = 1;
@@ -316,15 +317,27 @@ void dc_io::captureROI()
  */
 void dc_io::record()
 {
-	//TODO: 
 	bool state=true;
-	this->recordFlag = ui.RecordButton->isChecked();
-	if (recordFlag) {
-		ui.RecordButton->setText("Stop");
-	} else {
-		ui.RecordButton->setText("Record");
+	//if it is playing, it is able to record video
+	if (this->rc == XN_STATUS_OK && this->playFlag) {
+		this->recordFlag = ui.RecordButton->isChecked();
+		if (recordFlag && !(this->isRecording)) {
+			//Refresh the writer
+			QString filename;
+			filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString("capture.avi");			
+			int wid = this->ui.Display->getImage().width();
+			int hei = this->ui.Display->getImage().height();
+			this->videoWriter = cvCreateVideoWriter(filename.toLatin1().data(), -1, 20.0, cvSize(wid,hei));
+			ui.RecordButton->setText("Stop");
+			this->isRecording = true;
+		} else if( !(recordFlag) && this->isRecording){
+			//Release writer
+			cvReleaseVideoWriter( &this->videoWriter);
+			ui.RecordButton->setText("Record");
+			this->isRecording = false;
+		}
+		this->refreshStatusBar(QString("RecordFlag=") + QString((playFlag?"true":"false")));
 	}
-	this->refreshStatusBar(QString("RecordFlag=") + QString((playFlag?"true":"false")));
 }
 
 /*
@@ -405,6 +418,9 @@ void dc_io::timerEvent(QTimerEvent *event)
 		//TODO:
 		getData(); // 3-7ms	
 		drawScene(); // 42-46ms
+		if (isRecording && recordFlag)	{
+			recordOneFrame();
+		}
 		//this->refreshStatusBar(QString("One Frame: ") + QString::number(tmpTimer.elapsed()) + QString(" ms."));		
 	}	
 	this->resize(this->minimumSize());
@@ -478,7 +494,6 @@ void dc_io::drawScene()
 /*
  *	Force resize
  */
-
 void dc_io::resizeEvent(QResizeEvent *event)
 {
 	this->ui.gridLayout->activate();
@@ -522,4 +537,29 @@ void dc_io::changeMaxValue()
 	this->depthUpperBound = this->depthLowerBound + int(a*unit);
 
 	this->refreshStatusBar(QString("DOI....Max:")+QString::number(depthUpperBound) + QString(", \tMin: ") + QString::number(depthLowerBound));
+}
+/*
+ *	Record One Frame
+ */
+void dc_io::recordOneFrame()
+{
+	//get one frame
+	QImage fm = ui.Display->getImage();
+	IplImage *cFm = this->qimage2iplimage(&fm);
+	cvWriteFrame(this->videoWriter, cFm);
+	cvReleaseImage(&cFm);
+}
+/*
+ *	Convert QImage to IplImage
+ */
+IplImage* dc_io::qimage2iplimage(QImage *qimg)
+{
+	//TODO
+	IplImage *img = cvCreateImage(cvSize(qimg->width(),qimg->height()), IPL_DEPTH_8U, 4);
+	img->imageData = (char *)qimg->bits();
+
+	uchar *newData = (uchar*) malloc(sizeof(uchar) * qimg->byteCount());
+	memcpy(newData, qimg->bits(), qimg->byteCount());
+	img->imageData = (char *)newData;
+	return img;
 }

@@ -2,6 +2,8 @@
 #define DC_IO_H
 
 #include <QtGui/QMainWindow>
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
 #include "ui_dc_io.h"
 //kinect
 #include <XnOpenNI.h>
@@ -49,6 +51,9 @@ private slots:
 	void changeMinValue();
 	void changeMaxValue();
 
+public:
+	static IplImage* qimage2iplimage(QImage *qimg);
+
 protected:
 	//overload functions
 	void timerEvent(QTimerEvent *event);
@@ -59,6 +64,7 @@ private:
 	//paint related functions
 	void getData();
 	void drawScene();
+	void recordOneFrame();
 	void initializeDataAndTimer();
 	void initKinectParam();
 	bool checkROI(QRect& rct);
@@ -84,6 +90,7 @@ private:
 	QRect regionOfInterest;
 
 	//Status
+	bool isRecording;
 	bool hasROI;
 	bool playFlag;
 	bool recordFlag;
@@ -91,8 +98,10 @@ private:
 	int viewType;
 	double scaleFactor;
 
-	//Display
-	QImage *displayImage;
+	//Recorder
+	CvVideoWriter *writer;
+
+	//UI
 	Ui::dc_ioClass ui;
 };
 
