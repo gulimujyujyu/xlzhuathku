@@ -24,7 +24,7 @@ Thumbs.db
 *.jpg
 *.bmp
 #dc_io outputs
-*.box
+*.txt
 [Bb]in
 [Dd]ebug*/
 *.lib

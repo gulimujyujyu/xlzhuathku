@@ -13,10 +13,12 @@ lucienzhu@gmail.com
 *. OpenNI + NITE
 *. Qt4.7 for vs2008
 *. Qt4.7 add-on for vs2008
+*. OpenCV 2.2 for vs2008
 
 a. See http://www.openni.org
 b. See https://github.com/avin2/SensorKinect
 c. See http://www.studentguru.gr/blogs/vangos/archive/2011/01/20/how-to-successfully-install-kinect-windows-openni-nite.aspx
+d. http://opencv.willowgarage.com/wiki/VisualC%2B%2B_VS2008
 
 -----------------
 1.2 My Settings

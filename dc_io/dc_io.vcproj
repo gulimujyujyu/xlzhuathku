@@ -127,9 +127,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OpenNI.lib qtmaind.lib QtCored4.lib QtGuid4.lib QtMultimediad4.lib QtOpenGLd4.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="OpenNI.lib qtmaind.lib QtCored4.lib QtGuid4.lib QtMultimediad4.lib QtOpenGLd4.lib opengl32.lib glu32.lib cv210.lib cxcore210.lib highgui210.lib"
 				OutputFile="Debug\$(ProjectName).exe"
-				AdditionalLibraryDirectories="$(QTDIR)\lib;$(OPEN_NI_LIB);.\Libs"
+				AdditionalLibraryDirectories="$(QTDIR)\lib;$(OPEN_NI_LIB);.\Libs;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 			/>
@@ -236,7 +236,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -D_CONSOLE -D_DEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB -DQT_THREAD_SUPPORT -DUNICODE -DUSE_GLUT -DWIN32 -I&quot;$(OPEN_NI_INCLUDE)&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\qtmain&quot; -I&quot;$(QTDIR)\include\QtMultimedia&quot; -I&quot;$(QTDIR)\include\QtOpenGL&quot; -I&quot;.&quot; -I&quot;.\GeneratedFiles&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_DEBUG -D_CONSOLE -DUSE_GLUT -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB  -I&quot;.\GeneratedFiles&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)&quot; -I&quot;$(QTDIR)\include\qtmain&quot; -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\QtMultimedia&quot; -I&quot;.&quot; -I&quot;$(OPEN_NI_INCLUDE)&quot; -I&quot;$(QTDIR)\include\QtOpenGL&quot; &quot;.\xldisplay.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -262,7 +262,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -D_CONSOLE -D_DEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB -DQT_THREAD_SUPPORT -DUNICODE -DUSE_GLUT -DWIN32 -I&quot;$(OPEN_NI_INCLUDE)&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\qtmain&quot; -I&quot;$(QTDIR)\include\QtMultimedia&quot; -I&quot;$(QTDIR)\include\QtOpenGL&quot; -I&quot;.&quot; -I&quot;.\GeneratedFiles&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_DEBUG -D_CONSOLE -DUSE_GLUT -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB  -I&quot;.\GeneratedFiles&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)&quot; -I&quot;$(QTDIR)\include\qtmain&quot; -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\QtMultimedia&quot; -I&quot;.&quot; -I&quot;$(OPEN_NI_INCLUDE)&quot; -I&quot;$(QTDIR)\include\QtOpenGL&quot; &quot;.\xldoidialog.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>
@@ -288,7 +288,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputFileName)..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot; -D_CONSOLE -D_DEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_LARGEFILE_SUPPORT -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB -DQT_THREAD_SUPPORT -DUNICODE -DUSE_GLUT -DWIN32 -I&quot;$(OPEN_NI_INCLUDE)&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\qtmain&quot; -I&quot;$(QTDIR)\include\QtMultimedia&quot; -I&quot;$(QTDIR)\include\QtOpenGL&quot; -I&quot;.&quot; -I&quot;.\GeneratedFiles&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_DEBUG -D_CONSOLE -DUSE_GLUT -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_THREAD_SUPPORT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB  -I&quot;.\GeneratedFiles&quot; -I&quot;$(QTDIR)\include&quot; -I&quot;.\GeneratedFiles\$(ConfigurationName)&quot; -I&quot;$(QTDIR)\include\qtmain&quot; -I&quot;$(QTDIR)\include\QtCore&quot; -I&quot;$(QTDIR)\include\QtGui&quot; -I&quot;$(QTDIR)\include\QtMultimedia&quot; -I&quot;.&quot; -I&quot;$(OPEN_NI_INCLUDE)&quot; -I&quot;$(QTDIR)\include\QtOpenGL&quot; &quot;.\xlgldisplay.h&quot; -o &quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 						Outputs="&quot;.\GeneratedFiles\$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 					/>

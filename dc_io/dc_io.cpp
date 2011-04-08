@@ -301,7 +301,9 @@ void dc_io::captureROI()
 		out << cRect.topLeft().x() << endl
 			<< cRect.topLeft().y() << endl
 			<< cRect.width() << endl
-			<< cRect.height() << endl;
+			<< cRect.height() << endl
+			<< this->depthLowerBound << endl
+			<< this->depthUpperBound << endl;
 		file.close();
 		this->refreshStatusBar(QString("Successfully saved to ")+prefix);
 	} else {
