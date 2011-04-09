@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dc_io.ui'
 **
-** Created: Fri Apr 8 17:44:30 2011
+** Created: Sat Apr 9 13:43:29 2011
 **      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -54,6 +54,7 @@ public:
     QSlider *maxSlider;
     QSpacerItem *horizontalSpacer;
     QLabel *maxLabel;
+    QPushButton *RecordROIButton;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuView;
@@ -105,7 +106,7 @@ public:
         sizePolicy.setHeightForWidth(Display->sizePolicy().hasHeightForWidth());
         Display->setSizePolicy(sizePolicy);
 
-        gridLayout->addWidget(Display, 0, 0, 1, 11);
+        gridLayout->addWidget(Display, 0, 0, 1, 12);
 
         PlayButton = new QPushButton(centralWidget);
         PlayButton->setObjectName(QString::fromUtf8("PlayButton"));
@@ -132,28 +133,34 @@ public:
         minLabel = new QLabel(centralWidget);
         minLabel->setObjectName(QString::fromUtf8("minLabel"));
 
-        gridLayout->addWidget(minLabel, 1, 5, 1, 1);
+        gridLayout->addWidget(minLabel, 1, 6, 1, 1);
 
         minSlider = new QSlider(centralWidget);
         minSlider->setObjectName(QString::fromUtf8("minSlider"));
         minSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout->addWidget(minSlider, 1, 6, 1, 1);
+        gridLayout->addWidget(minSlider, 1, 7, 1, 1);
 
         maxSlider = new QSlider(centralWidget);
         maxSlider->setObjectName(QString::fromUtf8("maxSlider"));
         maxSlider->setOrientation(Qt::Horizontal);
 
-        gridLayout->addWidget(maxSlider, 1, 8, 1, 1);
+        gridLayout->addWidget(maxSlider, 1, 9, 1, 1);
 
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout->addItem(horizontalSpacer, 1, 4, 1, 1);
+        gridLayout->addItem(horizontalSpacer, 1, 5, 1, 1);
 
         maxLabel = new QLabel(centralWidget);
         maxLabel->setObjectName(QString::fromUtf8("maxLabel"));
 
-        gridLayout->addWidget(maxLabel, 1, 9, 1, 1);
+        gridLayout->addWidget(maxLabel, 1, 10, 1, 1);
+
+        RecordROIButton = new QPushButton(centralWidget);
+        RecordROIButton->setObjectName(QString::fromUtf8("RecordROIButton"));
+        RecordROIButton->setCheckable(true);
+
+        gridLayout->addWidget(RecordROIButton, 1, 4, 1, 1);
 
         dc_ioClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(dc_ioClass);
@@ -217,6 +224,7 @@ public:
         CaptureROIButton->setText(QApplication::translate("dc_ioClass", "CaptureROI", 0, QApplication::UnicodeUTF8));
         minLabel->setText(QApplication::translate("dc_ioClass", "Min", 0, QApplication::UnicodeUTF8));
         maxLabel->setText(QApplication::translate("dc_ioClass", "Max", 0, QApplication::UnicodeUTF8));
+        RecordROIButton->setText(QApplication::translate("dc_ioClass", "RecordROI", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("dc_ioClass", "&File", 0, QApplication::UnicodeUTF8));
         menuView->setTitle(QApplication::translate("dc_ioClass", "&View", 0, QApplication::UnicodeUTF8));
         menu_Set->setTitle(QApplication::translate("dc_ioClass", "&Set", 0, QApplication::UnicodeUTF8));

@@ -27,7 +27,7 @@
     </sizepolicy>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" colspan="11">
+    <item row="0" column="0" colspan="12">
      <widget class="XlDisplay" name="Display" native="true">
       <property name="enabled">
        <bool>true</bool>
@@ -74,7 +74,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="5">
+    <item row="1" column="6">
      <widget class="QLabel" name="minLabel">
       <property name="text">
        <string>Min</string>
@@ -84,21 +84,21 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="6">
+    <item row="1" column="7">
      <widget class="QSlider" name="minSlider">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="1" column="8">
+    <item row="1" column="9">
      <widget class="QSlider" name="maxSlider">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="1" column="4">
+    <item row="1" column="5">
      <spacer name="horizontalSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -111,13 +111,23 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="9">
+    <item row="1" column="10">
      <widget class="QLabel" name="maxLabel">
       <property name="text">
        <string>Max</string>
       </property>
       <property name="buddy">
        <cstring>maxSlider</cstring>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="4">
+     <widget class="QPushButton" name="RecordROIButton">
+      <property name="text">
+       <string>RecordROI</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
       </property>
      </widget>
     </item>

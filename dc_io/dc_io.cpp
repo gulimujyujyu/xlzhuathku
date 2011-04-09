@@ -29,6 +29,7 @@ dc_io::dc_io(QWidget *parent, Qt::WFlags flags)
 	connect(ui.CaptureButton, SIGNAL(clicked()), this, SLOT(capture()));
 	connect(ui.CaptureROIButton, SIGNAL(clicked()), this, SLOT(captureROI()));
 	connect(ui.RecordButton, SIGNAL(clicked()), this, SLOT(record()));
+	connect(ui.RecordROIButton, SIGNAL(clicked()), this, SLOT(recordROI()));
 	//connect sliders
 	connect(ui.minSlider, SIGNAL(valueChanged(int)), this, SLOT(changeMinValue()));
 	connect(ui.maxSlider, SIGNAL(valueChanged(int)), this, SLOT(changeMaxValue()));
@@ -137,7 +138,9 @@ void dc_io::initializeDataAndTimer()
 	this->hasROI = false;
 	this->playFlag = false;
 	this->recordFlag = false;
-	this->isRecording = false;
+	this->recordROIFlag = false;
+	this->isRecordingOneFrame = false;
+	this->isRecordingROI = false;
 	this->timerId = 0;
 	this->viewType = MAINWINDOW_VIEWTYPE_RAW;
 	this->scaleFactor = 1;
@@ -254,7 +257,7 @@ void dc_io::capture()
 
 	QString filename;
 
-	filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString("capture.png");
+	filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString("_")+QString::number(this->depthUpperBound)+QString("_")+QString::number(this->depthLowerBound)+QString("capture.png");
 
 	if(ui.Display->getImage().save(filename,"PNG")) {
 		this->refreshStatusBar(QString("Successfully saved to ")+filename);
@@ -279,7 +282,7 @@ void dc_io::captureROI()
 	QString ifn;
 	QString txtfn;
 
-	prefix = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz");
+	prefix = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString("_")+QString::number(this->depthUpperBound)+QString("_")+QString::number(this->depthLowerBound);
 	dfn = prefix + QString("depth.png");
 	cfn = prefix + QString("image.png");
 	ifn = prefix + QString("capture.png");
@@ -299,7 +302,8 @@ void dc_io::captureROI()
 			this->refreshStatusBar( QString("Cannot write to detail.txt but images saved"));
 		}
 		QTextStream out(&file);
-		out << cRect.topLeft().x() << endl
+		out << singleImageWidth << endl
+			<< cRect.topLeft().x() << endl
 			<< cRect.topLeft().y() << endl
 			<< cRect.width() << endl
 			<< cRect.height() << endl
@@ -321,22 +325,76 @@ void dc_io::record()
 	//if it is playing, it is able to record video
 	if (this->rc == XN_STATUS_OK && this->playFlag) {
 		this->recordFlag = ui.RecordButton->isChecked();
-		if (recordFlag && !(this->isRecording)) {
+		if (recordFlag && !(this->isRecordingOneFrame)) {
 			//Refresh the writer
 			QString filename;
-			filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString("capture.avi");			
+			filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString("_")+QString::number(this->depthUpperBound)+QString("_")+QString::number(this->depthLowerBound)+QString("capture.avi");			
 			int wid = this->ui.Display->getImage().width();
 			int hei = this->ui.Display->getImage().height();
 			this->videoWriter = cvCreateVideoWriter(filename.toLatin1().data(), -1, 20.0, cvSize(wid,hei));
 			ui.RecordButton->setText("Stop");
-			this->isRecording = true;
-		} else if( !(recordFlag) && this->isRecording){
+			this->isRecordingOneFrame = true;
+			this->ui.RecordROIButton->setEnabled(false);
+		} else if( !(recordFlag) && this->isRecordingOneFrame){
 			//Release writer
 			cvReleaseVideoWriter( &this->videoWriter);
 			ui.RecordButton->setText("Record");
-			this->isRecording = false;
+			this->isRecordingOneFrame = false;
+			this->ui.RecordROIButton->setEnabled(true);
 		}
-		this->refreshStatusBar(QString("RecordFlag=") + QString((playFlag?"true":"false")));
+		this->refreshStatusBar(QString("RecordFlag=") + QString((recordFlag?"true":"false")));
+	}
+}
+
+/*
+ *	Record frame within ROI and write into files
+ */
+void dc_io::recordROI()
+{
+	bool state=true;
+	//if it is playing, it is able to record video
+	if (this->rc == XN_STATUS_OK && this->playFlag && this->hasROI) {
+		this->recordROIFlag = ui.RecordROIButton->isChecked();
+		if (recordROIFlag && !(this->isRecordingOneFrame)) {
+			//Refresh the writer
+			QString filename;
+			QString boxfilename;
+			filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString("_")+QString::number(this->depthUpperBound)+QString("_")+QString::number(this->depthLowerBound)+QString("roicapture.avi");			
+			boxfilename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString("_")+QString::number(this->depthUpperBound)+QString("_")+QString::number(this->depthLowerBound)+QString("detail.box");			
+			//output bounding box
+			int singleImageWidth = ui.Display->getImage().width()/2;
+			QRect cRect(regionOfInterest.topLeft().x()%singleImageWidth,regionOfInterest.topLeft().y(),regionOfInterest.width(),regionOfInterest.height());
+			QFile file(boxfilename);
+			if( !file.open(QIODevice::WriteOnly)) {
+				this->refreshStatusBar( QString("Cannot write to detail.txt but images saved"));
+			}
+			QTextStream out(&file);
+			out << singleImageWidth << endl
+				<< cRect.topLeft().x() << endl
+				<< cRect.topLeft().y() << endl
+				<< cRect.width() << endl
+				<< cRect.height() << endl
+				<< this->depthLowerBound << endl
+				<< this->depthUpperBound << endl;
+			file.close();
+			//output data
+			int wid = this->ui.Display->getImage().width();
+			int hei = this->ui.Display->getImage().height();
+			this->videoWriter = cvCreateVideoWriter(filename.toLatin1().data(), -1, 20.0, cvSize(cRect.width()*2,cRect.height())); // note the difference
+			ui.RecordROIButton->setText("Stop");
+			this->isRecordingROI = true;
+			//TODO: need set disable!!!!!! 20110408
+			this->ui.RecordButton->setEnabled(false);
+		} else if( !(recordROIFlag) && this->isRecordingROI){
+			//Release writer
+			cvReleaseVideoWriter( &this->videoWriter);
+			ui.RecordROIButton->setText("RecordROI");
+			this->isRecordingROI = false;
+			this->ui.RecordButton->setEnabled(true);
+		}
+		this->refreshStatusBar(QString("RecordFlag=") + QString((recordROIFlag?"true":"false")));
+	} else {
+		this->refreshStatusBar(QString("Error. Have you set ROI?"));
 	}
 }
 
@@ -418,8 +476,10 @@ void dc_io::timerEvent(QTimerEvent *event)
 		//TODO:
 		getData(); // 3-7ms	
 		drawScene(); // 42-46ms
-		if (isRecording && recordFlag)	{
+		if (isRecordingOneFrame && recordFlag)	{
 			recordOneFrame();
+		} else if ( isRecordingROI && recordROIFlag){
+			recordOneFrameWithinROI();
 		}
 		//this->refreshStatusBar(QString("One Frame: ") + QString::number(tmpTimer.elapsed()) + QString(" ms."));		
 	}	
@@ -549,6 +609,39 @@ void dc_io::recordOneFrame()
 	cvWriteFrame(this->videoWriter, cFm);
 	cvReleaseImage(&cFm);
 }
+/*
+ *	Record One Frame within the region of interest
+ */
+void dc_io::recordOneFrameWithinROI()
+{
+	//get one frame
+	//TODO: need reimplement getImageROI!!!!!! 20110408
+	QImage fm = ui.Display->getImage();
+
+	//Get ROI image
+	int singleImageWidth = ui.Display->getImage().width()/2;
+	int xxOffset = regionOfInterest.topLeft().x()%singleImageWidth;
+	int yyOffset = regionOfInterest.topLeft().y();
+
+	QRect cRect(xxOffset,yyOffset,regionOfInterest.width(),regionOfInterest.height());
+	QImage fmROI(cRect.width()*2,cRect.height(),QImage::Format_ARGB32);
+
+	int xx = 0,yy=0;
+	int ROIwidth = fmROI.width()/2;
+
+	for ( yy=0; yy< fmROI.height(); yy++) {
+		for ( xx=0; xx < ROIwidth; xx++) {
+			fmROI.setPixel(xx,yy,fm.pixel(xx+xxOffset, yy+yyOffset));
+			fmROI.setPixel(xx+ROIwidth,yy,fm.pixel(xx+xxOffset+singleImageWidth, yy+yyOffset));
+		}
+	}
+	
+	//convert to opencv format
+	IplImage *cFm = this->qimage2iplimage(&fmROI);
+	cvWriteFrame(this->videoWriter, cFm);
+	cvReleaseImage(&cFm);
+}
+
 /*
  *	Convert QImage to IplImage
  */

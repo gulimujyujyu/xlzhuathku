@@ -47,6 +47,7 @@ private slots:
 	void capture();
 	void captureROI();
 	void record();
+	void recordROI();
 	//slider slots
 	void changeMinValue();
 	void changeMaxValue();
@@ -65,6 +66,7 @@ private:
 	void getData();
 	void drawScene();
 	void recordOneFrame();
+	void recordOneFrameWithinROI();
 	void initializeDataAndTimer();
 	void initKinectParam();
 	bool checkROI(QRect& rct);
@@ -90,16 +92,18 @@ private:
 	QRect regionOfInterest;
 
 	//Status
-	bool isRecording;
+	bool isRecordingOneFrame;
+	bool isRecordingROI;
 	bool hasROI;
 	bool playFlag;
+	bool recordROIFlag;
 	bool recordFlag;
 	int timerId;
 	int viewType;
 	double scaleFactor;
 
 	//Recorder
-	CvVideoWriter *writer;
+	CvVideoWriter *videoWriter;
 
 	//UI
 	Ui::dc_ioClass ui;
