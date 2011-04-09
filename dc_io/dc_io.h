@@ -2,11 +2,22 @@
 #define DC_IO_H
 
 #include <QtGui/QMainWindow>
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
 #include "ui_dc_io.h"
 //kinect
 #include <XnOpenNI.h>
 #include <XnCodecIDs.h>
 #include <XnCppWrapper.h>
+
+#define MAINWINDOW_VIEWTYPE_RAW 0
+#define MAINWINDOW_VIEWTYPE_REGISTERED 1
+#define MAINWINDOW_VIEWTYPE_3D 2
+
+#define KINECT_MAXDEPTH 10000
+#define ACCEPTABLE_MAX_DEPTH 3000
+#define ACCEPTABLE_MIN_DEPTH 1
+#define ACCEPTABLE_DEPTH_DIFFERENCE 10
 
 class dc_io : public QMainWindow
 {
@@ -16,6 +27,10 @@ public:
 	dc_io(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~dc_io();
 	void refreshStatusBar(QString ctn);
+	//Utilities Functions
+	int inline mapDepthToIntensity( unsigned int nValue);
+
+	static const int MinimalTimerInterval = 100;
 
 private slots:
 	bool connectCamera();
@@ -23,39 +38,74 @@ private slots:
 	bool changeViewRegistered();
 	bool changeView3D();
 	bool setROI();
-	bool setROR();
+	bool setDOI();
 	bool scale1();
 	bool scale05();
 	bool scale2();
 	//button slots
 	void play();
 	void capture();
+	void captureROI();
 	void record();
+	void recordROI();
+	//slider slots
+	void changeMinValue();
+	void changeMaxValue();
+
+public:
+	static IplImage* qimage2iplimage(QImage *qimg);
 
 protected:
 	//overload functions
 	void timerEvent(QTimerEvent *event);
+	void resizeEvent(QResizeEvent *event);
+	void keyPressEvent(QKeyEvent *event);
 
 private:
 	//paint related functions
 	void getData();
 	void drawScene();
+	void recordOneFrame();
+	void recordOneFrameWithinROI();
+	void initializeDataAndTimer();
+	void initKinectParam();
+	bool checkROI(QRect& rct);
 
 private:
 	//Kinect
 	XnStatus rc;
 	xn::Context g_Context;
-	xn::DepthGenerator g_DepthGenerator;
-	xn::ImageGenerator g_ImageGenerator;
-	xn::SceneAnalyzer g_SceneAnalyzer;
 	xn::Recorder* g_pRecorder;
 
-	//Status
-	bool playFlag;
-	bool recordFlag;
+	xn::DepthGenerator g_DepthGenerator;
+	xn::ImageGenerator g_ImageGenerator;
 
-	//Display
-	QImage *displayImage;
+	xn::DepthMetaData g_DepthData;
+	xn::ImageMetaData g_ImageData;
+
+	XnDepthPixel g_MaxDepth;
+	XnDepthPixel g_DepthHistogram;
+
+	//Region of Interest
+	int depthLowerBound;
+	int depthUpperBound;
+	QRect regionOfInterest;
+
+	//Status
+	bool isRecordingOneFrame;
+	bool isRecordingROI;
+	bool hasROI;
+	bool playFlag;
+	bool recordROIFlag;
+	bool recordFlag;
+	int timerId;
+	int viewType;
+	double scaleFactor;
+
+	//Recorder
+	CvVideoWriter *videoWriter;
+
+	//UI
 	Ui::dc_ioClass ui;
 };
 

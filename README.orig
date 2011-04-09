@@ -1,0 +1,59 @@
+################################
+My MPhil Research in HongKongU
+Xiaolong ZHU@HKU
+lucienzhu@gmail.com
+################################
+
+====================================
+1. Introduction
+====================================
+<<<<<<< HEAD
+------------------
+1.1 Dependencies
+------------------
+*. OpenNI + NITE
+*. Qt4.7 for vs2008
+*. Qt4.7 add-on for vs2008
+
+a. See http://www.openni.org
+b. See https://github.com/avin2/SensorKinect
+c. See http://www.studentguru.gr/blogs/vangos/archive/2011/01/20/how-to-successfully-install-kinect-windows-openni-nite.aspx
+
+-----------------
+1.2 My Settings
+-----------------
+0. Download OpenNI stable release OpenNI-Win32-1.0.0.23
+   Download OpenNI Compliant Hardware Binaries Sensor-Win32-5.0.0.24
+   Download OpenNI Compliant Middleware Binaries NITE-Win32-1.3.0.17
+   Download SampleXML from (c) as shown above.
+   Download Stable branches from (b) as shown above.
+1. Disconnect Kinect
+   Install OpenNI
+   Install Sensor
+   Install SensorKinect in (b)/Bin
+2. Connect Kinect
+   Check if it is well recognized.
+3. Install NITE
+4. Copy XML files to corresponding files as told in (c).
+5. Run samples in NITE/Samples/Bin/*.exe
+6. You may modify your own project in the similar way to NITE's samples in VS2008.
+
+=======
+-----------------
+1.1  dc_io
+-----------------
+depth camera I/O codes.
+
+-----------------
+1.2  xlzhuathku
+-----------------
+a playground for the time being.
+>>>>>>> 2a9774112db05e2468e89baee0e0c97f4029f180
+
+====================================
+2. Prerequisites
+====================================
+-----------------
+2.1 dc_io
+-----------------
+See ./dc_io/README

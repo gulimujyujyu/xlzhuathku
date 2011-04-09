@@ -1,17 +1,15 @@
 #include "xldisplay.h"
+#include <QMouseEvent>
 #include <QStylePainter>
 
-/*
- *	Class:	XlDisplay
- */
 XlDisplay::XlDisplay(QWidget *parent)
-	: QWidget(parent)
+	: QLabel(parent)
 {
-	setBackgroundRole(QPalette::Dark);
-	setAutoFillBackground(true);
-	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-	setFocusPolicy(Qt::StrongFocus);
-	setDisplaySettings(XlDisplaySettings());
+	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+	this->data = QImage(640,480,QImage::Format_RGB32);
+	this->setPixmap(QPixmap::fromImage(data));
+	this->isSelecting = false;
+	this->doneSelection = false;
 }
 
 XlDisplay::~XlDisplay()
@@ -19,43 +17,102 @@ XlDisplay::~XlDisplay()
 
 }
 
+void XlDisplay::putImage(QImage img)
+{
+	this->data = img;
+	this->setPixmap(QPixmap::fromImage(data));
+}
+
+QImage XlDisplay::getImage()
+{
+	return this->data;
+}
+
+void XlDisplay::mousePressEvent(QMouseEvent *ev)
+{
+	QRect rect(margin(), margin(), width() - 2*margin(), height() - 2*margin());
+
+	if (ev->button() == Qt::LeftButton) {
+		if(rect.contains(ev->pos())) {
+			doneSelection = false;
+			isSelecting = true;
+			selectionRectangle.setTopLeft(ev->pos());
+			selectionRectangle.setTopRight(ev->pos());
+			updateSelection();
+			setCursor(Qt::CrossCursor);
+		}
+	}
+}
+
+
+void XlDisplay::mouseMoveEvent(QMouseEvent *ev)
+{
+	if(isSelecting) {
+		updateSelection();
+		doneSelection = false;
+		selectionRectangle.setBottomRight(ev->pos());
+		updateSelection();
+	}
+}
+
+void XlDisplay::mouseReleaseEvent(QMouseEvent *ev)
+{
+	if (isSelecting && (ev->button() == Qt::LeftButton)) {
+		isSelecting = false;
+		doneSelection = true;
+
+		//check if it is valid
+		this->selectionRectangle = this->selectionRectangle.normalized();
+		if (selectionRectangle.width() < 20 || selectionRectangle.height() < 20) {
+			doneSelection = false;
+		}
+
+		updateSelection();
+		unsetCursor();
+	}
+}
+
+void XlDisplay::drawSelectionPoints()
+{
+	QPainter painter(this);
+	painter.setPen(palette().light().color());
+
+	if (doneSelection) {
+		painter.drawPoint(selectionRectangle.topLeft());
+		painter.drawPoint(selectionRectangle.bottomRight());
+	}
+}
+
 void XlDisplay::paintEvent(QPaintEvent *event)
 {
 	QStylePainter painter(this);
-	painter.drawPixmap(0,0,this->pixmap);
+	const QPixmap *a = this->pixmap();
+	painter.drawPixmap(0,0,*a);
+	if(isSelecting) {
+		painter.setPen(palette().light().color());
+		painter.drawRect(selectionRectangle.normalized().adjusted(0,0,-1,-1));
+	}
+	if (doneSelection) {
+		painter.drawPoint(selectionRectangle.topLeft());
+		painter.drawPoint(selectionRectangle.bottomRight());
+	}
 }
 
-void XlDisplay::resizeEvent(QResizeEvent *event)
+void XlDisplay::updateSelection()
 {
-
+	QRect rect = selectionRectangle.normalized();
+	update(rect.left(),rect.top(),rect.width(),1);
+	update(rect.left(),rect.top(),1,rect.height());
+	update(rect.left(),rect.bottom(),rect.width(),1);
+	update(rect.right(),rect.bottom(),1,rect.height());
 }
 
-void XlDisplay::setPixmap(QPixmap pm)
+QRect XlDisplay::getSelectionRect()
 {
-	this->pixmap = pm;
-	refreshPixmap();
+	return this->selectionRectangle;
 }
 
-void XlDisplay::setDisplaySettings(const XlDisplaySettings & settings) 
+bool XlDisplay::hasDoneSelection()
 {
-	this->settings = settings;
-}
-
-void XlDisplay::refreshPixmap()
-{
-	this->pixmap = QPixmap(this->size());
-	this->pixmap.fill(this,0,0);
-
-	QPainter painters(&pixmap);
-	painters.initFrom(this);
-	update();
-}
-/*
- *	Class:	XlDisplaySettings 
- */
-XlDisplaySettings::XlDisplaySettings()
-{
-	this->zoomLevel = 1;
-	this->height = 0;
-	this->width = 1;
+	return this->doneSelection;
 }

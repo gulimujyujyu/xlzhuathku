@@ -1,19 +1,10 @@
 #ifndef XLDISPLAY_H
 #define XLDISPLAY_H
 
-#include <QWidget>
-#include <QPixmap>
+#include <QLabel>
+#include <QStylePainter>
 
-class XlDisplaySettings {
-public:
-	XlDisplaySettings();
-
-	int height;
-	int width;
-	double zoomLevel;
-};
-
-class XlDisplay : public QWidget
+class XlDisplay : public QLabel
 {
 	Q_OBJECT
 
@@ -21,18 +12,25 @@ public:
 	XlDisplay(QWidget *parent);
 	~XlDisplay();
 
-	void setDisplaySettings(const XlDisplaySettings & settings);
-	void setPixmap(QPixmap pm);
-	void clearPixmap();
-	void refreshPixmap();
+	void putImage(QImage img);
+	QImage getImage();
+	QRect getSelectionRect();
+	bool hasDoneSelection();
 
 protected:
+	void mousePressEvent(QMouseEvent *ev);
+	void mouseMoveEvent(QMouseEvent *ev);
+	void mouseReleaseEvent(QMouseEvent *ev);
 	void paintEvent(QPaintEvent *event);
-	void resizeEvent(QResizeEvent *event);
 
 private:
-	QPixmap pixmap;
-	XlDisplaySettings settings;
+	QImage data;
+	bool isSelecting;
+	bool doneSelection;
+	QRect selectionRectangle;
+
+	void drawSelectionPoints();
+	void updateSelection();
 };
 
 #endif // XLDISPLAY_H

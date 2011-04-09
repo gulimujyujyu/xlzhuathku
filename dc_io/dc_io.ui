@@ -6,17 +6,39 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>824</width>
-    <height>629</height>
+    <width>622</width>
+    <height>98</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>dc_io</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" colspan="5">
-     <widget class="XlDisplay" name="Display" native="true"/>
+    <item row="0" column="0" colspan="12">
+     <widget class="XlDisplay" name="Display" native="true">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
     </item>
     <item row="1" column="0">
      <widget class="QPushButton" name="PlayButton">
@@ -36,6 +58,47 @@
      </widget>
     </item>
     <item row="1" column="3">
+     <widget class="QPushButton" name="RecordButton">
+      <property name="text">
+       <string>Record</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QPushButton" name="CaptureROIButton">
+      <property name="text">
+       <string>CaptureROI</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="6">
+     <widget class="QLabel" name="minLabel">
+      <property name="text">
+       <string>Min</string>
+      </property>
+      <property name="buddy">
+       <cstring>minSlider</cstring>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="7">
+     <widget class="QSlider" name="minSlider">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="9">
+     <widget class="QSlider" name="maxSlider">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="5">
      <spacer name="horizontalSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -48,10 +111,20 @@
       </property>
      </spacer>
     </item>
-    <item row="1" column="2">
-     <widget class="QPushButton" name="RecordButton">
+    <item row="1" column="10">
+     <widget class="QLabel" name="maxLabel">
       <property name="text">
-       <string>Record</string>
+       <string>Max</string>
+      </property>
+      <property name="buddy">
+       <cstring>maxSlider</cstring>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="4">
+     <widget class="QPushButton" name="RecordROIButton">
+      <property name="text">
+       <string>RecordROI</string>
       </property>
       <property name="checkable">
        <bool>true</bool>
@@ -65,7 +138,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>824</width>
+     <width>622</width>
      <height>21</height>
     </rect>
    </property>
@@ -98,7 +171,7 @@
      <addaction name="action05"/>
     </widget>
     <addaction name="actionROI"/>
-    <addaction name="actionROD"/>
+    <addaction name="actionDOI"/>
     <addaction name="separator"/>
     <addaction name="menuScale"/>
    </widget>
@@ -137,9 +210,9 @@
     <string>RO&amp;I</string>
    </property>
   </action>
-  <action name="actionROD">
+  <action name="actionDOI">
    <property name="text">
-    <string>RO&amp;D</string>
+    <string>&amp;DOI</string>
    </property>
   </action>
   <action name="action1">

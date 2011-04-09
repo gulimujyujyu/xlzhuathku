@@ -19,6 +19,13 @@ Thumbs.db
 *.cache
 *.ilk
 *.log
+#dc_io outputs
+*.png
+*.jpg
+*.bmp
+*.txt
+*.box
+*.avi
 [Bb]in
 [Dd]ebug*/
 *.lib
