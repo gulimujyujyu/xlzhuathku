@@ -54,3 +54,16 @@ _____________
 2. Usage
 ====================================
 depth camera I/O codes.
+
+====================================
+3. Empirical Notes
+====================================
+--------------
+3.1. Record Codec
+--------------
+High Accuracy:
+Intel IYUV Codec	*****
+Logitech Video		****
+Xvid Codec			****
+Microsoft Video 1	**
+
