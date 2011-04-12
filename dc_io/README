@@ -13,14 +13,14 @@ lucienzhu@gmail.com
 *. OpenNI + NITE
 *. Qt4.7 for vs2008
 *. Qt4.7 add-on for vs2008
-*. OpenCV 2.2 for vs2008
+*. OpenCV 2.1 for vs2008
 *. XVid for windows
 
 a. See http://www.openni.org
 b. See https://github.com/avin2/SensorKinect
 c. See http://www.studentguru.gr/blogs/vangos/archive/2011/01/20/how-to-successfully-install-kinect-windows-openni-nite.aspx
-d. http://opencv.willowgarage.com/wiki/VisualC%2B%2B_VS2008
-e. http://www.xvidmovies.com/codec/
+d. See http://opencv.willowgarage.com/wiki/VisualC%2B%2B_VS2008
+e. See http://www.xvidmovies.com/codec/
 
 -----------------
 1.2 My Settings
