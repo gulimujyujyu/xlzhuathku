@@ -2,6 +2,9 @@
 #define DC_VIEWER_H
 
 #include <QtGui/QMainWindow>
+#include <QFileSystemModel>
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
 #include "ui_dc_viewer.h"
 
 class dc_viewer : public QMainWindow
@@ -14,6 +17,15 @@ public:
 
 private:
 	Ui::dc_viewerClass ui;
+
+	//Model
+	QFileSystemModel *fileModel;
+
+	//Cached Data
+	IplImage *colorImage;
+	IplImage *depthImage;
+	int maxDepth;
+	int minDepth;
 };
 
 #endif // DC_VIEWER_H

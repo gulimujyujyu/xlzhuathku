@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'xldoidialog.ui'
 **
-** Created: Sat Apr 9 07:04:53 2011
-**      by: Qt User Interface Compiler version 4.7.2
+** Created: Tue Apr 12 19:45:52 2011
+**      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
