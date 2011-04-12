@@ -92,7 +92,7 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="actionSet_Root"/>
+    <addaction name="actionSetRoot"/>
     <addaction name="separator"/>
     <addaction name="action_Exit"/>
    </widget>
@@ -107,7 +107,7 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionSet_Root">
+  <action name="actionSetRoot">
    <property name="text">
     <string>Set &amp;Root</string>
    </property>

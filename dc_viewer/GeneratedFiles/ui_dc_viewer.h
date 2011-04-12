@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dc_viewer.ui'
 **
-** Created: Tue Apr 12 19:46:38 2011
+** Created: Tue Apr 12 21:55:31 2011
 **      by: Qt User Interface Compiler version 4.6.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -31,7 +31,7 @@ QT_BEGIN_NAMESPACE
 class Ui_dc_viewerClass
 {
 public:
-    QAction *actionSet_Root;
+    QAction *actionSetRoot;
     QAction *action_Exit;
     QWidget *centralWidget;
     QGridLayout *gridLayout;
@@ -55,8 +55,8 @@ public:
         if (dc_viewerClass->objectName().isEmpty())
             dc_viewerClass->setObjectName(QString::fromUtf8("dc_viewerClass"));
         dc_viewerClass->resize(536, 301);
-        actionSet_Root = new QAction(dc_viewerClass);
-        actionSet_Root->setObjectName(QString::fromUtf8("actionSet_Root"));
+        actionSetRoot = new QAction(dc_viewerClass);
+        actionSetRoot->setObjectName(QString::fromUtf8("actionSetRoot"));
         action_Exit = new QAction(dc_viewerClass);
         action_Exit->setObjectName(QString::fromUtf8("action_Exit"));
         centralWidget = new QWidget(dc_viewerClass);
@@ -130,7 +130,7 @@ public:
         dc_viewerClass->setStatusBar(statusBar);
 
         menuBar->addAction(menu_File->menuAction());
-        menu_File->addAction(actionSet_Root);
+        menu_File->addAction(actionSetRoot);
         menu_File->addSeparator();
         menu_File->addAction(action_Exit);
 
@@ -142,7 +142,7 @@ public:
     void retranslateUi(QMainWindow *dc_viewerClass)
     {
         dc_viewerClass->setWindowTitle(QApplication::translate("dc_viewerClass", "dc_viewer", 0, QApplication::UnicodeUTF8));
-        actionSet_Root->setText(QApplication::translate("dc_viewerClass", "Set &Root", 0, QApplication::UnicodeUTF8));
+        actionSetRoot->setText(QApplication::translate("dc_viewerClass", "Set &Root", 0, QApplication::UnicodeUTF8));
         action_Exit->setText(QApplication::translate("dc_viewerClass", "&Exit", 0, QApplication::UnicodeUTF8));
         colorLabel->setText(QApplication::translate("dc_viewerClass", "Color", 0, QApplication::UnicodeUTF8));
         depthLabel->setText(QApplication::translate("dc_viewerClass", "Depth", 0, QApplication::UnicodeUTF8));
