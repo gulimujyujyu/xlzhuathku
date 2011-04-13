@@ -1,5 +1,6 @@
 #include "dc_io.h"
 #include "xldoidialog.h"
+#include "openni_image_bayer_grbg.h"
 #include <cmath>
 #include <QtGui/QMessageBox>
 #include <QKeyEvent>
@@ -78,8 +79,11 @@ bool dc_io::connectCamera()
 	rc = g_Context.FindExistingNode(XN_NODE_TYPE_IMAGE, g_ImageGenerator);
 	CHECK_RC(rc, "Find image generator");
 
+	g_ImageGenerator.SetPixelFormat(XN_PIXEL_FORMAT_GRAYSCALE_16_BIT );
 	rc = g_Context.StartGeneratingAll();
+	
 	CHECK_RC(rc, "StartGenerating");
+	g_ImageGenerator.SetPixelFormat(XN_PIXEL_FORMAT_GRAYSCALE_8_BIT );
 
 	state=(rc==XN_STATUS_OK);
 	if(!state) {
@@ -496,6 +500,15 @@ void dc_io::getData()
 		
 		this->g_DepthGenerator.GetMetaData(this->g_DepthData);
 		this->g_ImageGenerator.GetMetaData(this->g_ImageData);
+
+#ifdef NEED_BAYER_DECODING
+		//deal with the poor Bayer Decoding
+		openni_wrapper::ImageBayerGRBG imageBayer(&(this->g_ImageData), openni_wrapper::ImageBayerGRBG::DebayeringMethod(1));
+		this->colorImage = cv::Mat::zeros (480, 640, CV_8UC3); 
+		unsigned char* rgb_buffer = (unsigned char*)(colorImage.data ); 
+		imageBayer.fillRGB (colorImage.cols, colorImage.rows, rgb_buffer, colorImage.step); 
+		//cv::cvtColor(colorImage,colorImage,CV_RGB2BGR);  // don't forget openCV uses BGR color order instead of RGB
+#endif		
 	}	
 }
 
@@ -524,8 +537,17 @@ void dc_io::drawScene()
 	unsigned int nValue;
 
 	//set one frame
-
 	for ( i = 0; i < dispHeight; i++) {
+#ifdef NEED_BAYER_DECODING
+		for (j=0; j< imgWidth; j++) {
+			tr = (this->colorImage.ptr() + this->colorImage.step*i)[j*3];
+			tg = (this->colorImage.ptr() + this->colorImage.step*i)[j*3+1];
+			tb = (this->colorImage.ptr() + this->colorImage.step*i)[j*3+2];
+			//tr = this->colorImage.at(i,j);
+			disp.setPixel(j,i,qRgb(tr, tg, tb));
+			//pImage ++;
+		}
+#else
 		for (j=0; j< imgWidth; j++) {
 			tr = pImage->nRed;
 			tg = pImage->nGreen;
@@ -533,6 +555,8 @@ void dc_io::drawScene()
 			disp.setPixel(j,i,qRgb(tr, tg, tb));
 			pImage ++;
 		}
+#endif
+		
 		for (j=0; j<dptWidth; j++) {
 			nValue = *pDepth;
 			pDepth++;

@@ -10,6 +10,8 @@
 #include <XnCodecIDs.h>
 #include <XnCppWrapper.h>
 
+#define NEED_BAYER_DECODING 1
+
 #define MAINWINDOW_VIEWTYPE_RAW 0
 #define MAINWINDOW_VIEWTYPE_REGISTERED 1
 #define MAINWINDOW_VIEWTYPE_3D 2
@@ -103,6 +105,7 @@ private:
 	double scaleFactor;
 
 	//Recorder
+	cv::Mat colorImage;
 	CvVideoWriter *videoWriter;
 
 	//UI
