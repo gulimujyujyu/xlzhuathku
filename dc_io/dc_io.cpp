@@ -428,6 +428,7 @@ bool dc_io::setROI()
 		this->refreshStatusBar(QString("Please first select a retangle within the picture above."));
 	}
 	this->hasROI = state;
+	this->ui.Display->setDisplaySelection(this->hasROI);
 	return state;
 }
 

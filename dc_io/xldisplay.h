@@ -16,6 +16,7 @@ public:
 	QImage getImage();
 	QRect getSelectionRect();
 	bool hasDoneSelection();
+	void setDisplaySelection( bool b);
 
 protected:
 	void mousePressEvent(QMouseEvent *ev);
@@ -27,6 +28,7 @@ private:
 	QImage data;
 	bool isSelecting;
 	bool doneSelection;
+	bool displaySelection;
 	QRect selectionRectangle;
 
 	void drawSelectionPoints();

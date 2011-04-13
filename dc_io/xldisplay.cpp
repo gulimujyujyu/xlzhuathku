@@ -10,6 +10,7 @@ XlDisplay::XlDisplay(QWidget *parent)
 	this->setPixmap(QPixmap::fromImage(data));
 	this->isSelecting = false;
 	this->doneSelection = false;
+	this->displaySelection = false;
 }
 
 XlDisplay::~XlDisplay()
@@ -36,6 +37,7 @@ void XlDisplay::mousePressEvent(QMouseEvent *ev)
 		if(rect.contains(ev->pos())) {
 			doneSelection = false;
 			isSelecting = true;
+			this->setDisplaySelection(false);
 			selectionRectangle.setTopLeft(ev->pos());
 			selectionRectangle.setTopRight(ev->pos());
 			updateSelection();
@@ -96,6 +98,16 @@ void XlDisplay::paintEvent(QPaintEvent *event)
 		painter.drawPoint(selectionRectangle.topLeft());
 		painter.drawPoint(selectionRectangle.bottomRight());
 	}
+	if (displaySelection) {
+		QPen pen(Qt::cyan, 2, Qt::SolidLine);
+		painter.setPen(pen);
+		painter.drawRect(selectionRectangle.normalized().adjusted(0,0,-1,-1));
+	}
+}
+
+void XlDisplay::setDisplaySelection( bool b)
+{
+	this->displaySelection = b;
 }
 
 void XlDisplay::updateSelection()
