@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dc_viewer.ui'
 **
-** Created: Tue Apr 12 21:55:31 2011
-**      by: Qt User Interface Compiler version 4.6.3
+** Created: Wed Apr 13 15:01:14 2011
+**      by: Qt User Interface Compiler version 4.7.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -17,7 +17,6 @@
 #include <QtGui/QGraphicsView>
 #include <QtGui/QGridLayout>
 #include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
@@ -25,6 +24,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QTreeView>
 #include <QtGui/QWidget>
+#include "xllabeldisplay.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -36,15 +36,13 @@ public:
     QWidget *centralWidget;
     QGridLayout *gridLayout;
     QTreeView *fileTreeView;
-    QLabel *colorLabel;
-    QLabel *depthLabel;
-    QLabel *normalLabel;
-    QLabel *curvatureLabel;
+    XlLabelDisplay *colorLabel;
+    XlLabelDisplay *depthLabel;
+    XlLabelDisplay *normalLabel;
+    XlLabelDisplay *curvatureLabel;
     QGraphicsView *graphicsView;
-    QLabel *normalLabel_2;
-    QLabel *curvatureLabel_2;
-    QLabel *edgeLabel;
-    QLabel *tempLabel;
+    XlLabelDisplay *edgeLabel;
+    XlLabelDisplay *tempLabel;
     QMenuBar *menuBar;
     QMenu *menu_File;
     QToolBar *mainToolBar;
@@ -68,24 +66,24 @@ public:
         fileTreeView = new QTreeView(centralWidget);
         fileTreeView->setObjectName(QString::fromUtf8("fileTreeView"));
 
-        gridLayout->addWidget(fileTreeView, 0, 0, 5, 1);
+        gridLayout->addWidget(fileTreeView, 0, 0, 4, 1);
 
-        colorLabel = new QLabel(centralWidget);
+        colorLabel = new XlLabelDisplay(centralWidget);
         colorLabel->setObjectName(QString::fromUtf8("colorLabel"));
 
         gridLayout->addWidget(colorLabel, 0, 1, 1, 1);
 
-        depthLabel = new QLabel(centralWidget);
+        depthLabel = new XlLabelDisplay(centralWidget);
         depthLabel->setObjectName(QString::fromUtf8("depthLabel"));
 
         gridLayout->addWidget(depthLabel, 0, 2, 1, 1);
 
-        normalLabel = new QLabel(centralWidget);
+        normalLabel = new XlLabelDisplay(centralWidget);
         normalLabel->setObjectName(QString::fromUtf8("normalLabel"));
 
         gridLayout->addWidget(normalLabel, 1, 1, 1, 1);
 
-        curvatureLabel = new QLabel(centralWidget);
+        curvatureLabel = new XlLabelDisplay(centralWidget);
         curvatureLabel->setObjectName(QString::fromUtf8("curvatureLabel"));
 
         gridLayout->addWidget(curvatureLabel, 1, 2, 1, 1);
@@ -93,27 +91,17 @@ public:
         graphicsView = new QGraphicsView(centralWidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
 
-        gridLayout->addWidget(graphicsView, 4, 1, 1, 2);
+        gridLayout->addWidget(graphicsView, 3, 1, 1, 2);
 
-        normalLabel_2 = new QLabel(centralWidget);
-        normalLabel_2->setObjectName(QString::fromUtf8("normalLabel_2"));
-
-        gridLayout->addWidget(normalLabel_2, 2, 2, 1, 1);
-
-        curvatureLabel_2 = new QLabel(centralWidget);
-        curvatureLabel_2->setObjectName(QString::fromUtf8("curvatureLabel_2"));
-
-        gridLayout->addWidget(curvatureLabel_2, 2, 1, 1, 1);
-
-        edgeLabel = new QLabel(centralWidget);
+        edgeLabel = new XlLabelDisplay(centralWidget);
         edgeLabel->setObjectName(QString::fromUtf8("edgeLabel"));
 
-        gridLayout->addWidget(edgeLabel, 3, 1, 1, 1);
+        gridLayout->addWidget(edgeLabel, 2, 1, 1, 1);
 
-        tempLabel = new QLabel(centralWidget);
+        tempLabel = new XlLabelDisplay(centralWidget);
         tempLabel->setObjectName(QString::fromUtf8("tempLabel"));
 
-        gridLayout->addWidget(tempLabel, 3, 2, 1, 1);
+        gridLayout->addWidget(tempLabel, 2, 2, 1, 1);
 
         dc_viewerClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(dc_viewerClass);
@@ -148,8 +136,6 @@ public:
         depthLabel->setText(QApplication::translate("dc_viewerClass", "Depth", 0, QApplication::UnicodeUTF8));
         normalLabel->setText(QApplication::translate("dc_viewerClass", "Normal", 0, QApplication::UnicodeUTF8));
         curvatureLabel->setText(QApplication::translate("dc_viewerClass", "Curvature", 0, QApplication::UnicodeUTF8));
-        normalLabel_2->setText(QApplication::translate("dc_viewerClass", "Normal", 0, QApplication::UnicodeUTF8));
-        curvatureLabel_2->setText(QApplication::translate("dc_viewerClass", "Curvature", 0, QApplication::UnicodeUTF8));
         edgeLabel->setText(QApplication::translate("dc_viewerClass", "Edge", 0, QApplication::UnicodeUTF8));
         tempLabel->setText(QApplication::translate("dc_viewerClass", "N/A", 0, QApplication::UnicodeUTF8));
         menu_File->setTitle(QApplication::translate("dc_viewerClass", "&File", 0, QApplication::UnicodeUTF8));

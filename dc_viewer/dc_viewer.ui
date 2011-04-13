@@ -15,63 +15,49 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" rowspan="5">
+    <item row="0" column="0" rowspan="4">
      <widget class="QTreeView" name="fileTreeView"/>
     </item>
     <item row="0" column="1">
-     <widget class="QLabel" name="colorLabel">
+     <widget class="XlLabelDisplay" name="colorLabel">
       <property name="text">
        <string>Color</string>
       </property>
      </widget>
     </item>
     <item row="0" column="2">
-     <widget class="QLabel" name="depthLabel">
+     <widget class="XlLabelDisplay" name="depthLabel">
       <property name="text">
        <string>Depth</string>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLabel" name="normalLabel">
+     <widget class="XlLabelDisplay" name="normalLabel">
       <property name="text">
        <string>Normal</string>
       </property>
      </widget>
     </item>
     <item row="1" column="2">
-     <widget class="QLabel" name="curvatureLabel">
+     <widget class="XlLabelDisplay" name="curvatureLabel">
       <property name="text">
        <string>Curvature</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="1" colspan="2">
+    <item row="3" column="1" colspan="2">
      <widget class="QGraphicsView" name="graphicsView"/>
     </item>
-    <item row="2" column="2">
-     <widget class="QLabel" name="normalLabel_2">
-      <property name="text">
-       <string>Normal</string>
-      </property>
-     </widget>
-    </item>
     <item row="2" column="1">
-     <widget class="QLabel" name="curvatureLabel_2">
-      <property name="text">
-       <string>Curvature</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLabel" name="edgeLabel">
+     <widget class="XlLabelDisplay" name="edgeLabel">
       <property name="text">
        <string>Edge</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="2">
-     <widget class="QLabel" name="tempLabel">
+    <item row="2" column="2">
+     <widget class="XlLabelDisplay" name="tempLabel">
       <property name="text">
        <string>N/A</string>
       </property>
@@ -119,6 +105,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>XlLabelDisplay</class>
+   <extends>QLabel</extends>
+   <header>xllabeldisplay.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="dc_viewer.qrc"/>
  </resources>
