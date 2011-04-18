@@ -70,7 +70,6 @@ void dc_viewer::loadFiles()
 	QString re_color(filePrefix + QString("image.png"));
 	QString re_depth(filePrefix + QString("depth.png"));
 
-	//TODO
 	//QString re_capture(filePrefix + QString("capture.png"));
 	//QString re_box(filePrefix + QString("detail.box"));
 
@@ -84,11 +83,102 @@ void dc_viewer::loadFiles()
 void dc_viewer::refreshAllLabels()
 {
 	//TODO
+	//1. color
 	QImage colorData = this->iplimage2qimage(this->colorImage);
+	//2. depth
 	QImage depthData = this->iplimage2qimage(this->depthImage);
+	//5. edge
+	QImage edgeData = this->calculateEdge(colorImage,depthImage);
+	//6. color depth
+	QImage ColoredDepthData = this->mapColor2Depth(colorImage,depthImage);
 	
 	ui.colorLabel->setPixmap(QPixmap::fromImage(colorData));
 	ui.depthLabel->setPixmap(QPixmap::fromImage(depthData));
+	ui.edgeLabel->setPixmap(QPixmap::fromImage(edgeData));
+	ui.tempLabel->setPixmap(QPixmap::fromImage(ColoredDepthData));
+}
+
+/*
+ *	Calculate Normal from color image and depth image
+ */
+QImage dc_viewer::calculateNormal( IplImage *clrImg, IplImage *dptImg)
+{
+	//TODO
+	QImage qimg;
+	return qimg;
+}
+
+/*
+ *	Calculate Edge from color image and depth image
+ */
+QImage dc_viewer::calculateEdge(IplImage *clrImg, IplImage *dptImg)
+{
+	IplImage *edgeImage = cvCreateImage(cvSize(clrImg->width,clrImg->height), IPL_DEPTH_16S, 1);
+	IplImage *grayImage = cvCreateImage(cvSize(clrImg->width,clrImg->height), IPL_DEPTH_8U, 1);
+	cvCvtColor(clrImg, grayImage, CV_BGR2GRAY);
+	//cvCopyImage(clrImg,edgeImage);
+	cvSmooth(grayImage,grayImage,CV_GAUSSIAN,3,3,0,0);
+	cvLaplace(grayImage,edgeImage,5);
+	cvConvertScaleAbs(edgeImage , grayImage, 1 , 0);
+
+	QImage qimg = this->iplimage2qimage(grayImage);
+	cvReleaseImage(&edgeImage);
+	cvReleaseImage(&grayImage);
+	return qimg;
+}
+
+/*
+ *	Calculate Curvature from color image and depth image
+ */
+QImage dc_viewer::calculateCurvature(IplImage *clrImg, IplImage *dptImg)
+{
+	//TODO
+	QImage qimg;
+	return qimg;
+}
+
+/*
+ *	Calculate Curvature from color image and depth image
+ */
+QImage dc_viewer::mapColor2Depth(IplImage *clrImg, IplImage *dptImg)
+{
+	int h = dptImg->height;
+	int w = dptImg->width;
+	int channels = dptImg->nChannels;
+	QImage qimg(w, h, QImage::Format_ARGB32);
+	char *data = dptImg->imageData;
+	char *colorData = clrImg->imageData;
+
+	for (int y = 0; y < h; y++, data += dptImg->widthStep, colorData += clrImg->widthStep)
+	{
+		for (int x = 0; x < w; x++)
+		{
+			char r, g, b, a = 0;
+			if (channels == 1)
+			{
+				r = data[x * channels]? colorData[x * channels]: 0;
+				g = data[x * channels]? colorData[x * channels]: 0;
+				b = data[x * channels]? colorData[x * channels]: 0;
+			}
+			else if (channels == 3 || channels == 4)
+			{
+				r = data[x * channels + 2]? colorData[x * channels+2]: 0;
+				g = data[x * channels + 1]? colorData[x * channels+1]: 0;
+				b = data[x * channels]? colorData[x * channels]: 0;
+			}			
+
+			if (channels == 4)
+			{
+				a = data[x * channels + 3];
+				qimg.setPixel(x, y, qRgba(r, g, b, a));
+			}
+			else
+			{
+				qimg.setPixel(x, y, qRgb(r, g, b));
+			}
+		}
+	}
+	return qimg;
 }
 
 /*

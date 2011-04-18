@@ -18,7 +18,11 @@ public:
 	void refreshStatusBar(QString ctn);
 
 	//Utilities functions
-	QImage dc_viewer::iplimage2qimage(IplImage *img);
+	QImage iplimage2qimage(IplImage *img);
+	QImage calculateCurvature( IplImage *clrImg, IplImage *dptImg);
+	QImage calculateEdge( IplImage *clrImg, IplImage *dptImg);
+	QImage calculateNormal( IplImage *clrImg, IplImage *dptImg);
+	QImage mapColor2Depth(IplImage *clrImg, IplImage *dptImg);
 
 private slots:
 	void setRootPath();
