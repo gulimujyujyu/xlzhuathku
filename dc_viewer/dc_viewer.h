@@ -8,6 +8,9 @@
 #include <opencv/highgui.h>
 #include "ui_dc_viewer.h"
 
+#define DEPTH_LOOKUP_TABLE_SIZE 256
+#define NORMNUM_THRESHOLD 8
+
 class dc_viewer : public QMainWindow
 {
 	Q_OBJECT
@@ -23,6 +26,7 @@ public:
 	QImage calculateEdge( IplImage *clrImg, IplImage *dptImg);
 	QImage calculateNormal( IplImage *clrImg, IplImage *dptImg);
 	QImage mapColor2Depth(IplImage *clrImg, IplImage *dptImg);
+	inline bool isInBoundingBox(int &x, int &y);
 
 private slots:
 	void setRootPath();
@@ -31,7 +35,10 @@ private slots:
 	
 private:
 	void loadFiles();
+	void loadPropertyFile();
+	void calculate3DData();
 	void refreshAllLabels();
+	void setDepthLookupTable();
 
 private:
 	Ui::dc_viewerClass ui;
@@ -40,12 +47,20 @@ private:
 	QFileSystemModel *fileModel;
 	//QFileSystemWatcher *fileWatcher;
 	QString rootPath;
+	double focusLength;
+	double pixelSize;
 
 	//Cached Data
+	double depthLU[DEPTH_LOOKUP_TABLE_SIZE];
+	QPoint boundingBox;
 	QString filePrefix;
 	IplImage *colorImage;
 	IplImage *depthImage;
 	IplImage *captureImage;
+	CvMat *normalData;
+	CvMat *pointData;
+	int depthHeight;
+	int depthWidth;
 	int maxDepth;
 	int minDepth;
 };

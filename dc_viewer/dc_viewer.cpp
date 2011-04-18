@@ -1,5 +1,7 @@
 #include "dc_viewer.h"
 #include <QtGui/QFileDialog>
+#include <QFile>
+#include <QTextStream>
 
 dc_viewer::dc_viewer(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
@@ -14,9 +16,15 @@ dc_viewer::dc_viewer(QWidget *parent, Qt::WFlags flags)
 	this->colorImage = NULL;
 	this->depthImage = NULL;
 	this->captureImage = NULL;
+	this->pointData = NULL;
+	this->normalData = NULL;
 	this->fileModel = new QFileSystemModel(this);
 	this->rootPath = QDir::currentPath();
 	this->fileModel->setRootPath(this->rootPath);
+	this->boundingBox.setX(0);
+	this->boundingBox.setY(0);
+	this->focusLength = 1;
+	this->pixelSize = 1;
 	//QStringList roiNameFilter;
 	//roiNameFilter << "png";
 	//this->fileModel->setNameFilters(roiNameFilter);
@@ -35,9 +43,26 @@ dc_viewer::~dc_viewer()
 void dc_viewer::setRootPath()
 {
 	this->rootPath = QFileDialog::getExistingDirectory(this, "Set Root Dir", QDir::currentPath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+	this->loadPropertyFile();
 	this->ui.fileTreeView->collapseAll();
 	this->ui.fileTreeView->setCurrentIndex(fileModel->index(this->rootPath));
 	this->ui.fileTreeView->expand(fileModel->index(this->rootPath));
+}
+
+/*
+ *	Load Property Files
+ */
+void dc_viewer::loadPropertyFile()
+{
+	QString filename = this->rootPath + QString("\\kinect.property");	
+	QFile file(filename);
+
+	if(!file.open(QIODevice::ReadOnly)) {
+		this->refreshStatusBar("Load kinect.property failed.");
+	}
+	QTextStream fin(&file);
+	fin >> this->focusLength >> this->pixelSize;
+	file.close();
 }
 
 /*
@@ -54,6 +79,8 @@ void dc_viewer::onFileItemDoubleClicked(QModelIndex idx)
 		fi.setFile(fileInfo.path(), prefix);
 		this->filePrefix = fi.filePath();
 		loadFiles();
+		setDepthLookupTable();
+		calculate3DData();
 		refreshAllLabels();
 	}	
 }
@@ -66,15 +93,121 @@ void dc_viewer::loadFiles()
 	if (this->colorImage) cvReleaseImage(&(this->colorImage));
 	if (this->depthImage) cvReleaseImage(&(this->depthImage));
 	if (this->captureImage) cvReleaseImage(&(this->captureImage));
+	if (this->normalData) cvReleaseMat(&(this->normalData));
+	if (this->pointData) cvReleaseMat(&(this->pointData));
 
 	QString re_color(filePrefix + QString("image.png"));
 	QString re_depth(filePrefix + QString("depth.png"));
+	QString re_box(filePrefix + QString("detail.box"));
 
 	//QString re_capture(filePrefix + QString("capture.png"));
-	//QString re_box(filePrefix + QString("detail.box"));
+	QFile file(re_box);
+	int tmp, tmpX, tmpY;
+	if(!file.open(QIODevice::ReadOnly)) {
+		this->refreshStatusBar("Load bounding box failed.");
+		return;
+	}
+	QTextStream fin(&file);
+	fin >> tmp >> tmpX >> tmpY >> tmp >> tmp >> tmp >> tmp;
+	file.close();
+	this->boundingBox.setX(tmpX);
+	this->boundingBox.setY(tmpY);
 
 	this->colorImage = cvLoadImage(re_color.toLatin1().data());
 	this->depthImage = cvLoadImage(re_depth.toLatin1().data());
+
+	this->depthWidth = colorImage->width;
+	this->depthHeight = colorImage->height;
+
+	this->pointData = cvCreateMat(depthImage->height*depthImage->width, 3, CV_32FC1);
+	this->normalData = cvCreateMat(depthImage->height*depthImage->width, 3, CV_32FC1);
+	cvZero(normalData);
+	cvZero(pointData);
+}
+
+/*
+ *	Calculate 3D information
+ */
+void dc_viewer::calculate3DData()
+{
+	//TODO: points
+	//X = (u - 320) * depth_md_[k] * pixel_size_ * 0.001 / F_; 
+	//Y = (v - 240) * depth_md_[k] * pixel_size_ * 0.001 / F_; 
+	//Z = depth_md_[k] * 0.001; // from mm in meters! 
+	int depthHeight = this->depthImage->height;
+	int depthWidth = this->depthImage->width;
+	int y,x;
+	int offsetX = this->boundingBox.x();
+	int offsetY = this->boundingBox.y();
+	double pxlSize = pixelSize;
+	double fcsLength = focusLength;
+	double X,Y,Z;
+	char *data = this->depthImage->imageData;
+	uchar tmpDepth = 0;
+	int channels = this->depthImage->nChannels;
+
+	for ( y=0; y<depthHeight; y++, data += depthImage->widthStep) {
+		for( x=0; x<depthWidth; x++) {
+			tmpDepth = uchar(data[x*channels]);
+			X = double(x+offsetX - 320) * depthLU[tmpDepth] * pxlSize * 0.001 / fcsLength; 
+			Y = double(y+offsetY - 240) * depthLU[tmpDepth] * pxlSize * 0.001 / fcsLength; 
+			Z = depthLU[tmpDepth] * 0.001; // from mm in meters! 
+			*((float*) CV_MAT_ELEM_PTR(*(this->pointData),x+y*depthWidth,0)) = X;
+			*((float*) CV_MAT_ELEM_PTR(*(this->pointData),x+y*depthWidth,1)) = Y;
+			*((float*) CV_MAT_ELEM_PTR(*(this->pointData),x+y*depthWidth,2)) = Z;
+		}
+	}
+	//TODO: normal
+	float buffer[75] = 0;
+	CvMat *tmpMat;
+	int normNum;
+	data = this->depthImage->imageData;
+	for ( y=0; y<depthHeight; y++, data += depthImage->widthStep) {
+		for( x=0; x<depthWidth; x++) {
+			tmpDepth = uchar(data[x*channels]);
+			normNum = 0;
+			if (tmpDepth) {
+				//get neighborhood	
+				for ( int ii=-2; ii<3; ii++) {
+					for ( int jj=-2; jj<3; jj++) {
+						if (isInBoundingBox(x+ii,y+jj)) {
+							tmpDepth = uchar(data[(x+ii)*channels+jj*depthImage->widthStep]);
+							if (tmpDepth) {
+								buffer[normNum*3] = CV_MAT_ELEM(*(this->pointData,(x+ii)+(y+jj)*depthWidth),float,normNum,0);
+								buffer[normNum*3+1] = CV_MAT_ELEM(*(this->pointData,(x+ii)+(y+jj)*depthWidth),float,normNum,1);
+								buffer[normNum*3+2] = CV_MAT_ELEM(*(this->pointData,(x+ii)+(y+jj)*depthWidth),float,normNum,2);
+								normNum++;
+							}
+						}
+					}
+				}
+				//calculate normal
+				if (normNum >= NORMNUM_THRESHOLD) {
+					//TODO
+					tmpMat = cvCreateMat(normNum,3,CV_32FC1);
+					cvSetData(tmpMat, buffer, tmpMat->step);
+
+				}
+				//calculate residue
+			}			
+		}
+	}
+	cvReleaseMat(&buffer);
+}
+
+inline bool dc_viewer::isInBoundingBox(int &x, int &y)
+{
+	return (x>=0 && x< this->depthWidth && y>=0 && y<this->depthHeight);
+}
+
+void dc_viewer::setDepthLookupTable()
+{
+	int depthItv = maxDepth-minDepth;
+	double unit = double(depthItv)/255.0;
+	for (int i = 0; i < DEPTH_LOOKUP_TABLE_SIZE; i++) {
+		this->depthLU[i] = minDepth+double(i)*unit;
+	}
+	depthLU[0] = 0;
 }
 
 /*
@@ -103,7 +236,16 @@ void dc_viewer::refreshAllLabels()
  */
 QImage dc_viewer::calculateNormal( IplImage *clrImg, IplImage *dptImg)
 {
-	//TODO
+	int heightDepth = dptImg->height;
+	int widthDepth = dptImg->width;
+	int x,y;
+
+	for( y = 0; y < heightDepth; y++) {
+		for( x=0; x<widthDepth; x++) {
+			//this->calcNormAt(x, y, 3, )
+		}
+	}
+	
 	QImage qimg;
 	return qimg;
 }
@@ -187,12 +329,13 @@ QImage dc_viewer::mapColor2Depth(IplImage *clrImg, IplImage *dptImg)
 bool dc_viewer::isValidROIImage(QFileInfo fileInfo, QString &prefix)
 {
 	//2011_12_04_13_58_45_513_931_752depth.png
-	QRegExp re_prefix("^(\\d{4}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_\\d{3}_\\d{1,5}_\\d{1,5})");
+	QRegExp reg_prefix("^(\\d{4}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_\\d{3}_\\d{1,5}_\\d{1,5})");
+	QRegExp reg_depth("^\\d{4}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_\\d{3}_(\\d{1,5})_(\\d{1,5})");
 	bool state = false;
 
-	int pos = re_prefix.indexIn(fileInfo.fileName());
+	int pos = reg_prefix.indexIn(fileInfo.fileName());
 	if (pos > -1) {
-		prefix = re_prefix.cap(1);
+		prefix = reg_prefix.cap(1);
 		QString re_color(prefix + QString("image.png"));
 		QString re_depth(prefix + QString("depth.png"));
 		QString re_capture(prefix + QString("capture.png"));
@@ -215,6 +358,9 @@ bool dc_viewer::isValidROIImage(QFileInfo fileInfo, QString &prefix)
 		if ( !(tmpFile.exists())){
 			return state;
 		}
+		pos = reg_depth.indexIn(fileInfo.fileName());
+		this->maxDepth = reg_depth.cap(1).toInt();
+		this->minDepth = reg_depth.cap(2).toInt();
 		state = true;
 	}
 	return state;
