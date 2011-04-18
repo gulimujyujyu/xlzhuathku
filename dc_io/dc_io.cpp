@@ -95,6 +95,25 @@ bool dc_io::connectCamera()
 		this->refreshStatusBar(QString("Connect Kinect Successful"));
 	}
 
+	QString filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString("kinect.property");	
+	QFile file(filename);
+	if( !file.open(QIODevice::WriteOnly)) {
+		this->refreshStatusBar( QString("Cannot write to KINECT_CAMERA.PROPERTY"));
+	}else {
+		XnUInt64 focusLength;
+		XnDouble pixelSize;
+
+		// get the focal length in mm (ZPS = zero plane distance) 
+		// get the pixel size in mm ("ZPPS" = pixel size at zero plane) 
+		g_DepthGenerator.GetIntProperty("ZPD", focusLength);
+		g_DepthGenerator.GetRealProperty("ZPPS", pixelSize);
+		
+		QTextStream out(&file);
+		out << focusLength << endl
+			<< pixelSize << endl;
+		file.close();
+	}	
+
 	//Display maximum distance - 10000
 	g_MaxDepth = this->g_DepthGenerator.GetDeviceMaxDepth();
 	this->refreshStatusBar(QString("Connect Kinect Successful. g_MaxDepth:") + QString::number(g_MaxDepth));
@@ -371,16 +390,17 @@ void dc_io::recordROI()
 			QFile file(boxfilename);
 			if( !file.open(QIODevice::WriteOnly)) {
 				this->refreshStatusBar( QString("Cannot write to detail.txt but images saved"));
-			}
-			QTextStream out(&file);
-			out << singleImageWidth << endl
-				<< cRect.topLeft().x() << endl
-				<< cRect.topLeft().y() << endl
-				<< cRect.width() << endl
-				<< cRect.height() << endl
-				<< this->depthLowerBound << endl
-				<< this->depthUpperBound << endl;
-			file.close();
+			}else {
+				QTextStream out(&file);
+				out << singleImageWidth << endl
+					<< cRect.topLeft().x() << endl
+					<< cRect.topLeft().y() << endl
+					<< cRect.width() << endl
+					<< cRect.height() << endl
+					<< this->depthLowerBound << endl
+					<< this->depthUpperBound << endl;
+				file.close();
+			}			
 			//output data
 			int wid = this->ui.Display->getImage().width();
 			int hei = this->ui.Display->getImage().height();
