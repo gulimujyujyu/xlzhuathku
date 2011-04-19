@@ -37,6 +37,7 @@ public:
 
 private slots:
 	void setRootPath();
+	void setTemppath();
 	void onFileItemDoubleClicked(QModelIndex idx);
 	bool isValidROIImage(QFileInfo fileInfo, QString &prefix);
 	
@@ -55,6 +56,7 @@ private:
 	QFileSystemModel *fileModel;
 	//QFileSystemWatcher *fileWatcher;
 	QString rootPath;
+	QString tempPath;
 	double focusLength;
 	double pixelSize;
 

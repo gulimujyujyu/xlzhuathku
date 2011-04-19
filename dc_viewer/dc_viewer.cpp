@@ -10,6 +10,7 @@ dc_viewer::dc_viewer(QWidget *parent, Qt::WFlags flags)
 
 	//connect signals
 	connect(this->ui.actionSetRoot, SIGNAL(triggered()), this, SLOT(setRootPath()));
+	connect(this->ui.actionSetTemppath, SIGNAL(triggered()), this, SLOT(setTemppath()));
 	connect(this->ui.fileTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onFileItemDoubleClicked(QModelIndex)));
 
 	//set parameters
@@ -49,6 +50,21 @@ void dc_viewer::initializeColorMap()
 		colorMapG[i] = abs((255-2*i));
 		colorMapB[i] = 255-i;
 	}
+}
+
+/*
+ *	Set temppath for labels to save locally.
+ */
+void dc_viewer::setTemppath()
+{
+	this->tempPath = QFileDialog::getExistingDirectory(this, "Set tempPath Dir", QDir::currentPath(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+	this->tempPath = tempPath + QString("\\");
+	ui.depthLabel->setTempPath(tempPath);
+	ui.colorLabel->setTempPath(tempPath);
+	ui.normalLabel->setTempPath(tempPath);
+	ui.curvatureLabel->setTempPath(tempPath);
+	ui.tempLabel->setTempPath(tempPath);
+	ui.edgeLabel->setTempPath(tempPath);
 }
 
 /*

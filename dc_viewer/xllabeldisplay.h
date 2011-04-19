@@ -10,6 +10,7 @@ class XlLabelDisplay : public QLabel
 public:
 	XlLabelDisplay(QWidget *parent);
 	~XlLabelDisplay();
+	void setTempPath(QString a);
 
 private slots:
 	void saveImageLocally();
@@ -18,6 +19,7 @@ private:
 	QAction *saveAction;
 
 private:
+	QString tempPath;
 	void createContextMenu();
 	
 };

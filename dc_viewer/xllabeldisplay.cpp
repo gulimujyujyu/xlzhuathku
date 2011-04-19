@@ -6,7 +6,8 @@ XlLabelDisplay::XlLabelDisplay(QWidget *parent)
 	: QLabel(parent)
 {
 	this->saveAction = new QAction("&Save", this);
-	connect(this->saveAction, SIGNAL(triggered()), this, SLOT(saveImageLocally()));
+	this->tempPath = "";
+	connect(this->saveAction, SIGNAL(triggered()), this, SLOT(saveImageLocally()));	
 	createContextMenu();
 }
 
@@ -31,5 +32,14 @@ void XlLabelDisplay::saveImageLocally()
 {
 	QImage img = this->pixmap()->toImage();
 	QString filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString(".png");
-	img.save(filename, "PNG");
+	img.save(this->tempPath + filename, "PNG");
+}
+
+/*
+ *	set temp paths
+ *	should contain '\', i.e. a = "aaaaa\\aaa\\a\\"
+ */
+void XlLabelDisplay::setTempPath(QString a)
+{
+	this->tempPath = a;
 }
