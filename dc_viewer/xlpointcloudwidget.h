@@ -5,6 +5,8 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
+#define ROTATION_PARAM 100
+
 class XlPointCloudWidget : public QGLWidget
 {
 	Q_OBJECT
@@ -25,11 +27,17 @@ protected:
 	void initializeGL();
 	void resizeGL(int w, int h);
 	void paintGL();
+	void mousePressEvent(QMouseEvent *ev);
+	void mouseMoveEvent(QMouseEvent *ev);
 
 private:
 	void draw();
 
 private:
+	QPoint lastPos;
+	GLfloat rotateX;
+	GLfloat rotateY;
+	GLfloat rotateZ;
 	CvMat *pointCloud;
 	QImage colorMap;
 	double meanX;

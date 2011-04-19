@@ -1,4 +1,5 @@
 #include "xlpointcloudwidget.h"
+#include <QMouseEvent>
 
 // #include <GL/glut.h>
 
@@ -7,6 +8,7 @@ XlPointCloudWidget::XlPointCloudWidget(QWidget *parent)
 {
 	setFormat(QGLFormat(QGL::DoubleBuffer| QGL::DepthBuffer));
 	this->pointCloud = NULL;
+	this->rotateY = this->rotateZ = this->rotateX = 0;
 }
 
 XlPointCloudWidget::~XlPointCloudWidget()
@@ -49,19 +51,12 @@ void XlPointCloudWidget::draw()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	float d = 0.1;
-	glOrtho(minX-d, maxX+d, minY-d, maxY+d, minZ-d, maxZ+d);
+	//glOrtho(minX-d, maxX+d, minY-d, maxY+d, minZ-d, maxZ+d);
+	glOrtho(-d, d, -d, d, -d, d);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	//glTranslatef((GLfloat) meanX, (GLfloat) meanY, (GLfloat) meanZ);
-
-	//glColor3f(1,0,0);
-	////glutSolidCube(20);
-	//glPointSize(10);
-	//glBegin(GL_POINTS);
-	//glVertex3f(0,0,0);
-	//glEnd();
-	//glRotatef(-90, 1,0,0);
+	
 	int numOfPoints = this->pointCloud->rows;
 	int iHeight = this->colorMap.height();
 	int iWidth = this->colorMap.width();
@@ -69,6 +64,11 @@ void XlPointCloudWidget::draw()
 	float x,y,z;
 	int r,g,b;
 	QRgb rgb;
+
+	glRotatef(rotateX, 1.0, 0.0, 0.0);
+	glRotatef(rotateY, 0.0, 1.0, 0.0);
+	glRotatef(rotateZ, 0.0, 0.0, 1.0);
+	glTranslatef(-meanX,-meanY,-meanZ);
 
 	glPointSize(1.5);
 	glBegin(GL_POINTS);
@@ -123,4 +123,25 @@ void XlPointCloudWidget::setMinMax(double minX, double minY, double minZ, double
 	this->maxY = maxY;
 	this->minZ = minZ;
 	this->maxZ = maxZ;
+}
+
+void XlPointCloudWidget::mouseMoveEvent(QMouseEvent *ev)
+{
+	GLfloat dx = GLfloat(ev->x()-lastPos.x()) / width() / ROTATION_PARAM;
+	GLfloat dy = GLfloat(ev->y()-lastPos.y()) / height() / ROTATION_PARAM;
+
+	if( ev->buttons() & Qt::LeftButton) {
+		rotateX += 180*dy;
+		rotateY += 180*dx;
+		updateGL();
+	} else if( ev->buttons() & Qt::RightButton) {
+		rotateX += 180*dy;
+		rotateZ += 180*dx;
+		updateGL();
+	}
+}
+
+void XlPointCloudWidget::mousePressEvent(QMouseEvent *ev)
+{
+	lastPos = ev->pos();
 }
