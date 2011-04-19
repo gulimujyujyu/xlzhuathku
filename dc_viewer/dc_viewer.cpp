@@ -25,6 +25,7 @@ dc_viewer::dc_viewer(QWidget *parent, Qt::WFlags flags)
 	this->boundingBox.setY(0);
 	this->focusLength = 1;
 	this->pixelSize = 1;
+	this->initializeColorMap();
 	//QStringList roiNameFilter;
 	//roiNameFilter << "png";
 	//this->fileModel->setNameFilters(roiNameFilter);
@@ -35,6 +36,19 @@ dc_viewer::dc_viewer(QWidget *parent, Qt::WFlags flags)
 dc_viewer::~dc_viewer()
 {
 
+}
+
+/*
+ *	Initialize Color Map for normal visualization
+ */
+void dc_viewer::initializeColorMap()
+{
+	for (int i=0; i<256; i++)
+	{
+		colorMapR[i] = 0+i;
+		colorMapG[i] = abs((255-2*i));
+		colorMapB[i] = 255-i;
+	}
 }
 
 /*
@@ -141,7 +155,7 @@ void dc_viewer::calculate3DData()
 	int offsetY = this->boundingBox.y();
 	double pxlSize = pixelSize;
 	double fcsLength = focusLength;
-	double X,Y,Z;
+	double X,Y,Z,XYZ;
 	char *data = this->depthImage->imageData;
 	uchar tmpDepth = 0;
 	int channels = this->depthImage->nChannels;
@@ -158,8 +172,11 @@ void dc_viewer::calculate3DData()
 		}
 	}
 	//TODO: normal
-	float buffer[75] = 0;
-	CvMat *tmpMat;
+	float buffer[NORMAL_NEIGHBORHOOD_SIZE_SQUARE_BY_3] = {0};
+	float bufferZ[NORMAL_NEIGHBORHOOD_SIZE_SQUARE] = {0};
+	CvMat *tmpMatLeft;
+	CvMat *tmpMatRight;
+	CvMat *tmpResult;
 	int normNum;
 	data = this->depthImage->imageData;
 	for ( y=0; y<depthHeight; y++, data += depthImage->widthStep) {
@@ -168,14 +185,15 @@ void dc_viewer::calculate3DData()
 			normNum = 0;
 			if (tmpDepth) {
 				//get neighborhood	
-				for ( int ii=-2; ii<3; ii++) {
-					for ( int jj=-2; jj<3; jj++) {
+				for ( int ii=-NORMAL_NEIGHBORHOOD_SIZE_HALF; ii<NORMAL_NEIGHBORHOOD_SIZE_HALF+1; ii++) {
+					for ( int jj=-NORMAL_NEIGHBORHOOD_SIZE_HALF; jj<NORMAL_NEIGHBORHOOD_SIZE_HALF+1; jj++) {
 						if (isInBoundingBox(x+ii,y+jj)) {
 							tmpDepth = uchar(data[(x+ii)*channels+jj*depthImage->widthStep]);
 							if (tmpDepth) {
-								buffer[normNum*3] = CV_MAT_ELEM(*(this->pointData,(x+ii)+(y+jj)*depthWidth),float,normNum,0);
-								buffer[normNum*3+1] = CV_MAT_ELEM(*(this->pointData,(x+ii)+(y+jj)*depthWidth),float,normNum,1);
-								buffer[normNum*3+2] = CV_MAT_ELEM(*(this->pointData,(x+ii)+(y+jj)*depthWidth),float,normNum,2);
+								buffer[normNum*3] = CV_MAT_ELEM(*(this->pointData),float,(x+ii)+(y+jj)*depthWidth,0);
+								buffer[normNum*3+1] = CV_MAT_ELEM(*(this->pointData),float,(x+ii)+(y+jj)*depthWidth,1);
+								buffer[normNum*3+2] = 1;
+								bufferZ[normNum] = CV_MAT_ELEM(*(this->pointData),float,(x+ii)+(y+jj)*depthWidth,2);
 								normNum++;
 							}
 						}
@@ -183,19 +201,33 @@ void dc_viewer::calculate3DData()
 				}
 				//calculate normal
 				if (normNum >= NORMNUM_THRESHOLD) {
-					//TODO
-					tmpMat = cvCreateMat(normNum,3,CV_32FC1);
-					cvSetData(tmpMat, buffer, tmpMat->step);
-
+					tmpMatLeft = cvCreateMat(normNum,3,CV_32FC1);
+					tmpResult = cvCreateMat(3,1,CV_32FC1);
+					tmpMatRight = cvCreateMat(normNum,1,CV_32FC1);
+					cvSetData(tmpMatLeft, buffer, tmpMatLeft->step);
+					cvSetData(tmpMatRight, bufferZ, tmpMatRight->step);
+					cvSolve(tmpMatLeft, tmpMatRight, tmpResult, CV_SVD);
+					X = CV_MAT_ELEM(*(tmpResult),float,0,0);
+					Y = CV_MAT_ELEM(*(tmpResult),float,1,0);
+					Z = -1;
+					XYZ = sqrt(X*X+Y*Y+Z*Z);
+					X /= XYZ;
+					Y /= XYZ;
+					Z /= XYZ;
+					*((float*) CV_MAT_ELEM_PTR(*(this->normalData),x+y*depthWidth,0)) = X;
+					*((float*) CV_MAT_ELEM_PTR(*(this->normalData),x+y*depthWidth,1)) = Y;
+					*((float*) CV_MAT_ELEM_PTR(*(this->normalData),x+y*depthWidth,2)) = Z;
+					cvReleaseMat(&tmpMatLeft);
+					cvReleaseMat(&tmpResult);
+					cvReleaseMat(&tmpMatRight);
 				}
 				//calculate residue
 			}			
 		}
 	}
-	cvReleaseMat(&buffer);
 }
 
-inline bool dc_viewer::isInBoundingBox(int &x, int &y)
+inline bool dc_viewer::isInBoundingBox(int x, int y)
 {
 	return (x>=0 && x< this->depthWidth && y>=0 && y<this->depthHeight);
 }
@@ -220,6 +252,8 @@ void dc_viewer::refreshAllLabels()
 	QImage colorData = this->iplimage2qimage(this->colorImage);
 	//2. depth
 	QImage depthData = this->iplimage2qimage(this->depthImage);
+	//3. normal
+	QImage normalData = this->calculateNormal(colorImage,depthImage);
 	//5. edge
 	QImage edgeData = this->calculateEdge(colorImage,depthImage);
 	//6. color depth
@@ -227,6 +261,7 @@ void dc_viewer::refreshAllLabels()
 	
 	ui.colorLabel->setPixmap(QPixmap::fromImage(colorData));
 	ui.depthLabel->setPixmap(QPixmap::fromImage(depthData));
+	ui.normalLabel->setPixmap(QPixmap::fromImage(normalData));
 	ui.edgeLabel->setPixmap(QPixmap::fromImage(edgeData));
 	ui.tempLabel->setPixmap(QPixmap::fromImage(ColoredDepthData));
 }
@@ -239,15 +274,32 @@ QImage dc_viewer::calculateNormal( IplImage *clrImg, IplImage *dptImg)
 	int heightDepth = dptImg->height;
 	int widthDepth = dptImg->width;
 	int x,y;
+	float nr,ng,nb;
+	float rr,gg,bb;
+
+	QImage qimg(dptImg->width, dptImg->height, QImage::Format_ARGB32);
 
 	for( y = 0; y < heightDepth; y++) {
 		for( x=0; x<widthDepth; x++) {
-			//this->calcNormAt(x, y, 3, )
+			nr = CV_MAT_ELEM(*(this->normalData),float,x+y*depthWidth,0);
+			ng = CV_MAT_ELEM(*(this->normalData),float,x+y*depthWidth,1);
+			nb = CV_MAT_ELEM(*(this->normalData),float,x+y*depthWidth,2);
+			normalColorMapping(rr,gg,bb,nr,ng,nb);
+			qimg.setPixel(x,y,qRgb(rr,gg,bb));
 		}
 	}
-	
-	QImage qimg;
+
 	return qimg;
+}
+
+/*
+ *	Normal Color Mapping
+ */
+inline void dc_viewer::normalColorMapping(float &dr, float &dg, float &db, float &r, float &g, float &b)
+{
+	dr = colorMapR[int((r+1)*122.5)];
+	dg = colorMapG[int((g+1)*122.5)];
+	db = colorMapB[int((b+1)*122.5)];
 }
 
 /*

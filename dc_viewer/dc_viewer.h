@@ -9,7 +9,13 @@
 #include "ui_dc_viewer.h"
 
 #define DEPTH_LOOKUP_TABLE_SIZE 256
-#define NORMNUM_THRESHOLD 8
+#define COLOR_LOOKUP_TABLE_SIZE 256
+
+#define NORMAL_NEIGHBORHOOD_SIZE 9
+#define NORMAL_NEIGHBORHOOD_SIZE_SQUARE 81 // = NORMAL_NEIGHBORHOOD_SIZE*NORMAL_NEIGHBORHOOD_SIZE
+#define NORMAL_NEIGHBORHOOD_SIZE_SQUARE_BY_3 273 // = NORMAL_NEIGHBORHOOD_SIZE*NORMAL_NEIGHBORHOOD_SIZE*3
+#define NORMAL_NEIGHBORHOOD_SIZE_HALF 4 // = NORMAL_NEIGHBORHOOD_SIZE/2
+#define NORMNUM_THRESHOLD 40 // = NORMAL_NEIGHBORHOOD_SIZE_SQUARE/2
 
 class dc_viewer : public QMainWindow
 {
@@ -26,7 +32,8 @@ public:
 	QImage calculateEdge( IplImage *clrImg, IplImage *dptImg);
 	QImage calculateNormal( IplImage *clrImg, IplImage *dptImg);
 	QImage mapColor2Depth(IplImage *clrImg, IplImage *dptImg);
-	inline bool isInBoundingBox(int &x, int &y);
+	inline bool isInBoundingBox(int x, int y);
+	inline void normalColorMapping(float &dr, float &dg, float &db, float &r, float &g, float &b);
 
 private slots:
 	void setRootPath();
@@ -35,6 +42,7 @@ private slots:
 	
 private:
 	void loadFiles();
+	void initializeColorMap();
 	void loadPropertyFile();
 	void calculate3DData();
 	void refreshAllLabels();
@@ -52,6 +60,9 @@ private:
 
 	//Cached Data
 	double depthLU[DEPTH_LOOKUP_TABLE_SIZE];
+	int colorMapR[COLOR_LOOKUP_TABLE_SIZE];
+	int colorMapB[COLOR_LOOKUP_TABLE_SIZE];
+	int colorMapG[COLOR_LOOKUP_TABLE_SIZE];
 	QPoint boundingBox;
 	QString filePrefix;
 	IplImage *colorImage;
