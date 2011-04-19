@@ -1,6 +1,7 @@
 #include "xllabeldisplay.h"
 #include <QDateTime>
 #include <QAction>
+#include <QMouseEvent>
 
 XlLabelDisplay::XlLabelDisplay(QWidget *parent)
 	: QLabel(parent)
@@ -33,6 +34,15 @@ void XlLabelDisplay::saveImageLocally()
 	QImage img = this->pixmap()->toImage();
 	QString filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString(".png");
 	img.save(this->tempPath + filename, "PNG");
+}
+
+/*
+ *	Modify mouse press event
+ */
+void XlLabelDisplay::mouseDoubleClickEvent(QMouseEvent *ev)
+{
+	if(ev->button() == Qt::LeftButton)
+		emit labelDoubleClicked();
 }
 
 /*

@@ -12,6 +12,11 @@ dc_viewer::dc_viewer(QWidget *parent, Qt::WFlags flags)
 	connect(this->ui.actionSetRoot, SIGNAL(triggered()), this, SLOT(setRootPath()));
 	connect(this->ui.actionSetTemppath, SIGNAL(triggered()), this, SLOT(setTemppath()));
 	connect(this->ui.fileTreeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onFileItemDoubleClicked(QModelIndex)));
+	connect(this->ui.colorLabel, SIGNAL(labelDoubleClicked()), this, SLOT(onColorLabelDoubleClicked()));
+	connect(this->ui.depthLabel, SIGNAL(labelDoubleClicked()),this, SLOT(onDepthLabelDoubleClicked()));
+	connect(this->ui.edgeLabel, SIGNAL(labelDoubleClicked()), this, SLOT(onEdgeLabelDoubleClicked()));
+	connect(this->ui.tempLabel, SIGNAL(labelDoubleClicked()), this, SLOT(onTempLabelDoubleClicked()));
+	connect(this->ui.normalLabel, SIGNAL(labelDoubleClicked()),this, SLOT(onNormalLabelDoubleClicked()));
 
 	//set parameters
 	this->colorImage = NULL;
@@ -50,6 +55,7 @@ void dc_viewer::initializeColorMap()
 		colorMapG[i] = abs((255-2*i));
 		colorMapB[i] = 255-i;
 	}
+	colorMapB[122] = colorMapG[122] = colorMapR[122] = 0;
 }
 
 /*
@@ -176,6 +182,12 @@ void dc_viewer::calculate3DData()
 	uchar tmpDepth = 0;
 	int channels = this->depthImage->nChannels;
 
+	int numOfValidPoints = 0;
+	this->meanX = 0;
+	this->meanY = 0;
+	this->meanZ = 0;
+
+	//point cloud
 	for ( y=0; y<depthHeight; y++, data += depthImage->widthStep) {
 		for( x=0; x<depthWidth; x++) {
 			tmpDepth = uchar(data[x*channels]);
@@ -185,9 +197,25 @@ void dc_viewer::calculate3DData()
 			*((float*) CV_MAT_ELEM_PTR(*(this->pointData),x+y*depthWidth,0)) = X;
 			*((float*) CV_MAT_ELEM_PTR(*(this->pointData),x+y*depthWidth,1)) = Y;
 			*((float*) CV_MAT_ELEM_PTR(*(this->pointData),x+y*depthWidth,2)) = Z;
+			if (tmpDepth != 0) {
+				meanX += X;
+				meanY += Y;
+				meanZ += Z;
+				minX = minX<X? minX:X;
+				minY = minY<Y? minY:Y;
+				minZ = minZ<Z? minZ:Z;
+				maxX = maxX>X? maxX:X;
+				maxY = maxY>Y? maxY:Y;
+				maxZ = maxZ>Z? maxZ:Z;
+				numOfValidPoints++;
+			}
 		}
 	}
-	//TODO: normal
+	meanX /= double(numOfValidPoints);
+	meanY /= double(numOfValidPoints);
+	meanZ /= double(numOfValidPoints);
+
+	//normal
 	float buffer[NORMAL_NEIGHBORHOOD_SIZE_SQUARE_BY_3] = {0};
 	float bufferZ[NORMAL_NEIGHBORHOOD_SIZE_SQUARE] = {0};
 	CvMat *tmpMatLeft;
@@ -273,13 +301,13 @@ void dc_viewer::refreshAllLabels()
 	//5. edge
 	QImage edgeData = this->calculateEdge(colorImage,depthImage);
 	//6. color depth
-	QImage ColoredDepthData = this->mapColor2Depth(colorImage,depthImage);
+	QImage coloredDepthData = this->mapColor2Depth(colorImage,depthImage);
 	
 	ui.colorLabel->setPixmap(QPixmap::fromImage(colorData));
 	ui.depthLabel->setPixmap(QPixmap::fromImage(depthData));
 	ui.normalLabel->setPixmap(QPixmap::fromImage(normalData));
 	ui.edgeLabel->setPixmap(QPixmap::fromImage(edgeData));
-	ui.tempLabel->setPixmap(QPixmap::fromImage(ColoredDepthData));
+	ui.tempLabel->setPixmap(QPixmap::fromImage(coloredDepthData));
 }
 
 /*
@@ -483,4 +511,79 @@ QImage dc_viewer::iplimage2qimage(IplImage *iplImg)
 		}
 	}
 	return qimg;
+}
+
+void dc_viewer::onColorLabelDoubleClicked()
+{
+	if(this->pointData) {
+		//1. color
+		QImage colorData = this->iplimage2qimage(this->colorImage);
+
+		ui.glWidget->setMinMax(minX,minY,minZ,maxX,maxY,maxZ);
+		ui.glWidget->setMeanX(meanX);
+		ui.glWidget->setMeanY(meanY);
+		ui.glWidget->setMeanZ(meanZ);
+		ui.glWidget->setPointCloud(this->pointData);
+		ui.glWidget->setColorMap(colorData);
+	} 	
+}
+
+void dc_viewer::onDepthLabelDoubleClicked()
+{
+	if(this->pointData) {
+		//2. depth
+		QImage depthData = this->iplimage2qimage(this->depthImage);
+
+		ui.glWidget->setMinMax(minX,minY,minZ,maxX,maxY,maxZ);
+		ui.glWidget->setMeanX(meanX);
+		ui.glWidget->setMeanY(meanY);
+		ui.glWidget->setMeanZ(meanZ);
+		ui.glWidget->setPointCloud(this->pointData);
+		ui.glWidget->setColorMap(depthData);
+	} 	
+}
+
+void dc_viewer::onNormalLabelDoubleClicked()
+{
+	if(this->pointData) {
+		//3. normal
+		QImage normalData = this->calculateNormal(colorImage,depthImage);
+
+		ui.glWidget->setMinMax(minX,minY,minZ,maxX,maxY,maxZ);
+		ui.glWidget->setMeanX(meanX);
+		ui.glWidget->setMeanY(meanY);
+		ui.glWidget->setMeanZ(meanZ);
+		ui.glWidget->setPointCloud(this->pointData);
+		ui.glWidget->setColorMap(normalData);
+	} 	
+}
+//void onCurvatureLabelDoubleClicked();
+void dc_viewer::onEdgeLabelDoubleClicked()
+{
+	if(this->pointData) {
+		//5. edge
+		QImage edgeData = this->calculateEdge(colorImage,depthImage);
+
+		ui.glWidget->setMinMax(minX,minY,minZ,maxX,maxY,maxZ);
+		ui.glWidget->setMeanX(meanX);
+		ui.glWidget->setMeanY(meanY);
+		ui.glWidget->setMeanZ(meanZ);
+		ui.glWidget->setPointCloud(this->pointData);
+		ui.glWidget->setColorMap(edgeData);
+	} 	
+}
+
+void dc_viewer::onTempLabelDoubleClicked()
+{
+	if(this->pointData) {
+		//6. color depth
+		QImage coloredDepthData = this->mapColor2Depth(colorImage,depthImage);
+
+		ui.glWidget->setMinMax(minX,minY,minZ,maxX,maxY,maxZ);
+		ui.glWidget->setMeanX(meanX);
+		ui.glWidget->setMeanY(meanY);
+		ui.glWidget->setMeanZ(meanZ);
+		ui.glWidget->setPointCloud(this->pointData);
+		ui.glWidget->setColorMap(coloredDepthData);
+	} 		
 }

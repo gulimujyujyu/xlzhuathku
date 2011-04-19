@@ -11,11 +11,11 @@
 #define DEPTH_LOOKUP_TABLE_SIZE 256
 #define COLOR_LOOKUP_TABLE_SIZE 256
 
-#define NORMAL_NEIGHBORHOOD_SIZE 9
-#define NORMAL_NEIGHBORHOOD_SIZE_SQUARE 81 // = NORMAL_NEIGHBORHOOD_SIZE*NORMAL_NEIGHBORHOOD_SIZE
-#define NORMAL_NEIGHBORHOOD_SIZE_SQUARE_BY_3 273 // = NORMAL_NEIGHBORHOOD_SIZE*NORMAL_NEIGHBORHOOD_SIZE*3
-#define NORMAL_NEIGHBORHOOD_SIZE_HALF 4 // = NORMAL_NEIGHBORHOOD_SIZE/2
-#define NORMNUM_THRESHOLD 40 // = NORMAL_NEIGHBORHOOD_SIZE_SQUARE/2
+#define NORMAL_NEIGHBORHOOD_SIZE 3
+#define NORMAL_NEIGHBORHOOD_SIZE_SQUARE 9 // = NORMAL_NEIGHBORHOOD_SIZE*NORMAL_NEIGHBORHOOD_SIZE
+#define NORMAL_NEIGHBORHOOD_SIZE_SQUARE_BY_3 27 // = NORMAL_NEIGHBORHOOD_SIZE*NORMAL_NEIGHBORHOOD_SIZE*3
+#define NORMAL_NEIGHBORHOOD_SIZE_HALF 1 // = NORMAL_NEIGHBORHOOD_SIZE/2
+#define NORMNUM_THRESHOLD 5 // = NORMAL_NEIGHBORHOOD_SIZE_SQUARE/2
 
 class dc_viewer : public QMainWindow
 {
@@ -40,6 +40,12 @@ private slots:
 	void setTemppath();
 	void onFileItemDoubleClicked(QModelIndex idx);
 	bool isValidROIImage(QFileInfo fileInfo, QString &prefix);
+	void onColorLabelDoubleClicked();
+	void onDepthLabelDoubleClicked();
+	void onNormalLabelDoubleClicked();
+	//void onCurvatureLabelDoubleClicked();
+	void onEdgeLabelDoubleClicked();
+	void onTempLabelDoubleClicked();
 	
 private:
 	void loadFiles();
@@ -61,6 +67,15 @@ private:
 	double pixelSize;
 
 	//Cached Data
+	double meanX;
+	double meanY;
+	double meanZ;
+	double minX;
+	double minY;
+	double minZ;
+	double maxX;
+	double maxY;
+	double maxZ;
 	double depthLU[DEPTH_LOOKUP_TABLE_SIZE];
 	int colorMapR[COLOR_LOOKUP_TABLE_SIZE];
 	int colorMapB[COLOR_LOOKUP_TABLE_SIZE];

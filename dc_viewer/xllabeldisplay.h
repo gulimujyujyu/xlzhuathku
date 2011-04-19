@@ -12,8 +12,14 @@ public:
 	~XlLabelDisplay();
 	void setTempPath(QString a);
 
+signals:
+	void labelDoubleClicked();
+
 private slots:
 	void saveImageLocally();
+
+protected:
+	void mouseDoubleClickEvent(QMouseEvent *ev);
 
 private:
 	QAction *saveAction;
