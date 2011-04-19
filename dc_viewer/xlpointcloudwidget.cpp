@@ -1,4 +1,6 @@
 #include "xlpointcloudwidget.h"
+#include <QDateTime>
+#include <QAction>
 #include <QMouseEvent>
 
 // #include <GL/glut.h>
@@ -8,7 +10,17 @@ XlPointCloudWidget::XlPointCloudWidget(QWidget *parent)
 {
 	setFormat(QGLFormat(QGL::DoubleBuffer| QGL::DepthBuffer));
 	this->pointCloud = NULL;
+	this->zoomLevel = 1;
 	this->rotateY = this->rotateZ = this->rotateX = 0;
+	this->saveAction = new QAction("&Save", this);
+	this->zoomInAction = new QAction("Zoom in", this);
+	this->zoomOutAction = new QAction("Zoom out", this);
+	this->resetAction = new QAction("Reset", this);
+	connect(this->saveAction, SIGNAL(triggered()), this, SLOT(saveImageLocally()));	
+	connect(this->zoomInAction, SIGNAL(triggered()), this, SLOT(zoomIn()));	
+	connect(this->zoomOutAction, SIGNAL(triggered()), this, SLOT(zoomOut()));	
+	connect(this->resetAction, SIGNAL(triggered()), this, SLOT(resetAllParam()));	
+	createContextMenu();
 }
 
 XlPointCloudWidget::~XlPointCloudWidget()
@@ -16,10 +28,52 @@ XlPointCloudWidget::~XlPointCloudWidget()
 	if (this->pointCloud) cvReleaseMat(&(this->pointCloud));
 }
 
+void XlPointCloudWidget::createContextMenu()
+{
+	this->addAction(saveAction);
+	this->addAction(zoomInAction);
+	this->addAction(zoomOutAction);
+	this->addAction(resetAction);
+	this->setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
 void XlPointCloudWidget::setColorMap(QImage img)
 {
 	this->colorMap = img;
 	repaint();
+}
+
+void XlPointCloudWidget::resetAllParam()
+{
+	this->zoomLevel = 1;
+	this->rotateZ = this->rotateY = this->rotateX = 0;
+	updateGL();
+}
+
+void XlPointCloudWidget::wheelEvent(QWheelEvent *ev)
+{
+	if (ev->orientation() == Qt::Vertical) {
+		int a = ev->delta();
+		if (a > 0) {
+			zoomIn();
+		} 
+		else {
+			zoomOut();
+		}
+	}
+	ev->accept();
+}
+
+void XlPointCloudWidget::zoomIn()
+{
+	this->zoomLevel *= 1.1;
+	updateGL();
+}
+
+void XlPointCloudWidget::zoomOut()
+{
+	this->zoomLevel /= 1.1;
+	updateGL();
 }
 
 void XlPointCloudWidget::setPointCloud(CvMat *data)
@@ -65,10 +119,12 @@ void XlPointCloudWidget::draw()
 	int r,g,b;
 	QRgb rgb;
 
+	glScalef(zoomLevel,zoomLevel,zoomLevel);
 	glRotatef(rotateX, 1.0, 0.0, 0.0);
 	glRotatef(rotateY, 0.0, 1.0, 0.0);
 	glRotatef(rotateZ, 0.0, 0.0, 1.0);
 	glTranslatef(-meanX,-meanY,-meanZ);
+	
 
 	glPointSize(1.5);
 	glBegin(GL_POINTS);
@@ -144,4 +200,16 @@ void XlPointCloudWidget::mouseMoveEvent(QMouseEvent *ev)
 void XlPointCloudWidget::mousePressEvent(QMouseEvent *ev)
 {
 	lastPos = ev->pos();
+}
+
+void XlPointCloudWidget::setTempPath(QString a)
+{
+	this->tempPath = a;
+}
+
+void XlPointCloudWidget::saveImageLocally()
+{
+	QImage img = this->grabFrameBuffer(true);
+	QString filename = QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz")+QString(".png");
+	img.save(this->tempPath + filename, "PNG");
 }

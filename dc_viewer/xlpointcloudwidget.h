@@ -14,14 +14,19 @@ class XlPointCloudWidget : public QGLWidget
 public:
 	XlPointCloudWidget(QWidget *parent);
 	~XlPointCloudWidget();
-
-public: 
 	void setColorMap( QImage img);
 	void setPointCloud( CvMat *data);
 	void setMeanX(double x);
 	void setMeanY(double y);
 	void setMeanZ(double z);
 	void setMinMax(double minX, double minY, double minZ, double maxX, double maxY, double maxZ);
+	void setTempPath(QString a);
+
+private slots:
+	void saveImageLocally();
+	void zoomIn();
+	void zoomOut();
+	void resetAllParam();
 
 protected:
 	void initializeGL();
@@ -29,11 +34,21 @@ protected:
 	void paintGL();
 	void mousePressEvent(QMouseEvent *ev);
 	void mouseMoveEvent(QMouseEvent *ev);
+	void wheelEvent(QWheelEvent *ev);
 
 private:
 	void draw();
+	void createContextMenu();
 
 private:
+	QAction *saveAction;
+	QAction *zoomInAction;
+	QAction *zoomOutAction;
+	QAction *resetAction;
+
+	//variables
+	float zoomLevel;
+	QString tempPath;
 	QPoint lastPos;
 	GLfloat rotateX;
 	GLfloat rotateY;

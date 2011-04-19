@@ -36,6 +36,10 @@ dc_viewer::dc_viewer(QWidget *parent, Qt::WFlags flags)
 	//roiNameFilter << "png";
 	//this->fileModel->setNameFilters(roiNameFilter);
 	this->ui.fileTreeView->setModel(fileModel);
+	this->ui.fileTreeView->hideColumn(1);
+	this->ui.fileTreeView->hideColumn(2);
+	this->ui.fileTreeView->hideColumn(3);
+	this->ui.fileTreeView->hideColumn(4);
 	this->ui.fileTreeView->setCurrentIndex(fileModel->index(this->rootPath));
 }
 
@@ -71,6 +75,7 @@ void dc_viewer::setTemppath()
 	ui.curvatureLabel->setTempPath(tempPath);
 	ui.tempLabel->setTempPath(tempPath);
 	ui.edgeLabel->setTempPath(tempPath);
+	ui.glWidget->setTempPath(tempPath);
 }
 
 /*

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>904</width>
-    <height>608</height>
+    <width>770</width>
+    <height>471</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" rowspan="4">
+    <item row="0" column="0" rowspan="3">
      <widget class="QTreeView" name="fileTreeView">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
@@ -25,7 +25,7 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>400</width>
+        <width>200</width>
         <height>0</height>
        </size>
       </property>
@@ -39,41 +39,13 @@
      </widget>
     </item>
     <item row="0" column="2">
-     <widget class="XlLabelDisplay" name="depthLabel">
-      <property name="text">
-       <string>Depth</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="XlLabelDisplay" name="normalLabel">
-      <property name="text">
-       <string>Normal</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="XlLabelDisplay" name="curvatureLabel">
-      <property name="text">
-       <string>Curvature</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="XlLabelDisplay" name="edgeLabel">
-      <property name="text">
-       <string>Edge</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
      <widget class="XlLabelDisplay" name="tempLabel">
       <property name="text">
        <string>N/A</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="1" colspan="2">
+    <item row="0" column="3" rowspan="3">
      <widget class="XlPointCloudWidget" name="glWidget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -89,6 +61,34 @@
       </property>
      </widget>
     </item>
+    <item row="1" column="1">
+     <widget class="XlLabelDisplay" name="curvatureLabel">
+      <property name="text">
+       <string>Curvature</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="XlLabelDisplay" name="depthLabel">
+      <property name="text">
+       <string>Depth</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="XlLabelDisplay" name="normalLabel">
+      <property name="text">
+       <string>Normal</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="XlLabelDisplay" name="edgeLabel">
+      <property name="text">
+       <string>Edge</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -96,7 +96,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>904</width>
+     <width>770</width>
      <height>21</height>
     </rect>
    </property>
