@@ -22,6 +22,11 @@ viewer of depth and color data
 -----------------
 a playground for the time being.
 
+-----------------
+1.4  dc_fbx2depth
+-----------------
+a command line tool to obtain the depth map from certain ROI.
+
 ====================================
 2. Prerequisites
 ====================================
@@ -39,6 +44,11 @@ See ./dc_viewer/README
 2.3 xlzhuathku
 -----------------
 See ./xlzhuathku/README
+
+-----------------
+2.4 dc_fbx2depth
+-----------------
+See ./dc_fbx2depth/README
 
 ====================================
 3. Collabrators

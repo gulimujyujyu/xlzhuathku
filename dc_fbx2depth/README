@@ -1,0 +1,26 @@
+###############################
+Depth Camera I/O interface
+Xiaolong ZHU@HKU
+lucienzhu@gmail.com
+###############################
+
+====================================
+1. Prerequisites
+====================================
+------------------
+1.1 Dependencies
+------------------
+*. FBX SDK for VS2008
+
+a. http://usa.autodesk.com/adsk/servlet/index?siteID=123112&id=7478532
+
+====================================
+2. Usage
+====================================
+Render FBX files into scene, and obtain the depth map in certain ROI.
+
+An command line file should also be provided.
+
+====================================
+3. Empirical Notes
+====================================
