@@ -12,6 +12,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dc_io", "dc_io\dc_io.vcproj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dc_viewer", "dc_viewer\dc_viewer.vcproj", "{447D6DCE-56DC-41C4-9F04-B3709BB96454}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dc_fbx2depth", "dc_fbx2depth\dc_fbx2depth.vcproj", "{F043A2A6-BF7D-46F9-8587-43930895500A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -26,6 +28,10 @@ Global
 		{447D6DCE-56DC-41C4-9F04-B3709BB96454}.Debug|Win32.Build.0 = Debug|Win32
 		{447D6DCE-56DC-41C4-9F04-B3709BB96454}.Release|Win32.ActiveCfg = Release|Win32
 		{447D6DCE-56DC-41C4-9F04-B3709BB96454}.Release|Win32.Build.0 = Release|Win32
+		{F043A2A6-BF7D-46F9-8587-43930895500A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F043A2A6-BF7D-46F9-8587-43930895500A}.Debug|Win32.Build.0 = Debug|Win32
+		{F043A2A6-BF7D-46F9-8587-43930895500A}.Release|Win32.ActiveCfg = Release|Win32
+		{F043A2A6-BF7D-46F9-8587-43930895500A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
