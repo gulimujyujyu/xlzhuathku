@@ -4,13 +4,20 @@
 #include "SceneContext.h"
 #include "GL/glut.h"
 
+#define FRAC_PI_180		        .017453292519943295769236907684886127134428718885417
+#define FRAC_180_PI		        57.295779513082320876798154814105170332405472466565
+
 SceneContext* gSceneDrawer;
+int camLat, camLon;
+const int LatStep = 10;
+const int LonStep = 10;
 
 const int DEFAULT_WINDOW_WIDTH = 720;
 const int DEFAULT_WINDOW_HEIGHT = 486;
 
 /* Tab character ("\t") counter */
 int numTabs = 0; 
+
 
 /**
  * Print the required number of tabs.
@@ -111,6 +118,9 @@ void loadData( QString filename, QString savePath)
 
 	// Initialize the sdk manager. This object handles all our memory management.
 	gSceneDrawer = new SceneContext(filename, savePath, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, lSupportVBO);
+
+	camLat = -90;
+	camLon = 0;
 }
 
 //TODO: 1.2 assign labels
@@ -140,6 +150,21 @@ void render(int argc, char *argv[])
 	glutMainLoop();
 }
 
+bool changeDxDy(int &dx, int &dy)
+{
+	if ( dy >= 360 || dy < 0)	{
+		return false;
+	} else {
+		dx += LatStep;
+		if (dx>90) {
+			dx = -90;
+			dy += LonStep;
+		}
+		gSceneDrawer->MoveCameraABit(dx, dy);
+		return true;
+	}
+}
+
 // Refresh the application window.
 void DisplayCallback()
 {
@@ -167,10 +192,12 @@ void TimerCallback(int)
 	if (gSceneDrawer->GetStatus() == SceneContext::MUST_BE_REFRESHED)
 	{
 		glutPostRedisplay();
-	}
-
+	}	
 	gSceneDrawer->OnTimerClick();
 
+	if( !changeDxDy(camLat, camLon)) {
+		exit(0);
+	}
 	// Call the timer to display the next frame.
 	glutTimerFunc((unsigned int)gSceneDrawer->GetFrameTime().GetMilliSeconds(), TimerCallback, 0);
 }
@@ -196,26 +223,6 @@ void KeyboardCallback(unsigned char pKey, int pX, int pY)
 
 	gSceneDrawer->OnKeyboard(pKey, pX, pY);
 }
-
-/*
-//2.1 set viewport
-void setViewPort( int i, int j)
-{
-	//TODO
-}
-
-//2.2 render
-void renderHand()
-{
-	//TODO
-}
-//2.3 obtain depthmap/labelmap
-bool captureDepthAndColor( QString path)
-{
-	//TODO
-	return true;
-}
-*/
 
 //Step3: ending works
 void destroyAllStuffs()

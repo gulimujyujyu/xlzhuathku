@@ -907,3 +907,29 @@ void CameraPan(KFbxScene* pScene, KFbxVector4 lOrigCamPos, KFbxVector4 lOrigCamC
     lCamera->InterestPosition.Set(lNewCenter);
 }
 
+void SetCameraPositionByLL(KFbxScene* pScene, KFbxVector4 lOrigCamPos, int lat, int lon)
+{
+	//TODO
+	// Orbit the camera horizontally dX degrees, vertically dY degrees.
+	KFbxCamera* lCamera = GetCurrentCamera(pScene);
+	if (!lCamera) return;
+	KFbxGlobalCameraSettings& lGlobalCameraSettings = pScene->GlobalCameraSettings();
+	if (lCamera != lGlobalCameraSettings.GetCameraProducerPerspective()) return;
+	if (lCamera->LockMode.Get()) return;
+
+	KFbxVector4 lLookAtPosition = lCamera->Position.Get();
+	KFbxVector4 lCurPosition = lCamera->InterestPosition.Get();
+	
+	KFbxVector4 dif = lLookAtPosition-lCurPosition;
+	double len = dif.Length();
+	double newX, newY, newZ;
+
+	double latInDegree = double(lat) * K_PI_180;
+	double lonInDegree = double(lon) * K_PI_180;
+	newZ = len * sin(latInDegree);
+	newY = len * cos(latInDegree) * sin(lonInDegree);
+	newX = len * cos(latInDegree) * cos(lonInDegree);
+	dif.Set(newX, newY, newZ);
+	lCurPosition = lCurPosition + dif;
+	lCamera->Position.Set(lCurPosition);
+}

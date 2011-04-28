@@ -26,6 +26,7 @@ void CameraOrbit(KFbxScene* pScene, KFbxVector4 lOrigCamPos, double OrigRoll, in
 
 void CameraPan(KFbxScene* pScene, KFbxVector4 lOrigCamPos, KFbxVector4 lOrigCamCenter, 
 			   double OrigRoll, int dX, int dY);
+void SetCameraPositionByLL(KFbxScene* pScene, KFbxVector4 lOrigCamPos, int lat, int lon);
 
 #endif // #ifndef _SET_CAMERA_H
 

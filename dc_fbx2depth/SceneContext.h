@@ -58,6 +58,10 @@ public:
     void OnMouseMotion(int pX, int pY);
     // Call this method when timer is finished, for animation display.
     void OnTimerClick() const;
+	// Move camera a bit
+	void MoveCameraABit( int x, int y);
+	// Save depth map
+	void SaveDepthMap();
 
     // Methods for creating menus.
     // Get all the cameras in current scene, including producer cameras.
@@ -97,8 +101,7 @@ private:
     void DisplayWindowMessage();
     // Display a X-Z grid.
     void DisplayGrid(const KFbxXMatrix & pTransform);
-	// Save depth map
-	void SaveDepthMap();
+	
 
     enum CameraStatus
     {

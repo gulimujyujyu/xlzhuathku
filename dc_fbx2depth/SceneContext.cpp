@@ -918,6 +918,12 @@ void SceneContext::DisplayWindowMessage()
     glPopMatrix();
 }
 
+void SceneContext::MoveCameraABit( int x, int y)
+{
+	//CameraOrbit(mScene, mCamPosition, mRoll, pX-mLastX, mLastY-pY);
+	SetCameraPositionByLL(mScene, mCamPosition, x, y);
+	mStatus = MUST_BE_REFRESHED;
+}
 
 void SceneContext::SaveDepthMap()
 {
@@ -961,7 +967,7 @@ void SceneContext::DisplayGrid(const KFbxXMatrix & pTransform)
     const int hw = 500;
     const int step = 20;
     const int bigstep = 100;
-    int       i;
+    int i;
 
     // Draw Grid
     for (i = -hw; i <= hw; i+=step) {

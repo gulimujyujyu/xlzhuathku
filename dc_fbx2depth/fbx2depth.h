@@ -17,14 +17,9 @@ void KeyboardCallback(unsigned char pKey, int, int);
 void MouseCallback(int button, int state, int x, int y);
 void MotionCallback(int x, int y);
 void TimerCallback(int);
-/*
-//2.1 set viewport
-void setViewPort( int i, int j);
-//2.2 render
-void renderHand();
-//2.3 obtain depthmap/labelmap
-bool captureDepthAndColor( QString path);
-*/
+
+//from x in [-90, 90] y in [0, 360)
+bool changeDxDy(int &dx, int &dy);
 
 //Step3: ending works
 void destroyAllStuffs();
