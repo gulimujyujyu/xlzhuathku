@@ -1,10 +1,13 @@
 #include "fbx2depth.h"
 
 #include <fbxsdk.h>
+#include "FBXSceneDrawer.h"
+#include "GL/glut.h"
 
-//globals
-KFbxSdkManager* lSdkManager;
-KFbxScene* lScene;
+FBXSceneDrawer gSceneDrawer;
+
+const int DEFAULT_WINDOW_WIDTH = 720;
+const int DEFAULT_WINDOW_HEIGHT = 486;
 
 /* Tab character ("\t") counter */
 int numTabs = 0; 
@@ -101,27 +104,27 @@ void loadData( QString filename)
 	//const char* lFilename = "E:\\DATA\\[CDC4CV11]\\ForTestFBX\\zxl.FBX";
 
 	// Initialize the sdk manager. This object handles all our memory management.
-	lSdkManager = KFbxSdkManager::Create();
+	gSceneDrawer.lSdkManager = KFbxSdkManager::Create();
 
 	// Create the io settings object.
-	KFbxIOSettings *ios = KFbxIOSettings::Create(lSdkManager, IOSROOT);
-	lSdkManager->SetIOSettings(ios);
+	KFbxIOSettings *ios = KFbxIOSettings::Create(gSceneDrawer.lSdkManager, IOSROOT);
+	gSceneDrawer.lSdkManager->SetIOSettings(ios);
 
 	// Create an importer using our sdk manager.
-	KFbxImporter* lImporter = KFbxImporter::Create(lSdkManager,"");
+	KFbxImporter* lImporter = KFbxImporter::Create(gSceneDrawer.lSdkManager,"");
 
 	// Use the first argument as the filename for the importer.
-	if(!lImporter->Initialize(lFilename, -1, lSdkManager->GetIOSettings())) {
+	if(!lImporter->Initialize(lFilename, -1, gSceneDrawer.lSdkManager->GetIOSettings())) {
 		printf("Call to KFbxImporter::Initialize() failed.\n");
 		printf("Error returned: %s\n\n", lImporter->GetLastErrorString());
 		exit(-1);
 	}
 
 	// Create a new scene so it can be populated by the imported file.
-	lScene = KFbxScene::Create(lSdkManager,"myScene");
+	gSceneDrawer.lScene = KFbxScene::Create(gSceneDrawer.lSdkManager,"myScene");
 
 	// Import the contents of the file into the scene.
-	lImporter->Import(lScene);
+	lImporter->Import(gSceneDrawer.lScene);
 
 	// The file has been imported; we can get rid of the importer.
 	lImporter->Destroy();
@@ -129,13 +132,13 @@ void loadData( QString filename)
 	// Print the nodes of the scene and their attributes recursively.
 	// Note that we are not printing the root node, because it should
 	// not contain any attributes.
-	KFbxNode* lRootNode = lScene->GetRootNode();
+	KFbxNode* lRootNode = gSceneDrawer.lScene->GetRootNode();
 	if(lRootNode) {
 		for(int i = 0; i < lRootNode->GetChildCount(); i++)
 			PrintNode(lRootNode->GetChild(i));
 	}
 	// Destroy the sdk manager and all other objects it was handling.
-	lSdkManager->Destroy();
+	gSceneDrawer.lSdkManager->Destroy();
 }
 
 //TODO: 1.2 assign labels
@@ -145,6 +148,33 @@ void assignLabels()
 }
 
 //Step2: rendering
+void render(int argc, char *argv[])
+{
+	// Set exit function to destroy objects created by the FBX SDK.
+	atexit(destroyAllStuffs);
+
+	//2.1 initial scene
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	gSceneDrawer.setWidthAndHeight(DEFAULT_WINDOW_WIDTH,DEFAULT_WINDOW_HEIGHT);
+	glutInitWindowSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT); 
+	glutInitWindowPosition(100, 100);
+	glutCreateWindow("ViewScene");
+
+	//2.2 begin loop
+	glutDisplayFunc(DisplayCallback); 
+	glutMainLoop();
+}
+
+// Refresh the application window.
+void DisplayCallback()
+{
+	gSceneDrawer.OnDisplay();
+
+	glutSwapBuffers();
+}
+
+/*
 //2.1 set viewport
 void setViewPort( int i, int j)
 {
@@ -162,6 +192,7 @@ bool captureDepthAndColor( QString path)
 	//TODO
 	return true;
 }
+*/
 
 //Step3: ending works
 void destroyAllStuffs()

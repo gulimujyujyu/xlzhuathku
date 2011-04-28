@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
 	//TODO: 1.2 assign labels
 
 	//Step2: rendering
+	render(argc, argv);
 	//2.1 set viewport
 	//2.2 render
 	//2.3 obtain depthmap/labelmap
