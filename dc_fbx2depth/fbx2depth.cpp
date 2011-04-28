@@ -1,10 +1,10 @@
 #include "fbx2depth.h"
 
 #include <fbxsdk.h>
-#include "FBXSceneDrawer.h"
+#include "SceneContext.h"
 #include "GL/glut.h"
 
-FBXSceneDrawer gSceneDrawer;
+SceneContext* gSceneDrawer;
 
 const int DEFAULT_WINDOW_WIDTH = 720;
 const int DEFAULT_WINDOW_HEIGHT = 486;
@@ -103,42 +103,11 @@ void loadData( QString filename)
 	const char* lFilename = fileStr.data();
 	//const char* lFilename = "E:\\DATA\\[CDC4CV11]\\ForTestFBX\\zxl.FBX";
 
+	// Initialize OpenGL.
+	const bool lSupportVBO = InitializeOpenGL();
+
 	// Initialize the sdk manager. This object handles all our memory management.
-	gSceneDrawer.lSdkManager = KFbxSdkManager::Create();
-
-	// Create the io settings object.
-	KFbxIOSettings *ios = KFbxIOSettings::Create(gSceneDrawer.lSdkManager, IOSROOT);
-	gSceneDrawer.lSdkManager->SetIOSettings(ios);
-
-	// Create an importer using our sdk manager.
-	KFbxImporter* lImporter = KFbxImporter::Create(gSceneDrawer.lSdkManager,"");
-
-	// Use the first argument as the filename for the importer.
-	if(!lImporter->Initialize(lFilename, -1, gSceneDrawer.lSdkManager->GetIOSettings())) {
-		printf("Call to KFbxImporter::Initialize() failed.\n");
-		printf("Error returned: %s\n\n", lImporter->GetLastErrorString());
-		exit(-1);
-	}
-
-	// Create a new scene so it can be populated by the imported file.
-	gSceneDrawer.lScene = KFbxScene::Create(gSceneDrawer.lSdkManager,"myScene");
-
-	// Import the contents of the file into the scene.
-	lImporter->Import(gSceneDrawer.lScene);
-
-	// The file has been imported; we can get rid of the importer.
-	lImporter->Destroy();
-
-	// Print the nodes of the scene and their attributes recursively.
-	// Note that we are not printing the root node, because it should
-	// not contain any attributes.
-	KFbxNode* lRootNode = gSceneDrawer.lScene->GetRootNode();
-	if(lRootNode) {
-		for(int i = 0; i < lRootNode->GetChildCount(); i++)
-			PrintNode(lRootNode->GetChild(i));
-	}
-	// Destroy the sdk manager and all other objects it was handling.
-	gSceneDrawer.lSdkManager->Destroy();
+	gSceneDrawer = new SceneContext(lFilename, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, lSupportVBO);
 }
 
 //TODO: 1.2 assign labels
@@ -156,22 +125,73 @@ void render(int argc, char *argv[])
 	//2.1 initial scene
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	gSceneDrawer.setWidthAndHeight(DEFAULT_WINDOW_WIDTH,DEFAULT_WINDOW_HEIGHT);
 	glutInitWindowSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT); 
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("ViewScene");
 
 	//2.2 begin loop
 	glutDisplayFunc(DisplayCallback); 
+	glutKeyboardFunc(KeyboardCallback);
+	glutMouseFunc(MouseCallback);
+	glutMotionFunc(MotionCallback);
 	glutMainLoop();
 }
 
 // Refresh the application window.
 void DisplayCallback()
 {
-	gSceneDrawer.OnDisplay();
+	gSceneDrawer->OnDisplay();
 
 	glutSwapBuffers();
+
+	// Import the scene if it's ready to load.
+	if (gSceneDrawer->GetStatus() == SceneContext::MUST_BE_LOADED)
+	{
+		// This function is only called in the first display callback
+		// to make sure that the application window is opened and a 
+		// status message is displayed before.
+		gSceneDrawer->LoadFile();
+
+		// Call the timer to display the first frame.
+		glutTimerFunc((unsigned int)gSceneDrawer->GetFrameTime().GetMilliSeconds(), TimerCallback, 0);
+	}
+}
+
+// Trigger the display of the current frame.
+void TimerCallback(int)
+{
+	// Ask to display the current frame only if necessary.
+	if (gSceneDrawer->GetStatus() == SceneContext::MUST_BE_REFRESHED)
+	{
+		glutPostRedisplay();
+	}
+
+	gSceneDrawer->OnTimerClick();
+
+	// Call the timer to display the next frame.
+	glutTimerFunc((unsigned int)gSceneDrawer->GetFrameTime().GetMilliSeconds(), TimerCallback, 0);
+}
+
+void MouseCallback(int button, int state, int x, int y)
+{
+	gSceneDrawer->OnMouse(button, state, x, y);
+}
+
+void MotionCallback(int x, int y)
+{
+	gSceneDrawer->OnMouseMotion(x, y);
+}
+
+// Exit the application from the keyboard.
+void KeyboardCallback(unsigned char pKey, int pX, int pY)
+{
+	// Exit on ESC key.
+	if (pKey == 27)
+	{
+		exit(0);
+	}
+
+	gSceneDrawer->OnKeyboard(pKey, pX, pY);
 }
 
 /*

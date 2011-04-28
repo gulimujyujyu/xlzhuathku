@@ -13,6 +13,10 @@ void assignLabels();
 //Step2: rendering
 void render(int argc, char *argv[]);
 void DisplayCallback();
+void KeyboardCallback(unsigned char pKey, int, int);
+void MouseCallback(int button, int state, int x, int y);
+void MotionCallback(int x, int y);
+void TimerCallback(int);
 /*
 //2.1 set viewport
 void setViewPort( int i, int j);

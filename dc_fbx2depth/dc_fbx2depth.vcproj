@@ -124,7 +124,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fbxsdk-2012.1-mdd.lib wininet.lib qtmaind.lib QtCored4.lib QtOpenGLd4.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="glew32.lib fbxsdk-2012.1-mdd.lib wininet.lib qtmaind.lib QtCored4.lib QtOpenGLd4.lib opengl32.lib glu32.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				AdditionalLibraryDirectories="&quot;C:\Program Files\Autodesk\FBX\FbxSdk\2012.1\lib\vs2008\x86&quot;;&quot;$(QTDIR)\lib&quot;;.\glutx86"
 				IgnoreDefaultLibraryNames="LIBMCT"
@@ -163,6 +163,18 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Common.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DrawScene.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DrawText.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\fbx2depth.cpp"
 				>
 			</File>
@@ -171,7 +183,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GetPosition.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GlFunctions.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SceneCache.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SceneContext.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SetCamera.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\targa.c"
 				>
 			</File>
 		</Filter>
@@ -181,11 +217,47 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\Common.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DrawScene.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DrawText.h"
+				>
+			</File>
+			<File
 				RelativePath=".\fbx2depth.h"
 				>
 			</File>
 			<File
 				RelativePath=".\FBXSceneDrawer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GetPosition.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GlFunctions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SceneCache.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SceneContext.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SetCamera.h"
+				>
+			</File>
+			<File
+				RelativePath=".\targa.h"
 				>
 			</File>
 		</Filter>

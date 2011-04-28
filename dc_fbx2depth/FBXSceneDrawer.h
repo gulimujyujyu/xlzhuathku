@@ -12,8 +12,8 @@ public:
 
 public:
 	//globals
-	KFbxSdkManager* lSdkManager;
-	KFbxScene* lScene;
+	KFbxSdkManager* mSdkManager;
+	KFbxScene* mScene;
 	int width;
 	int height;
 };
