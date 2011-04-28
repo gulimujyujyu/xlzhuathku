@@ -17,11 +17,14 @@ this software in either electronic or hard copy form.
 #include "DrawText.h"
 #include "targa.h"
 #include "Common.h"
+#include <QDateTime>
+#include <QImage>
 
 namespace
 {
     // Default file of ViewScene example
     const char * SAMPLE_FILENAME = "humanoid.fbx";
+	const char * SAMPLE_SAVEPATH = "";
 
     // Button and action definition
     const int LEFT_BUTTON = 0;
@@ -405,15 +408,22 @@ bool InitializeOpenGL()
     return true;
 }
 
-SceneContext::SceneContext(const char * pFileName, int pWindowWidth, int pWindowHeight, bool pSupportVBO)
-: mFileName(pFileName), mStatus(UNLOADED),
+SceneContext::SceneContext(QString pFileName, QString pSavePath, int pWindowWidth, int pWindowHeight, bool pSupportVBO)
+: qFileName(pFileName), qSavePath(pSavePath), mStatus(UNLOADED),
 mSdkManager(NULL), mScene(NULL), mImporter(NULL), mCurrentAnimLayer(NULL), mSelectedNode(NULL),
 mPoseIndex(-1), mCameraStatus(CAMERA_NOTHING), mPause(false), mShadingMode(SHADING_MODE_SHADED),
 mSupportVBO(pSupportVBO), mCameraZoomMode(ZOOM_FOCAL_LENGTH),
 mWindowWidth(pWindowWidth), mWindowHeight(pWindowHeight), mDrawText(new DrawText)
 {
+	mFileNameByte = qFileName.toLatin1();
+	mFileName = mFileNameByte.data();
+	mSavePathByte = qSavePath.toLatin1();
+	mSavePath = mSavePathByte.data();
     if (mFileName == NULL)
         mFileName = SAMPLE_FILENAME;
+
+	if (mSavePath == NULL)
+		mSavePath = SAMPLE_SAVEPATH;
 
    // Create the FBX SDK manager which is the object allocator for almost 
    // all the classes in the SDK and create the scene.
@@ -456,6 +466,11 @@ mWindowWidth(pWindowWidth), mWindowHeight(pWindowHeight), mDrawText(new DrawText
        mWindowMessage = "Unable to create the FBX SDK manager";
        mWindowMessage += "\nEsc to exit";
    }
+
+   mROI_x = 0;
+   mROI_y = 0;
+   mROI_w = mWindowWidth;
+   mROI_h = mWindowHeight;
 }
 
 SceneContext::~SceneContext()
@@ -479,6 +494,14 @@ SceneContext::~SceneContext()
         mSdkManager = NULL;
         mScene = NULL;
     }
+}
+
+void SceneContext::setROI(int x, int y, int w, int h)
+{
+	mROI_x = x;
+	mROI_y = y;
+	mROI_w = w;
+	mROI_h = h;
 }
 
 bool SceneContext::LoadFile()
@@ -688,14 +711,16 @@ bool SceneContext::OnDisplay()
             // Set the lighting before other things.
             InitializeLights(mScene, mCurrentTime, lPose);
             DrawNodeRecursive(mSelectedNode, mCurrentTime, mCurrentAnimLayer, lDummyGlobalPosition, lPose, mShadingMode);
-            DisplayGrid(lDummyGlobalPosition);
+			//SaveDepthMap();
+            //DisplayGrid(lDummyGlobalPosition);
         }
         // Otherwise, draw the whole scene.
         else
         {
             InitializeLights(mScene, mCurrentTime, lPose);
             DrawNodeRecursive(mScene->GetRootNode(), mCurrentTime, mCurrentAnimLayer, lDummyGlobalPosition, lPose, mShadingMode);
-            DisplayGrid(lDummyGlobalPosition);
+			//SaveDepthMap();
+            //DisplayGrid(lDummyGlobalPosition);
         }
 
         glPopAttrib();
@@ -751,6 +776,12 @@ void SceneContext::OnKeyboard(unsigned char pKey, int pX, int pY)
     {
         SetPause(!GetPause());
     }
+
+	// 'C' or 'c' to capture current frame
+	if (pKey == 'C' || pKey == 'c')
+	{
+		SaveDepthMap();
+	}
 }
 
 void SceneContext::OnMouse(int pButton, int pState, int pX, int pY)
@@ -885,6 +916,38 @@ void SceneContext::DisplayWindowMessage()
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
+}
+
+
+void SceneContext::SaveDepthMap()
+{
+	//TODO
+	int xx, yy;
+	float dd, rr, gg, bb;
+	float* dbuf = new float[mROI_w*mROI_h];
+	float* cbuf = new float[mROI_w*mROI_h*3];
+	glReadPixels( mROI_x, mROI_y, mROI_w, mROI_h, GL_DEPTH_COMPONENT, GL_FLOAT, dbuf);
+	glReadPixels( mROI_x, mROI_y, mROI_w, mROI_h, GL_RGB, GL_FLOAT, cbuf);
+	QImage dimg(mROI_w, mROI_h, QImage::Format_ARGB32);
+	QImage cimg(mROI_w, mROI_h, QImage::Format_ARGB32);
+	for (yy=0;yy<mROI_h;yy++) {
+		for ( xx=0;xx<mROI_w;xx++){
+			dd = dbuf[xx+yy*mROI_w];
+			rr = cbuf[(xx+yy*mROI_w)*3+0];
+			gg = cbuf[(xx+yy*mROI_w)*3+1];
+			bb = cbuf[(xx+yy*mROI_w)*3+2];
+			dimg.setPixel(xx,mROI_h-1-yy,qRgb(dd*255,dd*255,dd*255));
+			cimg.setPixel(xx,mROI_h-1-yy,qRgb(rr*255,gg*255,bb*255));
+		}
+	}
+	QString filename = qSavePath+QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz");
+	filename += QString("depth.png");
+	dimg.save(filename);
+	filename = qSavePath+QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz");
+	filename += QString("color.png");
+	cimg.save( filename);
+	delete dbuf;	
+	delete cbuf;
 }
 
 void SceneContext::DisplayGrid(const KFbxXMatrix & pTransform)

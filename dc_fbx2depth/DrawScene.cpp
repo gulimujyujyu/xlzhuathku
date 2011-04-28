@@ -67,24 +67,24 @@ void MatrixAdd(KFbxXMatrix& pDstMatrix, KFbxXMatrix& pSrcMatrix);
 
 void InitializeLights(const KFbxScene* pScene, const KTime & pTime, KFbxPose* pPose)
 {
-    // Set ambient light. Turn on light0 and set its attributes to default (white directional light in Z axis).
-    // If the scene contains at least one light, the attributes of light0 will be overridden.
-    LightCache::IntializeEnvironment(pScene->GetGlobalSettings().GetAmbientColor());
+	// Set ambient light. Turn on light0 and set its attributes to default (white directional light in Z axis).
+	// If the scene contains at least one light, the attributes of light0 will be overridden.
+	LightCache::IntializeEnvironment(pScene->GetGlobalSettings().GetAmbientColor());
 
-    // Setting the lights before drawing the whole scene
-    const int lLightCount = KFbxGetSrcCount<KFbxLight>(pScene);
-    for (int lLightIndex = 0; lLightIndex < lLightCount; ++lLightIndex)
-    {
-        KFbxLight * lLight = KFbxGetSrc<KFbxLight>(pScene, lLightIndex);
-        KFbxNode * lNode = lLight->GetNode();
-        if (lNode)
-{
-            KFbxXMatrix lGlobalPosition = GetGlobalPosition(lNode, pTime, pPose);
-            KFbxXMatrix lGeometryOffset = GetGeometry(lNode);
-            KFbxXMatrix lGlobalOffPosition = lGlobalPosition * lGeometryOffset;
-            DrawLight(lNode, pTime, lGlobalOffPosition);
-    }
-    }
+	// Setting the lights before drawing the whole scene
+	const int lLightCount = KFbxGetSrcCount<KFbxLight>(pScene);
+	for (int lLightIndex = 0; lLightIndex < lLightCount; ++lLightIndex)
+	{
+		KFbxLight * lLight = KFbxGetSrc<KFbxLight>(pScene, lLightIndex);
+		KFbxNode * lNode = lLight->GetNode();
+		if (lNode)
+		{
+			KFbxXMatrix lGlobalPosition = GetGlobalPosition(lNode, pTime, pPose);
+			KFbxXMatrix lGeometryOffset = GetGeometry(lNode);
+			KFbxXMatrix lGlobalOffPosition = lGlobalPosition * lGeometryOffset;
+			DrawLight(lNode, pTime, lGlobalOffPosition);
+		}
+	}
 }
 
 // Draw recursively each node of the scene. To avoid recomputing 
@@ -284,7 +284,7 @@ void DrawMesh(KFbxNode* pNode, KTime& pTime, KFbxAnimLayer* pAnimLayer,
         for (int lPolygonIndex = 0; lPolygonIndex < lPolygonCount; lPolygonIndex++)
         {
             const int lVerticeCount = lMesh->GetPolygonSize(lPolygonIndex);
-            glBegin(GL_LINE_LOOP);
+            glBegin(GL_TRIANGLES);
             for (int lVerticeIndex = 0; lVerticeIndex < lVerticeCount; lVerticeIndex++)
             {
                 glVertex3dv((GLdouble *)lVertexArray[lMesh->GetPolygonVertex(lPolygonIndex, lVerticeIndex)]);

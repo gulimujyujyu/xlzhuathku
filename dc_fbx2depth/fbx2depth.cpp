@@ -96,18 +96,21 @@ void PrintNode(KFbxNode* pNode) {
 
 //Step1: read data
 //1.1 load data
-void loadData( QString filename)
+void loadData( QString filename, QString savePath)
 {
 	// Change the following filename to a suitable filename value.
-	QByteArray fileStr = filename.toLatin1();
-	const char* lFilename = fileStr.data();
+	/*QByteArray fileStr = filename.toLatin1();
+	lFilename = fileStr.data();
+
+	QByteArray pathStr = savePath.toLatin1();
+	lSavePath = pathStr.data();*/
 	//const char* lFilename = "E:\\DATA\\[CDC4CV11]\\ForTestFBX\\zxl.FBX";
 
 	// Initialize OpenGL.
 	const bool lSupportVBO = InitializeOpenGL();
 
 	// Initialize the sdk manager. This object handles all our memory management.
-	gSceneDrawer = new SceneContext(lFilename, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, lSupportVBO);
+	gSceneDrawer = new SceneContext(filename, savePath, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, lSupportVBO);
 }
 
 //TODO: 1.2 assign labels

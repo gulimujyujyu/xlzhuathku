@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 	QString savePath = a.argv()[2];
 	//Step1: read data
 	//1.1 load data
-	loadData(modelPath);
+	loadData(modelPath, savePath);
 	//TODO: 1.2 assign labels
 
 	//Step2: rendering

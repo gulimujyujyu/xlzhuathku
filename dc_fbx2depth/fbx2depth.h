@@ -6,7 +6,7 @@
 
 //Step1: read data
 //1.1 load data
-void loadData( QString filename);
+void loadData( QString filename, QString savePath);
 //TODO: 1.2 assign labels
 void assignLabels();
 

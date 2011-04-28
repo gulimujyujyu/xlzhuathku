@@ -13,6 +13,7 @@ this software in either electronic or hard copy form.
 #define _SCENE_CONTEXT_H
 
 #include "GlFunctions.h"
+#include <QString>
 
 class DrawText;
 
@@ -31,13 +32,16 @@ public:
     Status GetStatus() const { return mStatus; }
 
     // Initialize with a .FBX, .DAE or .OBJ file name and current window size.
-    SceneContext(const char * pFileName, int pWindowWidth, int pWindowHeight, bool pSupportVBO);
+    SceneContext(QString pFileName, QString savePath, int pWindowWidth, int pWindowHeight, bool pSupportVBO);
     ~SceneContext();
 
     // Return the FBX scene for more informations.
     const KFbxScene * GetScene() const { return mScene; }
     // Load the FBX or COLLADA file into memory.
     bool LoadFile();
+
+	// Set ROI
+	void setROI(int x, int y, int w, int h);
 
     // The time period for one frame.
     const KTime GetFrameTime() const { return mFrameTime; }
@@ -93,6 +97,8 @@ private:
     void DisplayWindowMessage();
     // Display a X-Z grid.
     void DisplayGrid(const KFbxXMatrix & pTransform);
+	// Save depth map
+	void SaveDepthMap();
 
     enum CameraStatus
     {
@@ -102,7 +108,16 @@ private:
         CAMERA_PAN
     };
 
-    const char * mFileName;
+	int mROI_x;
+	int mROI_y;
+	int mROI_w;
+	int mROI_h;
+	const char * mFileName;
+	const char * mSavePath;
+	QByteArray mFileNameByte;
+	QByteArray mSavePathByte;
+    QString qFileName;
+	QString qSavePath;
     mutable Status mStatus;
     mutable KString mWindowMessage;
 

@@ -5,6 +5,7 @@ using namespace std;
 
 int main()
 {
+	/*
 	float a[100]={0};
 	for (int kk = 0; kk < 100; kk++)
 	{
@@ -23,6 +24,7 @@ int main()
 		}
 		cout << endl;
 	}
+	*/
 
 	return 0;
 }
