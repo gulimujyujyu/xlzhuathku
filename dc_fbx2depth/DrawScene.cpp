@@ -129,29 +129,29 @@ void DrawNode(KFbxNode* pNode,
     if (lNodeAttribute)
     {
         // All lights has been processed before the whole scene because they influence every geometry.
-        if (lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::eMARKER)
+        if (lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::eMARKER && NEED_DRAW_MAKER)
         {
             DrawMarker(pGlobalPosition);
         }
-        else if (lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::eSKELETON)
+        else if (lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::eSKELETON && NEED_DRAW_SKELETON)
         {
             DrawSkeleton(pNode, pParentGlobalPosition, pGlobalPosition);
         }
         // NURBS and patch have been converted into triangluation meshes.
-        else if (lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::eMESH)
+        else if (lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::eMESH && NEED_DRAW_MESH)
         {
             DrawMesh(pNode, pTime, pAnimLayer, pGlobalPosition, pPose, pShadingMode);
         }
-        else if (lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::eCAMERA)
+        else if (lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::eCAMERA && NEED_DRAW_CAMERA)
         {
             DrawCamera(pNode, pTime, pAnimLayer, pGlobalPosition);
         }
-        else if (lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::eNULL)
+        else if (lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::eNULL && NEED_DRAW_NULL)
         {
             DrawNull(pGlobalPosition);
         }
     }
-    else
+    else if(NEED_DRAW_NULL)
     {
         // Draw a Null for nodes without attribute.
         DrawNull(pGlobalPosition);

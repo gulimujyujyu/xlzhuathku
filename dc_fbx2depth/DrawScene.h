@@ -12,6 +12,12 @@ this software in either electronic or hard copy form.
 #ifndef _DRAW_SCENE_H
 #define _DRAW_SCENE_H
 
+#define NEED_DRAW_MAKER false
+#define NEED_DRAW_SKELETON false
+#define NEED_DRAW_MESH true
+#define NEED_DRAW_NULL false
+#define NEED_DRAW_CAMERA false
+
 #include "GlFunctions.h"
 
 void InitializeLights(const KFbxScene* pScene, const KTime & pTime, KFbxPose* pPose = NULL);
