@@ -398,7 +398,7 @@ void VBOMesh::Draw(int pMaterialIndex, ShadingMode pShadingMode) const
         for (int lIndex = 0; lIndex < mSubMeshes[pMaterialIndex]->TriangleCount; ++lIndex)
         {
             // Draw line loop for every triangle.
-            glDrawElements(GL_LINE_LOOP, TRIANGLE_VERTEX_COUNT, GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>(lOffset));
+            glDrawElements(GL_TRIANGLES, TRIANGLE_VERTEX_COUNT, GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>(lOffset));
             lOffset += sizeof(unsigned int) * TRIANGLE_VERTEX_COUNT;
         }
     }

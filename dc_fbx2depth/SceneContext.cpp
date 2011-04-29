@@ -1017,7 +1017,7 @@ void SceneContext::SaveDepthMap()
 			rr = cbuf[(xx+yy*mROI_w)*3+0];
 			gg = cbuf[(xx+yy*mROI_w)*3+1];
 			bb = cbuf[(xx+yy*mROI_w)*3+2];
-			dimg.setPixel(xx,mROI_h-1-yy,qRgb(dd*255,dd*255,dd*255));
+			dimg.setPixel(xx,mROI_h-1-yy,qRgb((1-dd)*255,(1-dd)*255,(1-dd)*255));
 			cimg.setPixel(xx,mROI_h-1-yy,qRgb(rr*255,gg*255,bb*255));
 		}
 	}

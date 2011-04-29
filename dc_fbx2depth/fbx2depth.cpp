@@ -7,14 +7,15 @@
 #define FRAC_PI_180		        .017453292519943295769236907684886127134428718885417
 #define FRAC_180_PI		        57.295779513082320876798154814105170332405472466565
 #define OPTION2_COPY_CAMERA001_TO_DEFAULT_CAMERA
+#define SAVE_DEPTH_MAP
 
 SceneContext* gSceneDrawer;
 int camLat, camLon;
 const int LatStep = 10;
 const int LonStep = 10;
 
-const int DEFAULT_WINDOW_WIDTH = 720;
-const int DEFAULT_WINDOW_HEIGHT = 486;
+const int DEFAULT_WINDOW_WIDTH = 320;
+const int DEFAULT_WINDOW_HEIGHT = 240;
 
 /* Tab character ("\t") counter */
 int numTabs = 0; 
@@ -207,7 +208,11 @@ void TimerCallback(int)
 		glutPostRedisplay();
 	}	
 	gSceneDrawer->OnTimerClick();
-	//gSceneDrawer->SaveDepthMap();
+
+#ifdef SAVE_DEPTH_MAP
+	gSceneDrawer->SaveDepthMap();
+#endif
+	
 
 #ifdef OPTION2_COPY_CAMERA001_TO_DEFAULT_CAMERA
 	if( !changeDxDy(camLat, camLon)) {
