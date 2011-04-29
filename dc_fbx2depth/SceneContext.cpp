@@ -633,15 +633,44 @@ bool SceneContext::SetCurrentAnimStack(int pIndex)
    return true;
 }
 
+bool SceneContext::CloneCameraToDefaultCamera(const char * pCameraName)
+{
+	if (!pCameraName)
+	{
+		return false;
+	}
+
+	KFbxCamera* lRet = NULL;
+	KFbxGlobalCameraSettings& lGlobalCameraSettings = mScene->GlobalCameraSettings();
+	KFbxNode* lCameraNode = mScene->FindNodeByName( pCameraName);
+	if ( lCameraNode) {
+		KFbxCamera* lRet = lCameraNode->GetCamera();
+		if ( !(lGlobalCameraSettings.CopyProducerCamera(PRODUCER_PERSPECTIVE, lRet))) {
+			return false;
+		}			
+	}
+
+	mStatus = MUST_BE_REFRESHED;
+	return true;
+}
+
 bool SceneContext::SetCurrentCamera(const char * pCameraName)
 {
     if (!pCameraName)
     {
         return false;
     }
+	KFbxCamera* lRet = NULL;
+	KFbxNode* lCameraNode = mScene->FindNodeByName( pCameraName);
+	if( lCameraNode)
+	{
+		lRet = lCameraNode->GetCamera();
+		lRet->ProjectionType.Set(KFbxCamera::ePERSPECTIVE);
+	}
 
     KFbxGlobalSettings& lGlobalCameraSettings = mScene->GetGlobalSettings();
     lGlobalCameraSettings.SetDefaultCamera(pCameraName);
+
     mStatus = MUST_BE_REFRESHED;
     return true;
 }
@@ -692,6 +721,21 @@ bool SceneContext::OnDisplay()
         glEnable(GL_DEPTH_TEST);
         // Draw the front face only, except for the texts and lights.
         glEnable(GL_CULL_FACE);
+
+		////DEBUG
+		//
+		//KFbxCamera *cam = GetCurrentCamera(mScene);
+		//KFbxVector4 p1 = cam->Position.Get();
+		//KFbxVector4 p2 = cam->InterestPosition.Get();
+		//const char* camName = cam->GetName();
+
+		//KFbxGlobalCameraSettings& lGlobalCameraSettings = mScene->GlobalCameraSettings();
+		//KFbxGlobalSettings& lGlobalSettings = mScene->GetGlobalSettings();
+		//KString lCurrentCameraName = lGlobalSettings.GetDefaultCamera();
+		//if (cam->ProjectionType.Get() == KFbxCamera::ePERSPECTIVE) {
+		//	;
+		//}
+		
 
         // Set the view to the current camera settings.
         SetCamera(mScene, mCurrentTime, mCurrentAnimLayer, mCameraArray,
@@ -916,6 +960,31 @@ void SceneContext::DisplayWindowMessage()
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
+}
+
+void SceneContext::CreateSceneCamera()
+{
+	//Create camera
+	KFbxCamera* zxlCamera = KFbxCamera::Create(mScene, "ZXLCamera");
+	zxlCamera->SetFormat(KFbxCamera::eNTSC);
+	KFbxNode* zxlCameraNode = KFbxNode::Create(mScene, "ZXLCameraNode");
+	zxlCameraNode->SetNodeAttribute(zxlCamera);
+	KFbxNode* rootNode = mScene->GetRootNode();
+	rootNode->AddChild(zxlCameraNode);
+	//create maker
+	KFbxMarker* zxlMarker = KFbxMarker::Create(mScene, "ZXLMarker");
+	KFbxNode* zxlMarkerNode = KFbxNode::Create(mScene, "ZXLMarkerNode");
+	zxlMarkerNode->SetNodeAttribute(zxlMarker);
+	rootNode->AddChild(zxlMarkerNode);
+	//set up node
+	zxlMarkerNode->LclTranslation.Set (KFbxVector4(0.0, 0.0, 0.0));
+	zxlMarkerNode->LclRotation.Set (KFbxVector4(0.0, 0.0, 0.0));
+	zxlMarkerNode->LclScaling.Set (KFbxVector4(1.0, 1.0, 1.0));
+
+	zxlCamera->Position.Set(KFbxVector4(40.0, 40.0, 0.0));
+	KFbxVector4 p1 = zxlCamera->Position.Get();
+	//point to marker
+	zxlCameraNode->SetTarget(zxlMarkerNode);
 }
 
 void SceneContext::MoveCameraABit( int x, int y)

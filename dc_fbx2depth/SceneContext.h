@@ -58,6 +58,8 @@ public:
     void OnMouseMotion(int pX, int pY);
     // Call this method when timer is finished, for animation display.
     void OnTimerClick() const;
+	// Create scene camera
+	void CreateSceneCamera();
 	// Move camera a bit
 	void MoveCameraABit( int x, int y);
 	// Save depth map
@@ -75,6 +77,8 @@ public:
     bool SetCurrentAnimStack(int pIndex);
     // Set the current camera with its name.
     bool SetCurrentCamera(const char * pCameraName);
+	//Clone Camera To Default Camera with its name.
+	bool CloneCameraToDefaultCamera(const char * pCameraName);
     // The input index is corresponding to the array returned from GetPoseArray.
     bool SetCurrentPoseIndex(int pPoseIndex);
     // Set the currently selected node from external window system.
@@ -153,6 +157,12 @@ private:
     int mWindowWidth, mWindowHeight;
     // Utility class for draw text in OpenGL.
     DrawText * mDrawText;
+
+	//ZXL's camera
+	KFbxCamera* zxlCamera;
+	KFbxNode* zxlCameraNode;
+	KFbxMarker* zxlMarker;
+	KFbxNode* zxlMarkerNode;
 };
 
 // Initialize GLEW, must be called after the window is created.

@@ -800,7 +800,6 @@ void CameraOrbit(KFbxScene* pScene, KFbxVector4 lOrigCamPos, double OrigRoll, in
     lNewPosition = lNewPosition + lCenter;
 
     lCamera->Position.Set(lNewPosition);
-
 }
 
 void CameraPan(KFbxScene* pScene, KFbxVector4 lOrigCamPos, KFbxVector4 lOrigCamCenter, double OrigRoll, int dX, int dY) {
@@ -913,16 +912,17 @@ void SetCameraPositionByLL(KFbxScene* pScene, KFbxVector4 lOrigCamPos, int lat, 
 	// Orbit the camera horizontally dX degrees, vertically dY degrees.
 	KFbxCamera* lCamera = GetCurrentCamera(pScene);
 	if (!lCamera) return;
-	KFbxGlobalCameraSettings& lGlobalCameraSettings = pScene->GlobalCameraSettings();
-	if (lCamera != lGlobalCameraSettings.GetCameraProducerPerspective()) return;
+	//KFbxGlobalCameraSettings& lGlobalCameraSettings = pScene->GlobalCameraSettings();
+	//if (lCamera != lGlobalCameraSettings.GetCameraProducerPerspective()) return;
 	if (lCamera->LockMode.Get()) return;
 
-	KFbxVector4 lLookAtPosition = lCamera->Position.Get();
-	KFbxVector4 lCurPosition = lCamera->InterestPosition.Get();
-	
-	KFbxVector4 dif = lLookAtPosition-lCurPosition;
+	KFbxVector4 lLookAtPosition = lCamera->InterestPosition.Get();
+	KFbxVector4 lCurPosition = lCamera->Position.Get();
+	KFbxVector4 dif;
+	double newZ, newX, newY;
+
+	dif = lLookAtPosition-lCurPosition;
 	double len = dif.Length();
-	double newX, newY, newZ;
 
 	double latInDegree = double(lat) * K_PI_180;
 	double lonInDegree = double(lon) * K_PI_180;
@@ -930,6 +930,6 @@ void SetCameraPositionByLL(KFbxScene* pScene, KFbxVector4 lOrigCamPos, int lat, 
 	newY = len * cos(latInDegree) * sin(lonInDegree);
 	newX = len * cos(latInDegree) * cos(lonInDegree);
 	dif.Set(newX, newY, newZ);
-	lCurPosition = lCurPosition + dif;
+	lCurPosition = lLookAtPosition + dif;
 	lCamera->Position.Set(lCurPosition);
 }

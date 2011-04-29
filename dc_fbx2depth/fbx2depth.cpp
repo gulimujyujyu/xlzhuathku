@@ -152,13 +152,13 @@ void render(int argc, char *argv[])
 
 bool changeDxDy(int &dx, int &dy)
 {
-	if ( dy >= 360 || dy < 0)	{
+	if (dx>90)	{
 		return false;
 	} else {
-		dx += LatStep;
-		if (dx>90) {
-			dx = -90;
-			dy += LonStep;
+		dy += LonStep;
+		if ( dy >= 360 || dy < 0) {
+			dy = 0;
+			dx += LatStep;
 		}
 		gSceneDrawer->MoveCameraABit(dx, dy);
 		return true;
@@ -179,6 +179,12 @@ void DisplayCallback()
 		// to make sure that the application window is opened and a 
 		// status message is displayed before.
 		gSceneDrawer->LoadFile();
+		gSceneDrawer->SetCurrentAnimStack(0); //by default, current animation stack is camera movement.
+		//gSceneDrawer->CreateSceneCamera();
+		//gSceneDrawer->SetCurrentCamera("ZXLCamera");
+		gSceneDrawer->SetCurrentCamera("Camera001");
+		//gSceneDrawer->SetCurrentCamera("Producer Perspective");
+		//gSceneDrawer->CloneCameraToDefaultCamera("Camera001");
 
 		// Call the timer to display the first frame.
 		glutTimerFunc((unsigned int)gSceneDrawer->GetFrameTime().GetMilliSeconds(), TimerCallback, 0);
@@ -195,9 +201,9 @@ void TimerCallback(int)
 	}	
 	gSceneDrawer->OnTimerClick();
 
-	if( !changeDxDy(camLat, camLon)) {
-		exit(0);
-	}
+	//if( !changeDxDy(camLat, camLon)) {
+	//	exit(0);
+	//}
 	// Call the timer to display the next frame.
 	glutTimerFunc((unsigned int)gSceneDrawer->GetFrameTime().GetMilliSeconds(), TimerCallback, 0);
 }
