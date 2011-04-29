@@ -43,6 +43,7 @@ namespace
             {
                 if (pNode->GetNodeAttribute()->GetAttributeType() == KFbxNodeAttribute::eCAMERA)
                 {
+					//double a = pNode->GetCamera()->GetNearPlane();
                     pCameraArray.Add(pNode);
                 }
             }
@@ -516,6 +517,9 @@ bool SceneContext::LoadFile()
             // the scene in the first timer callback.
             mStatus = MUST_BE_REFRESHED;
 
+			/*
+			//BUG IN MY PROGRAM, ALL SHOULD BE IN MILLIMETER!
+			//NOTE BY: ZHUXL
             // Convert Axis System to what is used in this example, if needed
             KFbxAxisSystem SceneAxisSystem = mScene->GetGlobalSettings().GetAxisSystem();
             KFbxAxisSystem OurAxisSystem(KFbxAxisSystem::YAxis, KFbxAxisSystem::ParityOdd, KFbxAxisSystem::RightHanded);
@@ -531,6 +535,7 @@ bool SceneContext::LoadFile()
                 //The unit in this example is centimeter.
                 KFbxSystemUnit::cm.ConvertScene( mScene);
             }
+			*/
 
             // Get the list of all the animation stack.
             mScene->FillAnimStackNameArray(mAnimStackNameArray);
@@ -696,6 +701,7 @@ void SceneContext::OnTimerClick() const
         if (mCurrentTime > mStop)
         {
             mCurrentTime = mStart;
+			exit(0);
         }
     }
     // Avoid displaying the same frame on 

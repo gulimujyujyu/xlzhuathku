@@ -6,6 +6,7 @@
 
 #define FRAC_PI_180		        .017453292519943295769236907684886127134428718885417
 #define FRAC_180_PI		        57.295779513082320876798154814105170332405472466565
+#define OPTION2_COPY_CAMERA001_TO_DEFAULT_CAMERA
 
 SceneContext* gSceneDrawer;
 int camLat, camLon;
@@ -179,13 +180,19 @@ void DisplayCallback()
 		// to make sure that the application window is opened and a 
 		// status message is displayed before.
 		gSceneDrawer->LoadFile();
+#ifndef OPTION2_COPY_CAMERA001_TO_DEFAULT_CAMERA
+		//NOTE BY ZHUXL
+		//OPTION 1: USE CAMERA TRAJ
 		gSceneDrawer->SetCurrentAnimStack(0); //by default, current animation stack is camera movement.
+#else
+		//NOTE BY ZHUXL
+		//OPTION 2: COPY CAMERA SETTING TO PRODUCER PERSPECTIVE CAMERA
 		//gSceneDrawer->CreateSceneCamera();
 		//gSceneDrawer->SetCurrentCamera("ZXLCamera");
-		gSceneDrawer->SetCurrentCamera("Camera001");
-		//gSceneDrawer->SetCurrentCamera("Producer Perspective");
-		//gSceneDrawer->CloneCameraToDefaultCamera("Camera001");
-
+		//gSceneDrawer->SetCurrentCamera("Camera001");
+		gSceneDrawer->SetCurrentCamera("Producer Perspective");
+		gSceneDrawer->CloneCameraToDefaultCamera("Camera001");
+#endif
 		// Call the timer to display the first frame.
 		glutTimerFunc((unsigned int)gSceneDrawer->GetFrameTime().GetMilliSeconds(), TimerCallback, 0);
 	}
@@ -200,10 +207,14 @@ void TimerCallback(int)
 		glutPostRedisplay();
 	}	
 	gSceneDrawer->OnTimerClick();
+	//gSceneDrawer->SaveDepthMap();
 
-	//if( !changeDxDy(camLat, camLon)) {
-	//	exit(0);
-	//}
+#ifdef OPTION2_COPY_CAMERA001_TO_DEFAULT_CAMERA
+	if( !changeDxDy(camLat, camLon)) {
+		exit(0);
+	}
+#endif
+	
 	// Call the timer to display the next frame.
 	glutTimerFunc((unsigned int)gSceneDrawer->GetFrameTime().GetMilliSeconds(), TimerCallback, 0);
 }

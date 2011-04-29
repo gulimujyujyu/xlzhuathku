@@ -123,10 +123,11 @@ void SetCamera(KFbxScene* pScene,
     lUp = lUp * cos( lRadians) + lRight * sin(lRadians);
 
 
-    double lNearPlane = 0.01;
+	//BUG
+    double lNearPlane = 200;
     if (lCamera)
         lNearPlane = lCamera->GetNearPlane();
-    double lFarPlane = 4000.0;
+    double lFarPlane = 600.0;
     if (lCamera)
         lFarPlane = lCamera->GetFarPlane();
 
