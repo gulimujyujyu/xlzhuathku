@@ -726,7 +726,7 @@ bool SceneContext::OnDisplay()
         glPushAttrib(GL_LIGHTING_BIT);
         glEnable(GL_DEPTH_TEST);
         // Draw the front face only, except for the texts and lights.
-        glEnable(GL_CULL_FACE);
+        //glEnable(GL_CULL_FACE);
 
 		////DEBUG
 		//
