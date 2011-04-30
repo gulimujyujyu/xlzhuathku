@@ -7,7 +7,7 @@
 #define FRAC_PI_180		        .017453292519943295769236907684886127134428718885417
 #define FRAC_180_PI		        57.295779513082320876798154814105170332405472466565
 #define OPTION2_COPY_CAMERA001_TO_DEFAULT_CAMERA
-#define SAVE_DEPTH_MAP
+//#define SAVE_DEPTH_MAP
 
 SceneContext* gSceneDrawer;
 int camLat, camLon;
@@ -215,9 +215,9 @@ void TimerCallback(int)
 	
 
 #ifdef OPTION2_COPY_CAMERA001_TO_DEFAULT_CAMERA
-	if( !changeDxDy(camLat, camLon)) {
-		exit(0);
-	}
+	//if( !changeDxDy(camLat, camLon)) {
+	//	exit(0);
+	//}
 #endif
 	
 	// Call the timer to display the next frame.
