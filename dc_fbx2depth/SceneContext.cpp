@@ -174,7 +174,7 @@ namespace
                 glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
                 glTexImage2D(GL_TEXTURE_2D, 0, 3, lTGAImage.width, lTGAImage.height, 0, GL_BGR,
                     GL_UNSIGNED_BYTE, lTGAImage.image_data);
-                glBindTexture(GL_TEXTURE_2D, 0);
+                //glBindTexture(GL_TEXTURE_2D, 0);
 
                 tga_free_buffers(&lTGAImage);
 
@@ -347,6 +347,26 @@ namespace
                     const KString lRelativeFileName = KString(lWorkingDir) + "/" + lFileTexture->GetFileName();
                     lStatus = LoadTextureFromFile(lRelativeFileName, lTextureObject);
                 }
+				
+				if (!lStatus)
+				{
+					// Try to use working path + local filename
+					const KString lWorkingDir = KFbxExtractDirectory(pFbxFileName);
+					const KString lLocalFilename = lFileTexture->GetFileName();
+					int i = lLocalFilename.GetLen();
+					for ( i=i-1; i>=0; i--) {
+						if (lLocalFilename[i] == '\\' || lLocalFilename[i] == '/'){
+							break;
+						}						
+					}
+					KString lFilename = "";
+					if(i>=0) {
+						lFilename = lLocalFilename.Right(lLocalFilename.GetLen()-i);
+						char* filename = lFilename.Buffer();
+						const KString lRelativeFileName = KString(lWorkingDir) + lFilename;
+						lStatus = LoadTextureFromFile(lRelativeFileName, lTextureObject);
+					}									
+				}
 
                 if (!lStatus)
                 {

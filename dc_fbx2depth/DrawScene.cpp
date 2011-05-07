@@ -189,12 +189,18 @@ void DrawMesh(KFbxNode* pNode, KTime& pTime, KFbxAnimLayer* pAnimLayer,
 {
     KFbxMesh* lMesh = pNode->GetMesh();
     const int lVertexCount = lMesh->GetControlPointsCount();
-
+	const int lTextureCount = lMesh->GetTextureUVCount();
+	bool lHasTexture = true;
     // No vertex to draw.
     if (lVertexCount == 0)
     {
         return;
     }
+
+	if (lTextureCount == 0)
+	{
+		lHasTexture = false;
+	}
 
     const VBOMesh * lMeshCache = static_cast<const VBOMesh *>(lMesh->GetUserDataPtr());
 
@@ -206,9 +212,14 @@ void DrawMesh(KFbxNode* pNode, KTime& pTime, KFbxAnimLayer* pAnimLayer,
     const bool lHasDeformation = lHasVertexCache || lHasShape || lHasSkin;
 
     KFbxVector4* lVertexArray = NULL;
+	KFbxLayerElementArrayTemplate<KFbxVector2>* lTextureArray = NULL; 
     if (!lMeshCache || lHasDeformation)
     {
         lVertexArray = new KFbxVector4[lVertexCount];
+		if (lHasTexture)
+		{
+			lMesh->GetTextureUV(&lTextureArray);
+		}		
         memcpy(lVertexArray, lMesh->GetControlPoints(), lVertexCount * sizeof(KFbxVector4));
     }
 
@@ -279,7 +290,13 @@ void DrawMesh(KFbxNode* pNode, KTime& pTime, KFbxAnimLayer* pAnimLayer,
     else
     {
         // OpenGL driver is too lower and use Immediate Mode
-        glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+		if (lHasTexture)
+		{
+			glEnable(GL_TEXTURE_2D);
+		}else {
+			glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+		}
+		
         const int lPolygonCount = lMesh->GetPolygonCount();
         for (int lPolygonIndex = 0; lPolygonIndex < lPolygonCount; lPolygonIndex++)
         {
@@ -287,6 +304,12 @@ void DrawMesh(KFbxNode* pNode, KTime& pTime, KFbxAnimLayer* pAnimLayer,
             glBegin(GL_TRIANGLES);
             for (int lVerticeIndex = 0; lVerticeIndex < lVerticeCount; lVerticeIndex++)
             {
+				if (lHasTexture)
+				{
+					int lCurrentIdx = lMesh->GetTextureUVIndex(lPolygonIndex,lVerticeIndex);
+					KFbxVector2 a = lTextureArray->GetAt(lCurrentIdx);
+					glTexCoord2dv((GLdouble *)a);
+				}
                 glVertex3dv((GLdouble *)lVertexArray[lMesh->GetPolygonVertex(lPolygonIndex, lVerticeIndex)]);
             }
             glEnd();
