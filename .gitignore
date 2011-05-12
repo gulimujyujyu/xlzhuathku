@@ -26,6 +26,8 @@ Thumbs.db
 *.txt
 *.box
 *.avi
+#matlab temp files
+*.asv
 [Bb]in
 [Dd]ebug*/
 *.sbr
