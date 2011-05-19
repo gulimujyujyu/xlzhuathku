@@ -927,8 +927,8 @@ void SetCameraPositionByLL(KFbxScene* pScene, KFbxVector4 lOrigCamPos, int lat, 
 
 	double latInDegree = double(lat) * K_PI_180;
 	double lonInDegree = double(lon) * K_PI_180;
-	newZ = len * sin(latInDegree);
-	newY = len * cos(latInDegree) * sin(lonInDegree);
+	newY = len * sin(latInDegree);
+	newZ = len * cos(latInDegree) * sin(lonInDegree);
 	newX = len * cos(latInDegree) * cos(lonInDegree);
 	dif.Set(newX, newY, newZ);
 	lCurPosition = lLookAtPosition + dif;

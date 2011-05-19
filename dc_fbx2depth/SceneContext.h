@@ -63,7 +63,7 @@ public:
 	// Move camera a bit
 	void MoveCameraABit( int x, int y);
 	// Save depth map
-	void SaveDepthMap();
+	void SaveDepthMap( int camLat, int camLon);
 
     // Methods for creating menus.
     // Get all the cameras in current scene, including producer cameras.

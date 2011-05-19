@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="dc_fbx2depth"
 	ProjectGUID="{F043A2A6-BF7D-46F9-8587-43930895500A}"
+	RootNamespace="dc_fbx2depth"
 	Keyword="Qt4VSv1.0"
 	TargetFrameworkVersion="0"
 	>

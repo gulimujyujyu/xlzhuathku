@@ -537,17 +537,20 @@ bool SceneContext::LoadFile()
             // the scene in the first timer callback.
             mStatus = MUST_BE_REFRESHED;
 
-			/*
-			//BUG IN MY PROGRAM, ALL SHOULD BE IN MILLIMETER!
-			//NOTE BY: ZHUXL
+			// System is ZAxis as Up Vector.
             // Convert Axis System to what is used in this example, if needed
-            KFbxAxisSystem SceneAxisSystem = mScene->GetGlobalSettings().GetAxisSystem();
-            KFbxAxisSystem OurAxisSystem(KFbxAxisSystem::YAxis, KFbxAxisSystem::ParityOdd, KFbxAxisSystem::RightHanded);
+            /*
+			KFbxAxisSystem SceneAxisSystem = mScene->GetGlobalSettings().GetAxisSystem();
+            KFbxAxisSystem OurAxisSystem(KFbxAxisSystem::ZAxis, KFbxAxisSystem::ParityOdd, KFbxAxisSystem::RightHanded);
             if( SceneAxisSystem != OurAxisSystem )
             {
                 OurAxisSystem.ConvertScene(mScene);
             }
+			*/
 
+			/*
+			//BUG IN MY PROGRAM, ALL SHOULD BE IN MILLIMETER!
+			//NOTE BY: ZHUXL
             // Convert Unit System to what is used in this example, if needed
             KFbxSystemUnit SceneSystemUnit = mScene->GetGlobalSettings().GetSystemUnit();
             if( SceneSystemUnit.GetScaleFactor() != 1.0 )
@@ -670,9 +673,12 @@ bool SceneContext::CloneCameraToDefaultCamera(const char * pCameraName)
 	KFbxNode* lCameraNode = mScene->FindNodeByName( pCameraName);
 	if ( lCameraNode) {
 		KFbxCamera* lRet = lCameraNode->GetCamera();
+		KFbxCamera* lPerspective = lGlobalCameraSettings.GetCameraProducerPerspective();
+		//lPerspective->Position.Set(lv);
 		if ( !(lGlobalCameraSettings.CopyProducerCamera(PRODUCER_PERSPECTIVE, lRet))) {
 			return false;
 		}			
+		KFbxVector4 lv = lPerspective->Position.Get();
 	}
 
 	mStatus = MUST_BE_REFRESHED;
@@ -850,7 +856,7 @@ void SceneContext::OnKeyboard(unsigned char pKey, int pX, int pY)
 	// 'C' or 'c' to capture current frame
 	if (pKey == 'C' || pKey == 'c')
 	{
-		SaveDepthMap();
+		SaveDepthMap(0,0);
 	}
 }
 
@@ -991,9 +997,9 @@ void SceneContext::DisplayWindowMessage()
 void SceneContext::CreateSceneCamera()
 {
 	//Create camera
-	KFbxCamera* zxlCamera = KFbxCamera::Create(mScene, "ZXLCamera");
-	zxlCamera->SetFormat(KFbxCamera::eNTSC);
-	KFbxNode* zxlCameraNode = KFbxNode::Create(mScene, "ZXLCameraNode");
+	zxlCamera = KFbxCamera::Create(mScene, "ZXLCamera");
+	zxlCamera->SetFormat(KFbxCamera::eNTSC );
+	zxlCameraNode = KFbxNode::Create(mScene, "ZXLCameraNode");
 	zxlCameraNode->SetNodeAttribute(zxlCamera);
 	KFbxNode* rootNode = mScene->GetRootNode();
 	rootNode->AddChild(zxlCameraNode);
@@ -1006,8 +1012,10 @@ void SceneContext::CreateSceneCamera()
 	zxlMarkerNode->LclTranslation.Set (KFbxVector4(0.0, 0.0, 0.0));
 	zxlMarkerNode->LclRotation.Set (KFbxVector4(0.0, 0.0, 0.0));
 	zxlMarkerNode->LclScaling.Set (KFbxVector4(1.0, 1.0, 1.0));
+	zxlCamera->SetNearPlane(800);
+	zxlCamera->SetFarPlane(1200);
 
-	zxlCamera->Position.Set(KFbxVector4(40.0, 40.0, 0.0));
+	zxlCamera->Position.Set(KFbxVector4( 0.0, 1000.0, 0.0));
 	KFbxVector4 p1 = zxlCamera->Position.Get();
 	//point to marker
 	zxlCameraNode->SetTarget(zxlMarkerNode);
@@ -1020,7 +1028,7 @@ void SceneContext::MoveCameraABit( int x, int y)
 	mStatus = MUST_BE_REFRESHED;
 }
 
-void SceneContext::SaveDepthMap()
+void SceneContext::SaveDepthMap( int camLat, int camLon)
 {
 	//TODO
 	int xx, yy;
@@ -1041,10 +1049,11 @@ void SceneContext::SaveDepthMap()
 			cimg.setPixel(xx,mROI_h-1-yy,qRgb(rr*255,gg*255,bb*255));
 		}
 	}
-	QString filename = qSavePath+QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz");
+	QString ll = QString::number(camLat) + QString("_") + QString::number(camLon) + QString("_");
+	QString filename = qSavePath+ll+QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz");
 	filename += QString("depth.png");
 	dimg.save(filename);
-	filename = qSavePath+QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz");
+	filename = qSavePath+ll+QDateTime::currentDateTime().toString("yyyy_dd_MM_hh_mm_ss_zzz");
 	filename += QString("color.png");
 	cimg.save( filename);
 	delete dbuf;	

@@ -7,15 +7,15 @@
 #define FRAC_PI_180		        .017453292519943295769236907684886127134428718885417
 #define FRAC_180_PI		        57.295779513082320876798154814105170332405472466565
 #define OPTION2_COPY_CAMERA001_TO_DEFAULT_CAMERA
-//#define SAVE_DEPTH_MAP
+#define SAVE_DEPTH_MAP
 
 SceneContext* gSceneDrawer;
 int camLat, camLon;
 const int LatStep = 10;
 const int LonStep = 10;
 
-const int DEFAULT_WINDOW_WIDTH = 320;
-const int DEFAULT_WINDOW_HEIGHT = 240;
+const int DEFAULT_WINDOW_WIDTH = 512;
+const int DEFAULT_WINDOW_HEIGHT = 512;
 
 /* Tab character ("\t") counter */
 int numTabs = 0; 
@@ -188,11 +188,12 @@ void DisplayCallback()
 #else
 		//NOTE BY ZHUXL
 		//OPTION 2: COPY CAMERA SETTING TO PRODUCER PERSPECTIVE CAMERA
-		//gSceneDrawer->CreateSceneCamera();
+		gSceneDrawer->CreateSceneCamera();
 		//gSceneDrawer->SetCurrentCamera("ZXLCamera");
 		//gSceneDrawer->SetCurrentCamera("Camera001");
 		gSceneDrawer->SetCurrentCamera("Producer Perspective");
-		gSceneDrawer->CloneCameraToDefaultCamera("Camera001");
+		//gSceneDrawer->CloneCameraToDefaultCamera("Camera001");
+		gSceneDrawer->CloneCameraToDefaultCamera("ZXLCameraNode");
 #endif
 		// Call the timer to display the first frame.
 		glutTimerFunc((unsigned int)gSceneDrawer->GetFrameTime().GetMilliSeconds(), TimerCallback, 0);
@@ -210,14 +211,14 @@ void TimerCallback(int)
 	gSceneDrawer->OnTimerClick();
 
 #ifdef SAVE_DEPTH_MAP
-	gSceneDrawer->SaveDepthMap();
+	gSceneDrawer->SaveDepthMap(camLat, camLon);
 #endif
 	
 
 #ifdef OPTION2_COPY_CAMERA001_TO_DEFAULT_CAMERA
-	//if( !changeDxDy(camLat, camLon)) {
-	//	exit(0);
-	//}
+	if( !changeDxDy(camLat, camLon)) {
+		exit(0);
+	}
 #endif
 	
 	// Call the timer to display the next frame.
