@@ -41,3 +41,12 @@ Render FBX files into scene, and obtain the depth map and label in certain ROI.
 An command line file should also be provided.
 
 #3. Empirical Notes
+
+#4. Data
+
+## 4.1 Single Frame pair (Color, Depth)
+
+	{lat_lon}_{datetime}color.png. Color Image
+	{lat_lon}_{datetime}depth.png. Depth Image
+	{datetime} := {yyyy_dd_MM_hh_mm_ss_zzz}
+	{lat_lon} := {cameraLatitute_cameraLongitute}
