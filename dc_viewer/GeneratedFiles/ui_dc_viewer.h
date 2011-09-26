@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dc_viewer.ui'
 **
-** Created: Tue Apr 19 19:35:06 2011
-**      by: Qt User Interface Compiler version 4.7.2
+** Created: Mon Sep 26 12:18:13 2011
+**      by: Qt User Interface Compiler version 4.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/

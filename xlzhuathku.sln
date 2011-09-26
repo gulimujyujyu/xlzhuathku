@@ -1,18 +1,18 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlzhuathku", "xlzhuathku\xlzhuathku.vcproj", "{78AEE709-A484-47BE-B2E6-7BAE74C1DDEC}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AA80B2B2-FDFC-40E6-A781-DA1878459EBE}"
 	ProjectSection(SolutionItems) = preProject
 		README = README
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dc_io", "dc_io\dc_io.vcproj", "{504E3316-1413-433E-93A3-383BAB33776E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlzhuathku", "xlzhuathku\xlzhuathku.vcxproj", "{78AEE709-A484-47BE-B2E6-7BAE74C1DDEC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dc_viewer", "dc_viewer\dc_viewer.vcproj", "{447D6DCE-56DC-41C4-9F04-B3709BB96454}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dc_io", "dc_io\dc_io.vcxproj", "{504E3316-1413-433E-93A3-383BAB33776E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dc_fbx2depth", "dc_fbx2depth\dc_fbx2depth.vcproj", "{F043A2A6-BF7D-46F9-8587-43930895500A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dc_viewer", "dc_viewer\dc_viewer.vcxproj", "{447D6DCE-56DC-41C4-9F04-B3709BB96454}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dc_fbx2depth", "dc_fbx2depth\dc_fbx2depth.vcxproj", "{F043A2A6-BF7D-46F9-8587-43930895500A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,5 +35,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		QtVersion = 4.7.1
 	EndGlobalSection
 EndGlobal

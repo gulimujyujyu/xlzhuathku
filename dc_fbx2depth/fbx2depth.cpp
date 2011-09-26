@@ -14,8 +14,8 @@ int camLat, camLon;
 const int LatStep = 10;
 const int LonStep = 10;
 
-const int DEFAULT_WINDOW_WIDTH = 512;
-const int DEFAULT_WINDOW_HEIGHT = 512;
+const int DEFAULT_WINDOW_WIDTH = 256;
+const int DEFAULT_WINDOW_HEIGHT = 256;
 
 /* Tab character ("\t") counter */
 int numTabs = 0; 

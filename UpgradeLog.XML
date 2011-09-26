@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="xlzhuathku">
+</Property><Property Name="Solution File" Value="E:\xlzhuathku_git\git\xlzhuathku\xlzhuathku.sln">
+</Property><Property Name="Date" Value="Monday, September 26, 2011">
+</Property><Property Name="Time" Value="11:31 AM">
+</Property></Properties><Event ErrorLevel="0" Project="xlzhuathku" Source="xlzhuathku\xlzhuathku.vcproj" Description="Converting project file 'E:\xlzhuathku_git\git\xlzhuathku\xlzhuathku\xlzhuathku.vcproj'.">
+</Event><Event ErrorLevel="1" Project="xlzhuathku" Source="xlzhuathku\xlzhuathku.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="xlzhuathku" Source="xlzhuathku\xlzhuathku.vcproj" Description="Done converting to new project file 'E:\xlzhuathku_git\git\xlzhuathku\xlzhuathku\xlzhuathku.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="xlzhuathku" Source="xlzhuathku\xlzhuathku.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="dc_io" Source="dc_io\dc_io.vcproj" Description="Converting project file 'E:\xlzhuathku_git\git\xlzhuathku\dc_io\dc_io.vcproj'.">
+</Event><Event ErrorLevel="1" Project="dc_io" Source="dc_io\dc_io.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="dc_io" Source="dc_io\dc_io.vcproj" Description="Done converting to new project file 'E:\xlzhuathku_git\git\xlzhuathku\dc_io\dc_io.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="dc_io" Source="dc_io\dc_io.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="dc_viewer" Source="dc_viewer\dc_viewer.vcproj" Description="Converting project file 'E:\xlzhuathku_git\git\xlzhuathku\dc_viewer\dc_viewer.vcproj'.">
+</Event><Event ErrorLevel="1" Project="dc_viewer" Source="dc_viewer\dc_viewer.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="dc_viewer" Source="dc_viewer\dc_viewer.vcproj" Description="Done converting to new project file 'E:\xlzhuathku_git\git\xlzhuathku\dc_viewer\dc_viewer.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="dc_viewer" Source="dc_viewer\dc_viewer.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="dc_fbx2depth" Source="dc_fbx2depth\dc_fbx2depth.vcproj" Description="Converting project file 'E:\xlzhuathku_git\git\xlzhuathku\dc_fbx2depth\dc_fbx2depth.vcproj'.">
+</Event><Event ErrorLevel="1" Project="dc_fbx2depth" Source="dc_fbx2depth\dc_fbx2depth.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="dc_fbx2depth" Source="dc_fbx2depth\dc_fbx2depth.vcproj" Description="Done converting to new project file 'E:\xlzhuathku_git\git\xlzhuathku\dc_fbx2depth\dc_fbx2depth.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="dc_fbx2depth" Source="dc_fbx2depth\dc_fbx2depth.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="xlzhuathku.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="xlzhuathku.sln" Description="Converted">
+</Event></UpgradeLog>
