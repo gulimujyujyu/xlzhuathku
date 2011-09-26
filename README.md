@@ -1,11 +1,11 @@
-################################
+*********************************
 My MPhil Research in HongKongU
 Xiaolong ZHU@HKU
 lucienzhu@gmail.com
-################################
+*********************************
 
 1. Introduction
-====================================
+===============
 
 1.1  dc_io
 -----------------
@@ -24,7 +24,7 @@ a playground for the time being.
 a command line tool to obtain the depth map from certain ROI.
 
 2. Prerequisites
-====================================
+===============
 
 2.1 dc_io
 -----------------

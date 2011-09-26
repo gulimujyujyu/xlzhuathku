@@ -1,11 +1,11 @@
-------------------------------
+*********************************
 Depth Camera I/O interface
 Xiaolong ZHU@HKU
 lucienzhu@gmail.com
-------------------------------
+*********************************
 
 1. Prerequisites
-====================================
+================
 
 1.1 Dependencies
 ------------------
@@ -35,10 +35,10 @@ lucienzhu@gmail.com
 		* glew32.lib;fbxsdk-2012.1-mdd.lib;wininet.lib;qtmaind.lib;QtCored4.lib;QtOpenGLd4.lib;opengl32.lib;glu32.lib;QtGuid4.lib;%(AdditionalDependencies)
 
 2. Usage
-====================================
+========
 Render FBX files into scene, and obtain the depth map and label in certain ROI.
 
 An command line file should also be provided.
 
 3. Empirical Notes
-====================================
+==================

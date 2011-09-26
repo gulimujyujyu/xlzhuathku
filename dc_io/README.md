@@ -1,11 +1,11 @@
-------------------------------
+*********************************
 Depth Camera I/O interface
 Xiaolong ZHU@HKU
 lucienzhu@gmail.com
-------------------------------
+*********************************
 
 1. Prerequisites
-====================================
+=================
 
 1.1 Dependencies
 ------------------
@@ -70,12 +70,12 @@ lucienzhu@gmail.com
 		* OpenNI.lib;qtmaind.lib;QtCored4.lib;QtGuid4.lib;QtOpenGLd4.lib;cv210.lib;cxcore210.lib;highgui210.lib;%(AdditionalDependencies)
 
 2. Usage
-====================================
+========
 depth camera I/O codes.
 
 
 3. Empirical Notes
-====================================
+===================
 
 3.1. Record Codec
 --------------
