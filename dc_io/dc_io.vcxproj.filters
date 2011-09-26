@@ -93,9 +93,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="README" />
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="dc_io.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -114,5 +111,8 @@
     <CustomBuild Include="dc_io.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

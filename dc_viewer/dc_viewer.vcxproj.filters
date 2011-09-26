@@ -75,9 +75,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="README" />
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="dc_viewer.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -93,5 +90,8 @@
     <CustomBuild Include="dc_viewer.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

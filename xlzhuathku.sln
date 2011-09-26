@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AA80B2B2-FDFC-40E6-A781-DA1878459EBE}"
 	ProjectSection(SolutionItems) = preProject
-		README = README
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlzhuathku", "xlzhuathku\xlzhuathku.vcxproj", "{78AEE709-A484-47BE-B2E6-7BAE74C1DDEC}"
