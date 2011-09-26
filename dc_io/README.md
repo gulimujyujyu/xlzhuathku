@@ -4,11 +4,11 @@
 	lucienzhu@gmail.com
 	*********************************
 
-1. Prerequisites
-=================
+#1. Prerequisites
 
-1.1 Dependencies
-------------------
+
+##1.1 Dependencies
+
 	*. OpenNI + NITE
 	*. Qt4.7 for vs2010
 	*. Qt4.7 add-on for vs2010
@@ -21,8 +21,8 @@
 	4. See [OpenCV for 2010](http://opencv.willowgarage.com/wiki/VisualC%2B%2B_VS2008)
 	5. See [XVid Codes](http://www.xvidmovies.com/codec/)
 
-1.2 My Settings
------------------
+##1.2 My Settings
+
 
 ###1.2.1 Kinect
 
@@ -69,19 +69,18 @@
 * Linker Input:
 	* OpenNI.lib;qtmaind.lib;QtCored4.lib;QtGuid4.lib;QtOpenGLd4.lib;cv210.lib;cxcore210.lib;highgui210.lib;%(AdditionalDependencies)
 
-2. Usage
-========
+#2. Usage
+
 depth camera I/O codes.
 
 
-3. Empirical Notes
-===================
+#3. Empirical Notes
 
-3.1. Record Codec
---------------
-	* High Accuracy:
-		* Intel IYUV Codec	    AAAAA
-		* Logitech Video		AAAAA
-		* Xvid Codec			AAAAA
-		* Microsoft Video 1	    AA
+##3.1. Record Codec
+
+* High Accuracy:
+	* Intel IYUV Codec	    AAAAA
+	* Logitech Video		AAAAA
+	* Xvid Codec			AAAAA
+	* Microsoft Video 1	    AA
 
