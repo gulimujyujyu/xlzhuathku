@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dc_viewer.ui'
 **
-** Created: Mon Sep 26 15:51:18 2011
+** Created: Tue Sep 27 20:55:24 2011
 **      by: Qt User Interface Compiler version 4.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -35,15 +35,16 @@ public:
     QAction *action_Exit;
     QAction *actionSetTemppath;
     QWidget *centralWidget;
-    QGridLayout *gridLayout;
+    QGridLayout *gridLayout_2;
     QTreeView *fileTreeView;
+    QGridLayout *gridLayout;
     XlLabelDisplay *colorLabel;
     XlLabelDisplay *tempLabel;
-    XlPointCloudWidget *glWidget;
     XlLabelDisplay *curvatureLabel;
     XlLabelDisplay *depthLabel;
     XlLabelDisplay *normalLabel;
     XlLabelDisplay *edgeLabel;
+    XlPointCloudWidget *glWidget;
     QMenuBar *menuBar;
     QMenu *menu_File;
     QToolBar *mainToolBar;
@@ -53,7 +54,7 @@ public:
     {
         if (dc_viewerClass->objectName().isEmpty())
             dc_viewerClass->setObjectName(QString::fromUtf8("dc_viewerClass"));
-        dc_viewerClass->resize(770, 471);
+        dc_viewerClass->resize(755, 471);
         actionSetRoot = new QAction(dc_viewerClass);
         actionSetRoot->setObjectName(QString::fromUtf8("actionSetRoot"));
         action_Exit = new QAction(dc_viewerClass);
@@ -62,10 +63,10 @@ public:
         actionSetTemppath->setObjectName(QString::fromUtf8("actionSetTemppath"));
         centralWidget = new QWidget(dc_viewerClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        gridLayout = new QGridLayout(centralWidget);
-        gridLayout->setSpacing(6);
-        gridLayout->setContentsMargins(11, 11, 11, 11);
-        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        gridLayout_2 = new QGridLayout(centralWidget);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         fileTreeView = new QTreeView(centralWidget);
         fileTreeView->setObjectName(QString::fromUtf8("fileTreeView"));
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -75,17 +76,43 @@ public:
         fileTreeView->setSizePolicy(sizePolicy);
         fileTreeView->setMinimumSize(QSize(200, 0));
 
-        gridLayout->addWidget(fileTreeView, 0, 0, 3, 1);
+        gridLayout_2->addWidget(fileTreeView, 0, 0, 1, 1);
 
+        gridLayout = new QGridLayout();
+        gridLayout->setSpacing(6);
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         colorLabel = new XlLabelDisplay(centralWidget);
         colorLabel->setObjectName(QString::fromUtf8("colorLabel"));
 
-        gridLayout->addWidget(colorLabel, 0, 1, 1, 1);
+        gridLayout->addWidget(colorLabel, 0, 0, 1, 1);
 
         tempLabel = new XlLabelDisplay(centralWidget);
         tempLabel->setObjectName(QString::fromUtf8("tempLabel"));
 
-        gridLayout->addWidget(tempLabel, 0, 2, 1, 1);
+        gridLayout->addWidget(tempLabel, 0, 1, 1, 1);
+
+        curvatureLabel = new XlLabelDisplay(centralWidget);
+        curvatureLabel->setObjectName(QString::fromUtf8("curvatureLabel"));
+
+        gridLayout->addWidget(curvatureLabel, 1, 0, 1, 1);
+
+        depthLabel = new XlLabelDisplay(centralWidget);
+        depthLabel->setObjectName(QString::fromUtf8("depthLabel"));
+
+        gridLayout->addWidget(depthLabel, 1, 1, 1, 1);
+
+        normalLabel = new XlLabelDisplay(centralWidget);
+        normalLabel->setObjectName(QString::fromUtf8("normalLabel"));
+
+        gridLayout->addWidget(normalLabel, 2, 0, 1, 1);
+
+        edgeLabel = new XlLabelDisplay(centralWidget);
+        edgeLabel->setObjectName(QString::fromUtf8("edgeLabel"));
+
+        gridLayout->addWidget(edgeLabel, 2, 1, 1, 1);
+
+
+        gridLayout_2->addLayout(gridLayout, 0, 1, 1, 1);
 
         glWidget = new XlPointCloudWidget(centralWidget);
         glWidget->setObjectName(QString::fromUtf8("glWidget"));
@@ -96,32 +123,12 @@ public:
         glWidget->setSizePolicy(sizePolicy1);
         glWidget->setMinimumSize(QSize(400, 400));
 
-        gridLayout->addWidget(glWidget, 0, 3, 3, 1);
-
-        curvatureLabel = new XlLabelDisplay(centralWidget);
-        curvatureLabel->setObjectName(QString::fromUtf8("curvatureLabel"));
-
-        gridLayout->addWidget(curvatureLabel, 1, 1, 1, 1);
-
-        depthLabel = new XlLabelDisplay(centralWidget);
-        depthLabel->setObjectName(QString::fromUtf8("depthLabel"));
-
-        gridLayout->addWidget(depthLabel, 1, 2, 1, 1);
-
-        normalLabel = new XlLabelDisplay(centralWidget);
-        normalLabel->setObjectName(QString::fromUtf8("normalLabel"));
-
-        gridLayout->addWidget(normalLabel, 2, 1, 1, 1);
-
-        edgeLabel = new XlLabelDisplay(centralWidget);
-        edgeLabel->setObjectName(QString::fromUtf8("edgeLabel"));
-
-        gridLayout->addWidget(edgeLabel, 2, 2, 1, 1);
+        gridLayout_2->addWidget(glWidget, 0, 2, 1, 1);
 
         dc_viewerClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(dc_viewerClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 770, 21));
+        menuBar->setGeometry(QRect(0, 0, 755, 21));
         menu_File = new QMenu(menuBar);
         menu_File->setObjectName(QString::fromUtf8("menu_File"));
         dc_viewerClass->setMenuBar(menuBar);
