@@ -145,14 +145,18 @@ void dc_viewer::loadFiles()
 	QFile file(re_box);
 	int tmp, tmpX, tmpY;
 	if(!file.open(QIODevice::ReadOnly)) {
-		this->refreshStatusBar("Load bounding box failed.");
-		return;
+		this->refreshStatusBar("None bounding box detected.");
+		this->boundingBox.setX(0);
+		this->boundingBox.setY(0);
+		//return;
+	} else {
+		QTextStream fin(&file);
+		fin >> tmp >> tmpX >> tmpY >> tmp >> tmp >> tmp >> tmp;
+		file.close();
+		this->boundingBox.setX(tmpX);
+		this->boundingBox.setY(tmpY);
 	}
-	QTextStream fin(&file);
-	fin >> tmp >> tmpX >> tmpY >> tmp >> tmp >> tmp >> tmp;
-	file.close();
-	this->boundingBox.setX(tmpX);
-	this->boundingBox.setY(tmpY);
+	
 
 	this->colorImage = cvLoadImage(re_color.toLatin1().data());
 	this->depthImage = cvLoadImage(re_depth.toLatin1().data());
@@ -451,6 +455,7 @@ bool dc_viewer::isValidROIImage(QFileInfo fileInfo, QString &prefix)
 		if ( !(tmpFile.exists())){
 			return state;
 		}
+		/*
 		tmpFile.setFile(fileInfo.path(), re_capture);
 		if ( !(tmpFile.exists())){
 			return state;
@@ -459,6 +464,7 @@ bool dc_viewer::isValidROIImage(QFileInfo fileInfo, QString &prefix)
 		if ( !(tmpFile.exists())){
 			return state;
 		}
+		*/
 		pos = reg_depth.indexIn(fileInfo.fileName());
 		this->maxDepth = reg_depth.cap(1).toInt();
 		this->minDepth = reg_depth.cap(2).toInt();
